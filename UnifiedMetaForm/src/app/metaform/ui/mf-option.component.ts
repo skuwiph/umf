@@ -58,6 +58,8 @@ export class MetaFormOptionComponent implements OnInit {
                     break;
             }
 
+            const value = this.form.getValue(this.name);
+
             if (optionControl.options) {
                 this.options = optionControl.options;
                 this.loaded = true;
@@ -72,7 +74,9 @@ export class MetaFormOptionComponent implements OnInit {
                         // console.log(`Got ${data.length} from ${optionControl.optionSource} results: ${JSON.stringify(data)}`);
                         this.options = nv.concat(data);
                         this.loaded = true;
-                        this.selectItem(this.form.getValue(this.name));
+                        if (value.length > 0) {
+                            this.selectItem(value);
+                        }
                     });
             }
 

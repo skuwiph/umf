@@ -2,16 +2,11 @@ var express = require("express");
 var cors = require('cors');
 var app = express();
 
-var corsOptions = {
-    origin: 'http://localhost:4200',
-    optionsSuccessStatus: 200
-}
-
 app.get("/url", (req, res, next) => {
     res.json(["Tony", "Lisa", "Michael", "Ginger", "Food"]);
 });
 
-app.get("/option", cors(corsOptions), (req, res, next) => {
+app.get("/option", cors(), (req, res, next) => {
     res.json([
         { 'code': 'UK', 'description': 'United Kingdom' },
         { 'code': 'DE', 'description': 'Germany' },
