@@ -1,0 +1,3 @@
+<div class="mf-options" [ngClass]="{'opt-horiz': isHorizontal, 'opt-vert': isVertical, 'error': inError }">
+    <button type="button" *ngFor="let o of options" class="mf-option-item" [ngClass]="{'opt-selected': isSelected(o.code)}" (click)="selectItem(o.code)">{{o.description}}</button>
+</div>

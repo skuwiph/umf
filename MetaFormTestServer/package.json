@@ -1,0 +1,15 @@
+{
+  "name": "metaformtestserver",
+  "version": "1.0.0",
+  "description": "Test REST API Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "IA Seckington",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}
