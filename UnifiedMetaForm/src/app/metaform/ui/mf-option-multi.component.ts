@@ -21,6 +21,7 @@ export class MetaFormOptionMultiComponent implements OnInit {
     optionType: string;
 
     inError = false;
+    loaded = false;
 
     isHorizontal = false;
     isVertical = true;
@@ -40,21 +41,28 @@ export class MetaFormOptionMultiComponent implements OnInit {
             this.isHorizontal = optionControl.optionLayout === ControlLayoutStyle.Horizontal;
             this.isVertical = !this.isHorizontal;
 
-            this.options = optionControl.options;
+            if (optionControl.options) {
+                this.options = optionControl.options;
+                this.loaded = true;
+                this.extractSelectedOptions();
+            } else if (optionControl.optionSource) {
+                this.mfService.loadOptionsFromUrl(this.form, optionControl.optionSource)
+                    .subscribe((data: MFOptionValue[]) => {
+                        const nv: MFOptionValue[] = [];
+                        if (optionControl.nullItem) {
+                            nv.push(new MFOptionValue('', optionControl.nullItem));
+                        }
 
-            // Set up the selection array
-            for (const o of this.options) {
-                this.selectedItems.set(o.code, false);
+                        // console.log(`Got ${data.length} from ${optionControl.optionSource} results: ${JSON.stringify(data)}`);
+                        this.options = nv.concat(data);
+                        // this.loaded = true;
+                        // if (value.length > 0) {
+                        //     this.selectItem(value);
+                        // }
+                        this.extractSelectedOptions();
+                    });
             }
 
-            // This will be a comma-separated list
-            const currentlySelected = this.form.getValue(this.control.name);
-            if (currentlySelected.indexOf(',') > -1) {
-                const split = currentlySelected.split(',');
-                for (const sel of split) {
-                    this.selectedItems.set(sel, true);
-                }
-            }
         }
     }
 
@@ -88,6 +96,23 @@ export class MetaFormOptionMultiComponent implements OnInit {
 
     onControlValidityChange(event: MFControlValidityChange): void {
         this.checkControlStatus();
+    }
+
+    private extractSelectedOptions() {
+
+        // Set up the selection array
+        for (const o of this.options) {
+            this.selectedItems.set(o.code, false);
+        }
+
+        // This will be a comma-separated list
+        const currentlySelected = this.form.getValue(this.control.name);
+        if (currentlySelected.indexOf(',') > -1) {
+            const split = currentlySelected.split(',');
+            for (const sel of split) {
+                this.selectedItems.set(sel, true);
+            }
+        }
     }
 
     private checkControlStatus() {

@@ -45,14 +45,7 @@ export class MetaFormService {
             dq = this.getQuestionsInForm(form);
         }
 
-        dq.controlStatus = new Map<string, boolean>();
-        for (const q of dq.questions) {
-            for (const c of q.controls) {
-                const valid = c.isValid(form, false);
-                // console.log(`Setting control/valid: ${c.name}=${valid}`);
-                dq.controlStatus.set(c.name, valid);
-            }
-        }
+        this.checkDisplayQuestionControlStatus(form, dq);
 
         return dq;
     }
@@ -76,14 +69,7 @@ export class MetaFormService {
             dq = this.getQuestionsInForm(form);
         }
 
-        dq.controlStatus = new Map<string, boolean>();
-        for (const q of dq.questions) {
-            for (const c of q.controls) {
-                const valid = c.isValid(form, false);
-                // console.log(`Setting control/valid: ${c.name}=${valid}`);
-                dq.controlStatus.set(c.name, valid);
-            }
-        }
+        this.checkDisplayQuestionControlStatus(form, dq);
 
         return dq;
     }
@@ -137,6 +123,7 @@ export class MetaFormService {
         }
 
         dq.lastItem = checkSection;
+        dq.numberOfControls = controlCount;
 
         return dq;
     }
@@ -153,13 +140,38 @@ export class MetaFormService {
         }
 
         dq.lastItem = 1;
+        dq.numberOfControls = controlCount;
 
         return dq;
     }
 
-    loadOptionsFromUrl(url: string) {
+    // Load option values from a passed URL
+    // This must be complete. If you need authentication or
+    // other headers added, ensure that your HttpInterceptor 
+    // is adding those by default.
+    //
+    // https://example.com/path/to/resource%fieldName1%?param=%fieldName2%
+    loadOptionsFromUrl(form: MetaForm, url: string) {
+        const hasReplacements = url.indexOf('%') > -1;
+
+        if (hasReplacements) {
+
+        }
+
         return this.http.get(url);
     }
+
+    private checkDisplayQuestionControlStatus(form: MetaForm, dq: DisplayQuestion) {
+        dq.controlStatus = new Map<string, boolean>();
+        for (const q of dq.questions) {
+            for (const c of q.controls) {
+                const valid = c.isValid(form, false);
+                // console.log(`Setting control/valid: ${c.name}=${valid}`);
+                dq.controlStatus.set(c.name, valid);
+            }
+        }
+    }
+
 }
 
 export class DisplayQuestion {

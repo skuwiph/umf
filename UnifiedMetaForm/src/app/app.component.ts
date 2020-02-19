@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
     constructor(private mfService: MetaFormService) { }
 
     ngOnInit() {
-        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.SingleQuestion);
+        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.EntireForm);
 
         this.form
             .addQuestion('name', 'Please enter your name')
@@ -85,7 +85,7 @@ export class AppComponent implements OnInit {
         options2.push(new MFOptionValue('de', 'German'));
         options2.push(new MFOptionValue('es', 'Spanish'));
 
-        this.form.setValue('option2', 'fr,de');
+        // this.form.setValue('option2', 'fr,de');
 
         this.form
             .addQuestion('option2', 'Please select all applicable options')

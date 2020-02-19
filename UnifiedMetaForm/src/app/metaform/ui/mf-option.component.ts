@@ -64,7 +64,7 @@ export class MetaFormOptionComponent implements OnInit {
                 this.options = optionControl.options;
                 this.loaded = true;
             } else if (optionControl.optionSource) {
-                this.mfService.loadOptionsFromUrl(optionControl.optionSource)
+                this.mfService.loadOptionsFromUrl(this.form, optionControl.optionSource)
                     .subscribe((data: MFOptionValue[]) => {
                         const nv: MFOptionValue[] = [];
                         if (optionControl.nullItem) {
