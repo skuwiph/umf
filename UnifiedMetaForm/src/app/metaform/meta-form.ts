@@ -1,4 +1,3 @@
-import { IMetaForm } from './imeta-form';
 import {
     MetaFormDrawType,
     MetaFormTextType,
@@ -10,7 +9,7 @@ import {
 import { EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 
-export class MetaForm implements IMetaForm {
+export class MetaForm {
     name: string; title: string;
     version: number;
     dateModified: Date;
