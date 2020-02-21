@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MetaForm, MFQuestion, MFControl, MFSection } from './meta-form';
-import { throwError } from 'rxjs';
+import { throwError, queueScheduler } from 'rxjs';
 import { MetaFormDrawType } from './meta-form-enums';
 import { HttpClient } from '@angular/common/http';
 
@@ -141,6 +141,8 @@ export class MetaFormService {
 
         dq.lastItem = 1;
         dq.numberOfControls = controlCount;
+        dq.atEnd = true;
+        dq.atStart = true;
 
         return dq;
     }

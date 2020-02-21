@@ -3,7 +3,10 @@
 }
 
 input { 
-    width: calc(100% - 1rem);    
+    width: calc(100% - 1rem);   
+    border: 1px solid #bbbbbb;
+    border-radius: 5px;
+    padding: 0.5rem 0;
 }
 
 .error {

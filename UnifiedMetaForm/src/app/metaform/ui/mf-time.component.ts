@@ -61,7 +61,17 @@ export class MetaFormTimeComponent implements OnInit {
 
     private checkControlStatus() {
         this.inError = !this.control.isValid(this.form);
+        if (!this.inError) {
+            this.control.isValidAsync(this.form).subscribe(
+                (valid: boolean) => {
+                    // console.log(`async validator finished: ${valid}`);
+                    this.inError = !valid;
+                    this.changeValidity.emit(new MFControlValidityChange(this.control.name, !this.inError));
+                }
+            );
+        }
         this.changeValidity.emit(new MFControlValidityChange(this.control.name, !this.inError));
     }
+
 
 }

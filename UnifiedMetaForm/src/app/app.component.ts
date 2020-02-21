@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
             .addValidator(MFValidator.Required('This field is required'))
             .addValidator(MFValidator.Email('Please enter a valid email address'))
             .addValidatorAsync(MFValidatorAsync.AsyncValidator(this.http,
-                'http://localhost:3000/validate/email', 'This email already exists or something'));
+                'http://localhost:3000/validate/email', 'Please enter a different email!'));
 
         this.form
             .addQuestion('password', 'Please choose a password')

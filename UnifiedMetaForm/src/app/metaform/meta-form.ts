@@ -484,14 +484,14 @@ export class MFControl {
 
         if (valid) {
             // Check async
-            console.log('Checking async validators')
+            // console.log('Checking async validators')
             if (this.validatorsAsync) {
-                console.log(`I have async validators`);
+                // console.log(`I have async validators`);
                 for (const v of this.validatorsAsync) {
-                    console.log(`Checking ${v.type} with url ${v.url}`);
+                    // console.log(`Checking ${v.type} with url ${v.url}`);
                     v.isValid(form, this).subscribe(
                         r => {
-                            console.log(`${v.url} returned ${JSON.stringify(r)}`);
+                            // console.log(`${v.url} returned ${JSON.stringify(r)}`);
 
                             valid = r;
                             if (!valid) {
@@ -503,7 +503,7 @@ export class MFControl {
                                 this.errorMessage = undefined;
                             }
 
-                            console.log(`Setting valid=${valid} on control ${this.name} currently in error: ${this.inError}`);
+                            // console.log(`Setting valid=${valid} on control ${this.name} currently in error: ${this.inError}`);
                             this.inError = !valid;
                             subject.next(r);
                         }

@@ -85,7 +85,7 @@ export class MetaFormTextComponent implements OnInit {
         if (!this.inError) {
             this.control.isValidAsync(this.form).subscribe(
                 (valid: boolean) => {
-                    console.log(`async validator finished: ${valid}`);
+                    // console.log(`async validator finished: ${valid}`);
                     this.inError = !valid;
                     this.changeValidity.emit(new MFControlValidityChange(this.control.name, !this.inError));
                 }

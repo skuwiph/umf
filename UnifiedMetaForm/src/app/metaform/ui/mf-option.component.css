@@ -10,8 +10,8 @@
 }
 
 .opt-selected {
-    background-color: cornflowerblue;
-    border: 1px solid cornflowerblue;
+    background-color: rgb(42, 42, 116);
+    border: 1px solid rgb(42, 42, 116);
     color: white;   
 }
 
