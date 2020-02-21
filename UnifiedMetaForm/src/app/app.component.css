@@ -1,0 +1,18 @@
+.buttons {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn {
+    padding: 0.55rem 1.5rem;
+    background-color: rgb(109, 109, 212);
+    border:  rgb(42, 42, 116);
+    border-radius: 5px;
+    color: white;
+}
+
+.selected {
+    background-color: rgb(42, 42, 116);  
+}

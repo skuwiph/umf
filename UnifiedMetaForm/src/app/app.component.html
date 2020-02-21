@@ -168,5 +168,14 @@
 <!-- <div class="toolbar" role="banner"></div> -->
 
 <div class="content" role="main">
-  <app-metaform-display [form]='form'></app-metaform-display>
+    <div class="buttons">
+        <button type="button" class="btn tab" [ngClass]="{'selected': displayType == 0}" (click)="changeType(0)">Fluent</button>
+        <button type="button" class="btn tab" [ngClass]="{'selected': displayType == 1}" (click)="changeType(1)">JSON</button>
+    </div>
+    <ng-container *ngIf="displayType == 0; else jsonType">
+        <app-metaform-display [form]='form'></app-metaform-display>
+    </ng-container>
+    <ng-template #jsonType>
+        <app-metaform-display [form]='form'></app-metaform-display>
+    </ng-template>
 </div>

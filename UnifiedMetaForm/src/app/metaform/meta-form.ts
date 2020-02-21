@@ -11,7 +11,8 @@ import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 export class MetaForm {
-    name: string; title: string;
+    name: string;
+    title: string;
     version: number;
     dateModified: Date;
     dataSource?: string;

@@ -43,7 +43,7 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
         // NOTE(Ian): Check whether this should be unsubscribed here
         if (this.form) {
             console.log(`onDestroy`);
-            this.form.change?.unsubscribe();
+            //this.form.change?.unsubscribe();
         }
     }
 

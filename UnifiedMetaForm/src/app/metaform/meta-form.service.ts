@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MetaForm, MFQuestion, MFControl, MFSection } from './meta-form';
-import { throwError, queueScheduler } from 'rxjs';
+import { throwError, queueScheduler, Observable, Subject } from 'rxjs';
 import { MetaFormDrawType } from './meta-form-enums';
 import { HttpClient } from '@angular/common/http';
+import { IMetaFormV1 } from './serialisation/v1.interfaces';
 
 @Injectable({
     providedIn: 'root'
@@ -20,10 +21,22 @@ export class MetaFormService {
         return form;
     }
 
-    loadFormWithName(name: string): MetaForm {
-        const form = new MetaForm();
+    loadFormWithName(formUrl: string, name: string): Observable<MetaForm> {
+        const subject = new Subject<MetaForm>();
 
-        return form;
+        this.http.get(`${formUrl}/${name}`)
+            .subscribe(
+                (data: IMetaFormV1) => {
+                    console.log(`Got data from ${formUrl}/${name}:`, data);
+
+                    const form = new MetaForm();
+                    form.name = data.name;
+                    form.title = data.title;
+
+                    subject.next(form);
+                });
+
+        return subject;
     }
 
     getNextQuestionToDisplay(form: MetaForm, lastItem: number): DisplayQuestion {

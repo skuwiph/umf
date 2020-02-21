@@ -12,10 +12,34 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent implements OnInit {
     title = 'UnifiedMetaForm';
     form: MetaForm;
+    displayType = 0;
 
     constructor(private http: HttpClient, private mfService: MetaFormService) { }
 
     ngOnInit() {
+        this.loadFluentForm();
+    }
+
+    changeType(type: number): void {
+        console.log(`Showing type: ${type}`);
+        this.displayType = type;
+
+        if (this.displayType === 1) {
+            this.form = null;
+            this.mfService
+                .loadFormWithName('http://localhost:3000/form', 'test-form')
+                .subscribe(
+                    (f: MetaForm) => {
+                        this.form = f;
+                    }
+                );
+        } else {
+            this.form = null;
+            this.loadFluentForm();
+        }
+    }
+
+    loadFluentForm() {
         this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.EntireForm);
 
         this.form
