@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { MFControl, MetaForm, MFLabelControl, MFControlValidityChange, MFOptionControl, MFOptionValue } from '../meta-form';
+import { MFControl, MetaForm, MFLabelControl, MFControlValidityChange, MFOptionControl, MFOptionValue, MFValueChange } from '../meta-form';
 import { MetaFormService } from '../meta-form.service';
 import { FormControl } from '@angular/forms';
 import { EventEmitter } from '@angular/core';
 import { MetaFormOptionType, ControlLayoutStyle } from '../meta-form-enums';
-import { BuiltinVar } from '@angular/compiler';
+import { filter } from 'rxjs/operators';
 
 @Component({
     selector: 'app-mf-option',
@@ -45,7 +45,7 @@ export class MetaFormOptionComponent implements OnInit {
             switch (optionControl.optionType) {
                 case MetaFormOptionType.SingleSelect:
                     this.optionType = 'single';
-                    this.expandOptions = optionControl.expandOptions;
+                    this.expandOptions = optionControl.options.expandOptions ?? true;
                     break;
                 case MetaFormOptionType.MultiSelect:
                     this.optionType = 'multi';
@@ -58,32 +58,54 @@ export class MetaFormOptionComponent implements OnInit {
                     break;
             }
 
-            const value = this.form.getValue(this.name);
-
-            if (optionControl.options) {
-                this.options = optionControl.options;
+            if (optionControl.hasOptionList) {
+                this.options = optionControl.optionList;
                 this.loaded = true;
-            } else if (optionControl.optionSource) {
-                this.mfService.loadOptionsFromUrl(this.form, optionControl.optionSource)
-                    .subscribe((data: MFOptionValue[]) => {
-                        const nv: MFOptionValue[] = [];
-                        if (optionControl.nullItem) {
-                            nv.push(new MFOptionValue('', optionControl.nullItem));
-                        }
-
-                        // console.log(`Got ${data.length} from ${optionControl.optionSource} results: ${JSON.stringify(data)}`);
-                        this.options = nv.concat(data);
-                        this.loaded = true;
-                        if (value.length > 0) {
-                            this.selectItem(value);
-                        }
-                    });
+            } else if (optionControl.hasUrl) {
+                this.loadOptions(optionControl);
             }
 
             this.formControl.valueChanges.subscribe(obs => {
                 this.form.setValue(this.control.name, obs);
                 this.checkControlStatus();
             });
+
+            this.checkControlDependencies();
+        }
+    }
+
+    checkControlDependencies(): void {
+        if (this.control.dependencies) {
+            for (const dep of this.control.dependencies) {
+                this.form.change
+                    .pipe(
+                        filter((c: MFValueChange) => c.name === dep)
+                    )
+                    .subscribe((chg: MFValueChange) => {
+                        this.loadOptions(this.control as MFOptionControl);
+                    });
+            }
+        }
+    }
+
+    loadOptions(optionControl: MFOptionControl): void {
+
+        const url = optionControl.urlForService(this.form, this.control);
+        if (url) {
+            this.mfService.loadOptionsFromUrl(this.form, url)
+                .subscribe((data: MFOptionValue[]) => {
+                    const value = this.form.getValue(this.name);
+                    const nv: MFOptionValue[] = [];
+
+                    if (optionControl.options.nullItem) {
+                        nv.push(new MFOptionValue('', optionControl.options.nullItem));
+                    }
+                    this.options = nv.concat(data);
+                    this.loaded = true;
+                    if (value.length > 0) {
+                        this.selectItem(value);
+                    }
+                });
         }
     }
 
@@ -110,8 +132,19 @@ export class MetaFormOptionComponent implements OnInit {
     }
 
     selectItem(code: string): void {
-        console.log(`Selecting item ${code}`);
+        // console.log(`Selecting item ${code}`);
+        let found = false;
         if (code.length > 0) {
+            // Check whether the value exists!
+            for (const opt of this.options) {
+                if (opt.code === code) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (found) {
             this.form.setValue(this.control.name, code);
         } else {
             this.form.setValue(this.control.name, '');
@@ -125,7 +158,7 @@ export class MetaFormOptionComponent implements OnInit {
 
     private checkControlStatus() {
         this.inError = !this.control.isValid(this.form);
-        console.log(`Is control invalid? ${this.inError}`);
+        // console.log(`Is control invalid? ${this.inError}`);
         this.changeValidity.emit(new MFControlValidityChange(this.control.name, !this.inError));
     }
 }

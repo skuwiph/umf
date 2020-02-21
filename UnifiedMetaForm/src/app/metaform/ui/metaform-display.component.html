@@ -1,20 +1,22 @@
 <h2>{{form.title}}</h2>
 <div class="mf-form">
     <ng-container *ngIf="display?.questions">
-        <div class="mf-question" *ngFor="let q of display.questions">
-            <div class="mf-caption"><label class="caption">{{q.caption}}</label></div>
-            <div class="mf-control" *ngFor="let c of q.controls">
-                <ng-container [ngSwitch]="c.controlType">
-                    <ng-container *ngSwitchCase="0"><app-mf-label [form]="form" [control]="c"></app-mf-label></ng-container>
-                    <ng-container *ngSwitchCase="1"><app-mf-text [form]="form" [control]="c" (changeValidity)="onControlValidityChange($event)"></app-mf-text></ng-container>
-                    <ng-container *ngSwitchCase="2"><app-mf-option [form]="form" [control]="c" (changeValidity)="onControlValidityChange($event)"></app-mf-option></ng-container>
-                    <ng-container *ngSwitchCase="3"><app-mf-date [form]="form" [control]="c" (changeValidity)="onControlValidityChange($event)"></app-mf-date></ng-container>
-                    <ng-container *ngSwitchCase="4"><app-mf-time [form]="form" [control]="c" (changeValidity)="onControlValidityChange($event)"></app-mf-time></ng-container>
-                    <ng-container *ngSwitchDefault><b>No control implementation: {{c.controlType}}</b></ng-container>
-                </ng-container>
-                <div *ngIf="c.inError" class="errorMessage">{{c.errorMessage}}</div>
+        <ng-container *ngFor="let q of display.questions">
+            <div class="mf-question" *ngIf="q.canBeDisplayed()">
+                <div class="mf-caption"><label class="caption">{{q.caption}}</label></div>
+                <div class="mf-control" *ngFor="let c of q.controls">
+                    <ng-container [ngSwitch]="c.controlType">
+                        <ng-container *ngSwitchCase="0"><app-mf-label [form]="form" [control]="c"></app-mf-label></ng-container>
+                        <ng-container *ngSwitchCase="1"><app-mf-text [form]="form" [control]="c" (changeValidity)="onControlValidityChange($event)"></app-mf-text></ng-container>
+                        <ng-container *ngSwitchCase="2"><app-mf-option [form]="form" [control]="c" (changeValidity)="onControlValidityChange($event)"></app-mf-option></ng-container>
+                        <ng-container *ngSwitchCase="3"><app-mf-date [form]="form" [control]="c" (changeValidity)="onControlValidityChange($event)"></app-mf-date></ng-container>
+                        <ng-container *ngSwitchCase="4"><app-mf-time [form]="form" [control]="c" (changeValidity)="onControlValidityChange($event)"></app-mf-time></ng-container>
+                        <ng-container *ngSwitchDefault><b>No control implementation: {{c.controlType}}</b></ng-container>
+                    </ng-container>
+                    <div *ngIf="c.inError" class="errorMessage">{{c.errorMessage}}</div>
+                </div>
             </div>
-        </div>
+        </ng-container>
     </ng-container>
 </div>
 <div class="buttons">

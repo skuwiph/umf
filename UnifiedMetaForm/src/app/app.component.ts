@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MetaFormService } from './metaform/meta-form.service';
-import { MetaForm, MFValidator, MFOptionValue } from './metaform/meta-form';
+import { MetaForm, MFValidator, MFOptionValue, MFOptions, MFValidatorAsync } from './metaform/meta-form';
 import { MetaFormControlType, MetaFormTextType, MetaFormDateType, MetaFormOptionType, MetaFormDrawType } from './metaform/meta-form-enums';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-root',
@@ -12,7 +13,7 @@ export class AppComponent implements OnInit {
     title = 'UnifiedMetaForm';
     form: MetaForm;
 
-    constructor(private mfService: MetaFormService) { }
+    constructor(private http: HttpClient, private mfService: MetaFormService) { }
 
     ngOnInit() {
         this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.EntireForm);
@@ -35,7 +36,9 @@ export class AppComponent implements OnInit {
             .addQuestion('email', 'Please enter your email address')
             .addTextControl('email', MetaFormTextType.Email, 255, 'email@example.com')
             .addValidator(MFValidator.Required('This field is required'))
-            .addValidator(MFValidator.Email('Please enter a valid email address'));
+            .addValidator(MFValidator.Email('Please enter a valid email address'))
+            .addValidatorAsync(MFValidatorAsync.AsyncValidator(this.http,
+                'http://localhost:3000/validate/email', 'This email already exists or something'));
 
         this.form
             .addQuestion('password', 'Please choose a password')
@@ -74,9 +77,11 @@ export class AppComponent implements OnInit {
         options.push(new MFOptionValue('Y', 'Yes'));
         options.push(new MFOptionValue('N', 'No'));
 
+        const o1 = MFOptions.OptionFromList(options);
+
         this.form
             .addQuestion('option1', 'Please answer the option question')
-            .addOptionControl('option1', MetaFormOptionType.SingleSelect, null, options)
+            .addOptionControl('option1', MetaFormOptionType.SingleSelect, o1)
             .addValidator(MFValidator.Required('Please select an option'));
 
         const options2: MFOptionValue[] = [];
@@ -87,15 +92,25 @@ export class AppComponent implements OnInit {
 
         // this.form.setValue('option2', 'fr,de');
 
+        const o2 = MFOptions.OptionFromList(options2);
+
         this.form
             .addQuestion('option2', 'Please select all applicable options')
-            .addOptionControl('option2', MetaFormOptionType.MultiSelect, null, options2)
+            .addOptionControl('option2', MetaFormOptionType.MultiSelect, o2)
             .addValidator(MFValidator.Required('Please select an option'));
+
+        const o3 = MFOptions.OptionFromUrl('http://localhost:3000/country', 'Please Select', false);
 
         this.form
-            .addQuestion('option3', 'Please select a country from URL')
-            .addOptionControl('option3', MetaFormOptionType.SingleSelect, 'Please Select', null, 'http://localhost:3000/option', false)
+            .addQuestion('country', 'Please select a country from URL')
+            .addOptionControl('countryCode', MetaFormOptionType.SingleSelect, o3)
             .addValidator(MFValidator.Required('Please select an option'));
 
+        const o4 = MFOptions.OptionFromUrl('http://localhost:3000/country/[countryCode]/regions', null, true);
+
+        this.form
+            .addQuestion('region', 'Please select a region from URL')
+            .addOptionControl('region', MetaFormOptionType.SingleSelect, o4)
+            .addValidator(MFValidator.Required('Please select a region'));
     }
 }

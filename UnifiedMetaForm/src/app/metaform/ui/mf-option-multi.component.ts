@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { MFControl, MetaForm, MFControlValidityChange, MFOptionControl, MFOptionValue } from '../meta-form';
+import { MFControl, MetaForm, MFControlValidityChange, MFOptionControl, MFOptionValue, MFValueChange } from '../meta-form';
 import { MetaFormService } from '../meta-form.service';
 import { FormControl } from '@angular/forms';
 import { EventEmitter } from '@angular/core';
 import { ControlLayoutStyle } from '../meta-form-enums';
+import { filter } from 'rxjs/operators';
 
 @Component({
     selector: 'app-mf-option-multi',
@@ -41,28 +42,44 @@ export class MetaFormOptionMultiComponent implements OnInit {
             this.isHorizontal = optionControl.optionLayout === ControlLayoutStyle.Horizontal;
             this.isVertical = !this.isHorizontal;
 
-            if (optionControl.options) {
-                this.options = optionControl.options;
+            if (optionControl.hasOptionList) {
+                this.options = optionControl.optionList;
                 this.loaded = true;
                 this.extractSelectedOptions();
-            } else if (optionControl.optionSource) {
-                this.mfService.loadOptionsFromUrl(this.form, optionControl.optionSource)
-                    .subscribe((data: MFOptionValue[]) => {
-                        const nv: MFOptionValue[] = [];
-                        if (optionControl.nullItem) {
-                            nv.push(new MFOptionValue('', optionControl.nullItem));
-                        }
+            } else if (optionControl.hasUrl) {
+                this.loadOptions(optionControl);
+            }
+            this.checkControlDependencies();
+        }
+    }
 
-                        // console.log(`Got ${data.length} from ${optionControl.optionSource} results: ${JSON.stringify(data)}`);
-                        this.options = nv.concat(data);
-                        // this.loaded = true;
-                        // if (value.length > 0) {
-                        //     this.selectItem(value);
-                        // }
-                        this.extractSelectedOptions();
+    checkControlDependencies(): void {
+        if (this.control.dependencies) {
+            for (const dep of this.control.dependencies) {
+                this.form.change
+                    .pipe(
+                        filter((c: MFValueChange) => c.name === dep)
+                    )
+                    .subscribe((chg: MFValueChange) => {
+                        this.loadOptions(this.control as MFOptionControl);
                     });
             }
+        }
+    }
 
+    loadOptions(optionControl: MFOptionControl): void {
+        const url = optionControl.urlForService(this.form, this.control);
+        if (url) {
+            this.mfService.loadOptionsFromUrl(this.form, url)
+                .subscribe((data: MFOptionValue[]) => {
+                    const nv: MFOptionValue[] = [];
+                    if (optionControl.options.nullItem) {
+                        nv.push(new MFOptionValue('', optionControl.options.nullItem));
+                    }
+
+                    this.options = nv.concat(data);
+                    this.extractSelectedOptions();
+                });
         }
     }
 

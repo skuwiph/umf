@@ -7,7 +7,8 @@ import {
     MetaFormOptionType
 } from './meta-form-enums';
 import { EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 export class MetaForm {
     name: string; title: string;
@@ -36,15 +37,52 @@ export class MetaForm {
         return f;
     }
 
+    static isFieldReference(value: string): { isField: boolean, fieldName: string } {
+        if (value.startsWith('[')) {
+            return { isField: true, fieldName: value.substr(1, value.length - 2) };
+        } else {
+            return { isField: false, fieldName: undefined };
+        }
+    }
+
+    static isVariable(valueToCheck: string): { isVariable: boolean, value: string } {
+        if (valueToCheck.startsWith('%')) {
+            // Extract the variable name
+            return { isVariable: true, value: valueToCheck.substr(1).toUpperCase() };
+        } else {
+            return { isVariable: false, value: undefined };
+        }
+    }
+
+    // Initialise the form ready for use
     initialise() {
+
+        // Firstly, find all field references and dependencies
         for (const q of this.questions) {
             for (const c of q.controls) {
+                // A reference is required when a validator
+                // from one control checks against another
                 if (c.references) {
                     for (const name of c.references) {
-                        console.log(`${c.name} references ${name}`);
-                        const referenced = this.getControlByName(name);
-                        referenced.isReferencedBy = c.name;
+                        this.addReference(c.name, name);
                     }
+                }
+
+                // A dependency is triggered by data having
+                // to come from another question or control
+                if (c.dependencies) {
+                    for (const name of c.dependencies) {
+                        this.addReference(c.name, name);
+                    }
+
+                    q.canBeDisplayed = () => {
+                        for (const dep of c.dependencies) {
+                            if (!this.getValue(dep)) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    };
                 }
             }
         }
@@ -183,15 +221,16 @@ export class MetaForm {
 
             // Check for referencing values
             const c = this.getControlByName(name);
-            if (c) {
-                // console.log(`Got control ${name}`);
-                const referencedBy = c.isReferencedBy;
-                if (referencedBy) {
-                    // console.log(`${referencedBy} also needs updating!`);
-                    const r = this.getControlByName(c.isReferencedBy);
-                    r.isValid(this, true);
+            if (c && c.isReferencedBy) {
+                for (const referencedBy of c.isReferencedBy) {
+                    if (referencedBy) {
+                        // console.log(`Referenced by: ${referencedBy}`);
 
-                    this.change.emit(new MFValueChange(r.name, this.getValue(r.name)));
+                        const r = this.getControlByName(referencedBy);
+                        r.isValid(this, true);
+
+                        this.change.emit(new MFValueChange(r.name, this.getValue(r.name)));
+                    }
                 }
             }
         }
@@ -217,6 +256,18 @@ export class MetaForm {
         this.questions.push(q);
     }
 
+    private addReference(from: string, to: string) {
+        console.log(`${from} references ${to}`);
+
+        const toControl = this.getControlByName(to);
+
+        if (!toControl.isReferencedBy) {
+            toControl.isReferencedBy = [];
+        }
+
+        toControl.isReferencedBy.push(from);
+    }
+
     private getControlByName(name: string): MFControl {
         for (const q of this.questions) {
             for (const c of q.controls) {
@@ -238,6 +289,8 @@ export class MFQuestion {
     animation?: MFAnimation[];
     controls: MFControl[] = [];
     controlLayout: ControlLayoutStyle = ControlLayoutStyle.Horizontal;
+
+    canBeDisplayed = () => true;
 
     addTextControl(name: string, textType: MetaFormTextType, maxLength?: number, placeholderText?: string): MFControl {
         const c = new MFTextControl();
@@ -295,19 +348,31 @@ export class MFQuestion {
         return this;
     }
 
-    addOptionControl(name: string, optionType: MetaFormOptionType, nullItem?: string,
-        // tslint:disable-next-line: align
-        options?: MFOptionValue[], optionSource?: string, expandOptions?: boolean): MFOptionControl {
+    addOptionControl(name: string, optionType: MetaFormOptionType, options?: MFOptions): MFOptionControl {
         const c = new MFOptionControl();
 
         c.controlType = MetaFormControlType.Option;
         c.optionType = optionType;
-        c.optionSource = optionSource;
         c.options = options;
-        c.expandOptions = expandOptions ?? true;
-        c.nullItem = nullItem;
         c.name = name;
         c.validators = [];
+
+        // Check options for referencing
+        if (c.hasUrl) {
+            // console.log(`looking for references for ${c.name}`);
+            // Find any field references
+            const r = c.urlFieldReferences();
+            if (r.length > 0) {
+                // console.log(`Adding ${r.length} references to ${c.name}`);
+                if (!c.dependencies) {
+                    c.dependencies = [];
+                }
+                for (const referencedField of r) {
+                    // console.log(`Adding ${referencedField}`);
+                    c.dependencies.push(referencedField);
+                }
+            }
+        }
 
         this.pushControl(c);
 
@@ -340,6 +405,7 @@ export class MFControl {
     controlType: MetaFormControlType;
     name: string;
     validators?: MFValidator[];
+    validatorsAsync?: MFValidatorAsync[];
 
     // NOTE(Ian): Not sure if necessary or wanted
     autocomplete?: string;
@@ -347,8 +413,9 @@ export class MFControl {
     inError = false;
     errorMessage?: string;
 
-    isReferencedBy: string;
+    isReferencedBy: string[];
     references: string[];
+    dependencies: string[];
 
     addValidator(validator: MFValidator): MFControl {
         if (!this.validators) {
@@ -365,11 +432,26 @@ export class MFControl {
         return this;
     }
 
+    addValidatorAsync(validator: MFValidatorAsync): MFControl {
+        if (!this.validatorsAsync) {
+            this.validatorsAsync = [];
+        }
+        this.validatorsAsync.push(validator);
+
+        if (validator.hasOwnProperty('referencesField')) {
+            const reference = validator.referencesField;
+            // console.log(`The control ${this.name} also references ${reference}`);
+            this.references = reference;
+        }
+
+        return this;
+    }
+
     isValid(form: MetaForm, updateStatus = true): boolean {
         let valid = true;
         let controlName: string;
 
-        if (this.validators !== undefined) {
+        if (this.validators) {
             for (const v of this.validators) {
                 if (!v.isValid(form, this)) {
                     // console.warn(`${this.name}: ${v.message}`);
@@ -394,6 +476,47 @@ export class MFControl {
         return valid;
     }
 
+    isValidAsync(form: MetaForm, updateStatus = true): Observable<boolean> {
+        const subject = new Subject<boolean>();
+
+        let valid = true;
+        let controlName: string;
+
+        if (valid) {
+            // Check async
+            console.log('Checking async validators')
+            if (this.validatorsAsync) {
+                console.log(`I have async validators`);
+                for (const v of this.validatorsAsync) {
+                    console.log(`Checking ${v.type} with url ${v.url}`);
+                    v.isValid(form, this).subscribe(
+                        r => {
+                            console.log(`${v.url} returned ${JSON.stringify(r)}`);
+
+                            valid = r;
+                            if (!valid) {
+                                controlName = this.name;
+                                this.errorMessage = v.message;
+                            }
+
+                            if (valid) {
+                                this.errorMessage = undefined;
+                            }
+
+                            console.log(`Setting valid=${valid} on control ${this.name} currently in error: ${this.inError}`);
+                            this.inError = !valid;
+                            subject.next(r);
+                        }
+                    );
+                }
+            }
+        }
+
+        return subject;
+    }
+
+    refresh(): void {
+    }
 }
 
 export class MFLabel extends MFControl {
@@ -408,12 +531,91 @@ export class MFTextControl extends MFControl {
 
 export class MFOptionControl extends MFControl {
     optionType: MetaFormOptionType;
-    expandOptions = true;
-    nullItem?: string;
-    options?: MFOptionValue[];
-    optionSource?: string;
+    // expandOptions = true;
+    // nullItem?: string;
+    // options?: MFOptionValue[];
+    // optionSource?: string;
+
+    options?: MFOptions;
 
     optionLayout = ControlLayoutStyle.Vertical;
+
+    get hasOptionList(): boolean {
+        return this.options?.list !== null;
+    }
+
+    get hasUrl(): boolean {
+        return this.options?.optionSource !== null;
+    }
+
+    get optionList(): MFOptionValue[] {
+        return this.options?.list;
+    }
+
+    get optionUrl(): string {
+        return this.options?.optionSource?.url;
+    }
+
+    urlForService(form: MetaForm, control: MFControl): string {
+        const baseUrl = this.options?.optionSource?.url;
+        if (!baseUrl) {
+            console.error(`Was asked for an invalid url!`);
+            return null;
+        }
+        // console.log(`Got url ${baseUrl}`);
+        if (baseUrl.indexOf('[') === -1) {
+            return baseUrl;
+        } else {
+            let url: string;
+            const splits = baseUrl.split('/');
+            if (splits.length > 1) {
+                url = `${splits[0]}//${splits[2]}/`;
+            }
+
+            for (let i = 3; i < splits.length; i++) {
+                const f = MetaForm.isFieldReference(splits[i]);
+
+                if (f.isField) {
+                    const value = form.getValue(f.fieldName);
+                    if (value) {
+                        url += `${value}/`;
+                    } else {
+                        console.warn(`Missing parameter value for URL ${f.fieldName}`);
+                        return null;
+                    }
+                } else {
+                    url += `${splits[i]}/`;
+                }
+            }
+
+            if (url.endsWith('/')) {
+                url = url.substr(0, url.length - 1);
+            }
+
+            // console.log(`Url: ${url}`);
+
+            return url;
+        }
+    }
+
+    urlFieldReferences(): string[] {
+        const s = [];
+        const baseUrl = this.options?.optionSource?.url;
+        if (!baseUrl) {
+            return [];
+        }
+
+        const splits = baseUrl.split('/');
+        for (let i = 3; i < splits.length; i++) {
+            const f = MetaForm.isFieldReference(splits[i]);
+
+            if (f.isField) {
+                s.push(f.fieldName);
+            }
+        }
+
+        return s;
+    }
 }
 
 export class MFDateControl extends MFControl {
@@ -569,7 +771,7 @@ export class MFValidator {
     // Does this validator reference any other fields?
     // This will effect validity checks for other controls
     protected checkForReference(value: string) {
-        const r = this.isFieldReference(value);
+        const r = MetaForm.isFieldReference(value);
         if (r.isField) {
             // console.log(`This validator has a field reference pointing at ${r.fieldName}`);
             if (!this.referencesField) {
@@ -581,8 +783,8 @@ export class MFValidator {
 
     getAnswerForControl(answers: MetaFormAnswers, valueToCheck: string): string {
         // If the passed 'valueToCheck' starts with a [ or % it is a special value
-        const f = this.isFieldReference(valueToCheck);
-        const c = this.isVariable(valueToCheck);
+        const f = MetaForm.isFieldReference(valueToCheck);
+        const c = MetaForm.isVariable(valueToCheck);
 
         if (f.isField) {
             // Extract the field name
@@ -599,23 +801,6 @@ export class MFValidator {
     isValid(form: MetaForm, control: MFControl): boolean {
         console.error(`SHOULDN'T BE HERE`);
         return false;
-    }
-
-    private isFieldReference(value: string): { isField: boolean, fieldName: string } {
-        if (value.startsWith('[')) {
-            return { isField: true, fieldName: value.substr(1, value.length - 2) };
-        } else {
-            return { isField: false, fieldName: undefined };
-        }
-    }
-
-    private isVariable(valueToCheck: string): { isVariable: boolean, value: string } {
-        if (valueToCheck.startsWith('%')) {
-            // Extract the variable name
-            return { isVariable: true, value: valueToCheck.substr(1).toUpperCase() };
-        } else {
-            return { isVariable: false, value: undefined };
-        }
     }
 
     private unpackVariable(value: string): string {
@@ -663,6 +848,32 @@ export class MFValidator {
         const incr = numberOfDays * (1000 * 60 * 60 * 24);
         return incr;
     }
+}
+
+export class MFValidatorAsync {
+    constructor(http: HttpClient, type: string, url: string, message: string) {
+        this.http = http;
+        this.type = type;
+        this.url = url;
+        this.message = message;
+    }
+    http: HttpClient;
+    type: string;
+    message: string;
+    url: string;
+
+    referencesField: string[];
+
+    static AsyncValidator(http: HttpClient, url: string, message: string): MFAsyncValidator {
+        const v = new MFAsyncValidator(http, 'Async', url, message);
+        return v;
+    }
+
+    isValid(form: MetaForm, control: MFControl): Observable<boolean> {
+        console.error(`SHOULDN'T BE HERE`);
+        return null;
+    }
+
 }
 
 export class MFValueRequired extends MFValidator {
@@ -804,9 +1015,61 @@ export class MFMustBeBetweenValidator extends MFValidator {
     }
 }
 
+export class MFAsyncValidator extends MFValidatorAsync {
+    url: string;
+
+    isValid(form: MetaForm, control: MFControl): Observable<boolean> {
+        const s = new Subject<boolean>();
+
+        this.http
+            .post(this.url, { check: form.getValue(control.name) })
+            .subscribe((d: MFAsyncValidationResponse) => {
+                console.log(`Data: ${JSON.stringify(d)}`);
+                s.next(d.valid);
+                s.complete();
+            });
+
+        return s;
+    }
+}
+
 export class MFAnimation {
     event: string;
     name: string;
+}
+
+export class MFOptions {
+    expandOptions = true;
+    nullItem?: string;
+
+    list?: MFOptionValue[];
+    optionSource?: MFOptionSource;
+
+    constructor(options?: MFOptionValue[], url?: string, nullItem?: string, expandOptions?: boolean) {
+        this.nullItem = nullItem;
+        this.list = options;
+        this.expandOptions = expandOptions ?? true;
+        if (url) {
+            this.optionSource = new MFOptionSource(url);
+        }
+    }
+
+    static OptionFromList(options: MFOptionValue[], nullItem?: string, expandOptions?: boolean): MFOptions {
+        const o = new MFOptions(options, null, nullItem, expandOptions);
+        return o;
+    }
+
+    static OptionFromUrl(url: string, nullItem?: string, expandOptions?: boolean): MFOptions {
+        const o = new MFOptions(null, url, nullItem, expandOptions);
+        return o;
+    }
+}
+
+export class MFOptionSource {
+    url: string;
+    constructor(url: string) {
+        this.url = url;
+    }
 }
 
 export class MFOptionValue {
@@ -854,3 +1117,6 @@ export class MFControlValidityChange {
     }
 }
 
+export class MFAsyncValidationResponse {
+    valid: boolean;
+}

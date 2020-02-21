@@ -1,9 +1,17 @@
-import { MetaForm, MFValidator, MetaFormAnswers, MFOptionValue, MFAnswerMustMatch, MFValueRequired } from './meta-form';
+import { MetaForm, MFValidator, MetaFormAnswers, MFOptionValue, MFAnswerMustMatch, MFValueRequired, MFOptions } from './meta-form';
 import { MetaFormDrawType, MetaFormTextType, MetaFormOptionType, MetaFormDateType } from './meta-form-enums';
 
 describe('MetaForm', () => {
     it('should create an instance', () => {
         expect(new MetaForm()).toBeTruthy();
+    });
+
+    it('should have a working fieldReference check', () => {
+        const test = '[fieldName]';
+        const f = MetaForm.isFieldReference(test);
+        expect(f.isField).toEqual(true, `'[fieldName]' is a field reference`);
+
+        expect(f.fieldName === 'fieldName').toBeTruthy('Extracted field name did not match expectatiion');
     });
 
     it('should create a single question form', () => {
@@ -106,7 +114,7 @@ describe('MetaForm', () => {
 
         f
             .addQuestion('answerMe', 'Please answer YES')
-            .addOptionControl('answerMe', MetaFormOptionType.SingleSelect, undefined, options)
+            .addOptionControl('answerMe', MetaFormOptionType.SingleSelect, MFOptions.OptionFromList(options))
             .addValidator(MFValidator.Required('This field is required'))
             .addValidator(MFValidator.AnswerMustMatch('Y', 'Answer must be yes'));
 

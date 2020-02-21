@@ -5,6 +5,7 @@ import { MetaFormTextType } from '../meta-form-enums';
 
 import { FormControl } from '@angular/forms';
 import { EventEmitter } from '@angular/core';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
     selector: 'app-mf-text',
@@ -57,10 +58,14 @@ export class MetaFormTextComponent implements OnInit {
 
             this.formControl.setValue(this.form.getValue(this.name));
 
-            this.formControl.valueChanges.subscribe(obs => {
-                this.form.setValue(this.control.name, obs);
-                this.checkControlStatus();
-            });
+            this.formControl.valueChanges
+                .pipe(
+                    debounceTime(250),
+                    distinctUntilChanged()
+                ).subscribe(obs => {
+                    this.form.setValue(this.control.name, obs);
+                    this.checkControlStatus();
+                });
 
             this.form.change.subscribe(data => {
                 if (data.name === this.name) {
@@ -77,6 +82,15 @@ export class MetaFormTextComponent implements OnInit {
 
     private checkControlStatus() {
         this.inError = !this.control.isValid(this.form);
+        if (!this.inError) {
+            this.control.isValidAsync(this.form).subscribe(
+                (valid: boolean) => {
+                    console.log(`async validator finished: ${valid}`);
+                    this.inError = !valid;
+                    this.changeValidity.emit(new MFControlValidityChange(this.control.name, !this.inError));
+                }
+            );
+        }
         this.changeValidity.emit(new MFControlValidityChange(this.control.name, !this.inError));
     }
 

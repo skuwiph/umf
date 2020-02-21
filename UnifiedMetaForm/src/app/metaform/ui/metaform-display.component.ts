@@ -1,6 +1,6 @@
 
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { MetaForm, MFQuestion, MFValueChange, MFValueRequired, MFControlValidityChange } from '../meta-form';
+import { MetaForm, MFQuestion, MFValueChange, MFValueRequired, MFControlValidityChange, MFControl } from '../meta-form';
 import { MetaFormService, DisplayQuestion } from '../meta-form.service';
 
 @Component({
@@ -30,6 +30,13 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
         }
         this.form.initialise();
         this.getNextQuestions();
+
+        console.log(`Form: ${JSON.stringify(this.form, null, 2)}`);
+
+        this.form.change.subscribe((chg: MFValueChange) => {
+            console.log(`Changed: ${chg.name}`);
+        });
+
     }
 
     ngOnDestroy(): void {

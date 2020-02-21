@@ -147,17 +147,11 @@ export class MetaFormService {
 
     // Load option values from a passed URL
     // This must be complete. If you need authentication or
-    // other headers added, ensure that your HttpInterceptor 
+    // other headers added, ensure that your HttpInterceptor
     // is adding those by default.
     //
-    // https://example.com/path/to/resource%fieldName1%?param=%fieldName2%
+    // https://example.com/path/to/resource[fieldName1]?param=[fieldName2]
     loadOptionsFromUrl(form: MetaForm, url: string) {
-        const hasReplacements = url.indexOf('%') > -1;
-
-        if (hasReplacements) {
-
-        }
-
         return this.http.get(url);
     }
 
