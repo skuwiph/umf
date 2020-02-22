@@ -103,10 +103,11 @@ export class MetaForm {
         return this;
     }
 
-    addQuestion(name: string, caption: string, layout?: ControlLayoutStyle): MFQuestion {
+    addQuestion(name: string, caption: string, footnote?: string, layout?: ControlLayoutStyle): MFQuestion {
         const q = new MFQuestion();
         q.controls = [];
         q.controlLayout = layout ?? ControlLayoutStyle.Vertical;
+        q.captionFootnote = footnote;
 
         this.pushQuestion(q, name, caption);
 

@@ -31,7 +31,7 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
         this.form.initialise();
         this.getNextQuestions();
 
-        console.log(`Form: ${JSON.stringify(this.form, null, 2)}`);
+        // console.log(`Form: ${JSON.stringify(this.form, null, 2)}`);
 
         this.form.change.subscribe((chg: MFValueChange) => {
             console.log(`Changed: ${chg.name}`);
@@ -43,7 +43,7 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
         // NOTE(Ian): Check whether this should be unsubscribed here
         if (this.form) {
             console.log(`onDestroy`);
-            //this.form.change?.unsubscribe();
+            // this.form.change?.unsubscribe();
         }
     }
 

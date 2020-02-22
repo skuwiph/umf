@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
         this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.EntireForm);
 
         this.form
-            .addQuestion('name', 'Please enter your name')
+            .addQuestion('name', 'Please enter your name', 'Please enter exactly as they appear in your passport.')
             .addTextControl('firstName', MetaFormTextType.SingleLine, 50, 'First or given name')
             .addValidator(MFValidator.Required('This field is required'));
 
@@ -74,6 +74,39 @@ export class AppComponent implements OnInit {
             .addTextControl('confirmPassword', MetaFormTextType.Password, 255, 'Confirm Password')
             .addValidator(MFValidator.Required('This field is required'))
             .addValidator(MFValidator.AnswerMustMatch('[password]', 'Passwords do not match!'));
+
+        this.form
+            .addQuestion('addressHome',
+                'Please enter your contact address',
+                'This should be your correspondence address, or where you will be staying during your application period')
+            .addTextControl('address1', MetaFormTextType.SingleLine, 50, 'Address')
+            .addValidator(MFValidator.Required('This field is required'));
+
+        this.form
+            .getQuestion('addressHome')
+            .addTextControl('address2', MetaFormTextType.SingleLine, 50, '');
+
+        this.form
+            .getQuestion('addressHome')
+            .addTextControl('address3', MetaFormTextType.SingleLine, 50, 'Town/City')
+            .addValidator(MFValidator.Required('This field is required'));
+
+        this.form
+            .getQuestion('addressHome')
+            .addTextControl('address4', MetaFormTextType.SingleLine, 50, 'County/State')
+            .addValidator(MFValidator.Required('This field is required'));
+
+        this.form
+            .getQuestion('addressHome')
+            .addTextControl('postcode', MetaFormTextType.SingleLine, 10, 'Postal Code')
+            .addValidator(MFValidator.Required('This field is required'));
+
+        const addressCountry = MFOptions.OptionFromUrl('http://localhost:3000/country', 'Country', false);
+
+        this.form
+            .getQuestion('addressHome')
+            .addOptionControl('countryCode', MetaFormOptionType.SingleSelect, addressCountry)
+            .addValidator(MFValidator.Required('Please select an option'));
 
         this.form
             .addQuestion('dates', 'Please enter some dates')
@@ -113,8 +146,6 @@ export class AppComponent implements OnInit {
         options2.push(new MFOptionValue('fr', 'French'));
         options2.push(new MFOptionValue('de', 'German'));
         options2.push(new MFOptionValue('es', 'Spanish'));
-
-        // this.form.setValue('option2', 'fr,de');
 
         const o2 = MFOptions.OptionFromList(options2);
 

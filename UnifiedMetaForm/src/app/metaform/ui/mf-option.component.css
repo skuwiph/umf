@@ -15,7 +15,7 @@
     color: white;   
 }
 
-input, select { 
+input, select, option { 
     width: calc(100% - 0.25rem);    
     padding: 0.25rem;
     border-radius: 5px;

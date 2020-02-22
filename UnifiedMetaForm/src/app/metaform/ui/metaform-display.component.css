@@ -3,8 +3,15 @@
 }
 
 .mf-question {
-    border: 1px solid cornflowerblue;
+    border: 1px solid rgb(27, 48, 87);
     margin-bottom: 1rem;
+    border-radius: 5px;
+}
+
+.footnote {
+    font-size: 10pt;
+    margin: 0.5rem 0.25rem;
+    color: rgb(42, 42, 116);
 }
 
 .mf-caption {
