@@ -38,6 +38,18 @@ label.caption {
     border-radius: 5px;
 }
 
+.mf-controls {
+    display: flex;
+}
+
+.layout-horiz {
+    flex-direction: row;
+}
+
+.layout-vert {
+    flex-direction: column;
+}
+
 .mf-control {
     padding: 0.25rem 0 0.25rem 0.25rem;
 }
