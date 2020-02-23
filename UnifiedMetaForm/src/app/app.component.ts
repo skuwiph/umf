@@ -13,16 +13,20 @@ export class AppComponent implements OnInit {
     title = 'UnifiedMetaForm';
     form: MetaForm;
     displayType = 0;
+    loading = true;
 
     constructor(private http: HttpClient, private mfService: MetaFormService) { }
 
     ngOnInit() {
+        this.loading = true;
         this.loadFluentForm();
+        this.loading = false;
     }
 
     changeType(type: number): void {
         console.log(`Showing type: ${type}`);
         this.displayType = type;
+        this.loading = true;
 
         if (this.displayType === 1) {
             this.form = null;
@@ -30,12 +34,15 @@ export class AppComponent implements OnInit {
                 .loadFormWithName('http://localhost:3000/form', 'test-form')
                 .subscribe(
                     (f: MetaForm) => {
+                        console.log(`Got form`);
                         this.form = f;
+                        this.loading = false;
                     }
                 );
         } else {
             this.form = null;
             this.loadFluentForm();
+            this.loading = false;
         }
     }
 

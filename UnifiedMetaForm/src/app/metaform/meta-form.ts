@@ -259,7 +259,7 @@ export class MetaForm {
     }
 
     private addReference(from: string, to: string) {
-        console.log(`${from} references ${to}`);
+        // console.log(`${from} references ${to}`);
 
         const toControl = this.getControlByName(to);
 
@@ -1026,7 +1026,7 @@ export class MFAsyncValidator extends MFValidatorAsync {
         this.http
             .post(this.url, { check: form.getValue(control.name) })
             .subscribe((d: MFAsyncValidationResponse) => {
-                console.log(`Data: ${JSON.stringify(d)}`);
+                // console.log(`Data: ${JSON.stringify(d)}`);
                 s.next(d.valid);
                 s.complete();
             });

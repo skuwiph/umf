@@ -176,6 +176,6 @@
         <app-metaform-display [form]='form'></app-metaform-display>
     </ng-container>
     <ng-template #jsonType>
-        <app-metaform-display [form]='form'></app-metaform-display>
+        <app-metaform-display *ngIf="!loading" [form]='form'></app-metaform-display>
     </ng-template>
 </div>

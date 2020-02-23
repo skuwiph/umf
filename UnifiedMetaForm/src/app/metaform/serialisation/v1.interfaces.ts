@@ -33,35 +33,39 @@ export interface Options {
 
 export interface Control {
     controlType: number;
-    textType: number;
-    maxLength: number;
-    placeholder: string;
+    textType?: number;
+    maxLength?: number;
+    placeholder?: string;
     name: string;
-    validators: Validator[];
-    validatorsAsync: ValidatorsAsync[];
+    validators?: Validator[];
+    validatorsAsync?: ValidatorsAsync[];
     dateType?: number;
-    start: string;
-    end: string;
+    start?: string;
+    end?: string;
     hourStart?: number;
     hourEnd?: number;
     minuteStep?: number;
     optionLayout?: number;
     optionType?: number;
-    options: Options;
+    options?: Options;
+    text?: string;
 }
 
 export interface Question {
+    sectionId: number;
     controls: Control[];
     controlLayout: number;
     name: string;
     caption: string;
+    footnote?: string;
 }
 
 export interface IMetaFormV1 {
     name: string;
     drawType: number;
+    dataSource?: string;
     version: number;
-    allowSaves: boolean;
+    allowSaves?: boolean;
     dateModified: Date;
     sections: Section[];
     questions: Question[];

@@ -33,29 +33,29 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
 
         // console.log(`Form: ${JSON.stringify(this.form, null, 2)}`);
 
-        this.form.change.subscribe((chg: MFValueChange) => {
-            console.log(`Changed: ${chg.name}`);
-        });
+        // this.form.change.subscribe((chg: MFValueChange) => {
+        //     console.log(`Changed: ${chg.name}`);
+        // });
 
     }
 
     ngOnDestroy(): void {
         // NOTE(Ian): Check whether this should be unsubscribed here
         if (this.form) {
-            console.log(`onDestroy`);
+            // console.log(`onDestroy`);
             // this.form.change?.unsubscribe();
         }
     }
 
     previousPage() {
-        console.log(`Clicked previous page`);
+        // console.log(`Clicked previous page`);
         this.getPreviousQuestions();
     }
 
     nextPage() {
-        console.log(`Clicked next page`);
+        // console.log(`Clicked next page`);
         this.getNextQuestions();
-        console.log(`Back from getQuestionstoDisplay`);
+        // console.log(`Back from getQuestionstoDisplay`);
     }
 
     ruleMatches(q: MFQuestion) {

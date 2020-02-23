@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { MetaForm, MFQuestion, MFControl, MFSection } from './meta-form';
+import { MetaForm, MFQuestion, MFControl, MFSection, MFValidator, MFValidatorAsync } from './meta-form';
 import { throwError, queueScheduler, Observable, Subject } from 'rxjs';
-import { MetaFormDrawType } from './meta-form-enums';
+import { MetaFormDrawType, MetaFormControlType, MetaFormOptionType } from './meta-form-enums';
 import { HttpClient } from '@angular/common/http';
 import { IMetaFormV1 } from './serialisation/v1.interfaces';
+import { Meta } from '@angular/platform-browser';
 
 @Injectable({
     providedIn: 'root'
@@ -27,11 +28,96 @@ export class MetaFormService {
         this.http.get(`${formUrl}/${name}`)
             .subscribe(
                 (data: IMetaFormV1) => {
-                    console.log(`Got data from ${formUrl}/${name}:`, data);
+                    // console.log(`Got data from ${formUrl}/${name}:`, data);
 
                     const form = new MetaForm();
                     form.name = data.name;
                     form.title = data.title;
+                    form.version = data.version;
+                    form.drawType = data.drawType;
+                    form.dataSource = data.dataSource;
+                    form.dateModified = data.dateModified;
+
+                    for (const s of data.sections) {
+                        form.addSection(s.title);
+                    }
+
+                    for (const q of data.questions) {
+                        const fq = form.addQuestion(q.name, q.caption, q.footnote, q.controlLayout);
+                        fq.sectionId = q.sectionId;
+                        for (const c of q.controls) {
+                            let fc: MFControl;
+                            switch (c.controlType) {
+                                case MetaFormControlType.Text:
+                                    fc = fq.addTextControl(c.name, c.textType, c.maxLength, c.placeholder);
+                                    break;
+                                case MetaFormControlType.Label:
+                                    fq.addLabel(c.text);
+                                    break;
+                                case MetaFormControlType.Date:
+                                    fc = fq.addDateControl(c.name, c.dateType, c.start, c.end);
+                                    break;
+                                case MetaFormControlType.Time:
+                                    fc = fq.addTimeControl(c.name, c.minuteStep, c.hourStart, c.hourEnd);
+                                    break;
+                                case MetaFormControlType.Option:
+                                    fc = fq.addOptionControl(c.name, c.optionType, c.options);
+                                    break;
+                                default:
+                                    console.warn(`Missing type: ${c.controlType}, name: ${c.name}`);
+                                    break;
+                            }
+
+                            for (const v of c.validators) {
+                                switch (v.type) {
+                                    case 'Required':
+                                        fc.addValidator(MFValidator.Required(v.message));
+                                        break;
+                                    case 'Email':
+                                        fc.addValidator(MFValidator.Email(v.message));
+                                        break;
+                                    case 'Date':
+                                        fc.addValidator(MFValidator.Date(v.message));
+                                        break;
+                                    case 'Time':
+                                        fc.addValidator(MFValidator.Time(v.message));
+                                        break;
+                                    case 'AnswerMustMatch':
+                                        fc.addValidator(MFValidator.AnswerMustMatch(v.value, v.message));
+                                        break;
+                                    case 'AnswerAfterDate':
+                                        fc.addValidator(MFValidator.AnswerAfterDate(v.value, v.message));
+                                        break;
+                                    case 'AnswerBeforeDate':
+                                        fc.addValidator(MFValidator.AnswerBeforeDate(v.value, v.message));
+                                        break;
+                                    case 'AnswerAfterTime':
+                                        fc.addValidator(MFValidator.AnswerAfterTime(v.value, v.message));
+                                        break;
+                                    case 'AnswerBeforeTime':
+                                        fc.addValidator(MFValidator.AnswerBeforeTime(v.value, v.message));
+                                        break;
+                                    default:
+                                        console.warn(`Got validator of type: ${v.type}`);
+                                }
+                            }
+                            if (c.validatorsAsync) {
+
+                                for (const va of c.validatorsAsync) {
+                                    switch (va.type) {
+                                        case 'Async':
+                                            fc.addValidatorAsync(MFValidatorAsync.AsyncValidator(this.http, va.url, va.message));
+                                            break;
+                                        default:
+                                            console.warn(`Got async validator of type: ${va.type}`);
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                    // console.log(`Form is now: ${JSON.stringify(form, null, 2)}`);
 
                     subject.next(form);
                 });
