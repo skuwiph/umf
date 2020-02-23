@@ -62,7 +62,8 @@ export class AppComponent implements OnInit {
             .addValidator(MFValidator.Required('This field is required'))
             .addValidator(MFValidator.Email('Please enter a valid email address'))
             .addValidatorAsync(MFValidatorAsync.AsyncValidator(this.http,
-                'http://localhost:3000/validate/email', 'Please enter a different email!'));
+                'http://localhost:3000/validate/email',
+                'Please enter a different email!'));
 
         this.form
             .addQuestion('password', 'Please choose a password')
@@ -78,7 +79,7 @@ export class AppComponent implements OnInit {
         this.form
             .addQuestion('addressHome',
                 'Please enter your contact address',
-                'This should be your correspondence address, or where you will be staying during your application period')
+                'This should be your correspondence address, or where you will be staying during your application period.')
             .addTextControl('address1', MetaFormTextType.SingleLine, 50, 'Address')
             .addValidator(MFValidator.Required('This field is required'));
 
