@@ -28,6 +28,10 @@ export class BusinessRuleService {
         return this.add(r);
     }
 
+    getRule(name: string): BusinessRule {
+        return this.rules.get(name);
+    }
+
     evaluateRule(name: string, data: MetaFormAnswers): boolean {
         if (this.rules.has(name)) {
             const rule = this.rules.get(name);

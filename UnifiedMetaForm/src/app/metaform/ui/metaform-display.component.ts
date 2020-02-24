@@ -2,6 +2,8 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { MetaForm, MFQuestion, MFValueChange, MFValueRequired, MFControlValidityChange, MFControl } from '../meta-form';
 import { MetaFormService, DisplayQuestion } from '../meta-form.service';
+import { BusinessRule } from '../business-rule';
+import { BusinessRuleService } from '../business-rule.service';
 
 @Component({
     selector: 'app-metaform-display',
@@ -10,7 +12,7 @@ import { MetaFormService, DisplayQuestion } from '../meta-form.service';
 })
 export class MetaFormDisplayComponent implements OnInit, OnDestroy {
 
-    constructor(private formService: MetaFormService) { }
+    constructor(private formService: MetaFormService, private ruleService: BusinessRuleService) { }
 
     @Input() form: MetaForm;
 
@@ -31,7 +33,7 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
         this.form.initialise();
         this.getNextQuestions();
 
-        // console.log(`Form: ${JSON.stringify(this.form, null, 2)}`);
+        // console.log(`Form: ${this.form.toJson()}`);
 
         // this.form.change.subscribe((chg: MFValueChange) => {
         //     console.log(`Changed: ${chg.name}`);
@@ -58,7 +60,17 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
         // console.log(`Back from getQuestionstoDisplay`);
     }
 
-    ruleMatches(q: MFQuestion) {
+    ruleMatches(question: MFQuestion): boolean {
+        if (!question.ruleToMatch) {
+            return true;
+        }
+
+        if (this.ruleService) {
+            const rule = this.ruleService.getRule(question.ruleToMatch);
+            return rule.evaluate(this.form.answers);
+        }
+
+        return false;
     }
 
     onControlValidityChange(event: MFControlValidityChange): void {
@@ -99,9 +111,14 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
         for (const [key, value] of this.display.controlStatus) {
             // console.log(`Key: ${key} = ${this.display.controlStatus.get(key)}`);
             if (this.display.controlStatus.get(key)) {
+                console.log(`Field ${key} PASSED`);
                 numberOfPasses++;
+            } else {
+                console.warn(`Field ${key} failed`);
             }
         }
+
+        console.log(`Number of passes: ${numberOfPasses}/${this.display.numberOfControls}`);
 
         this.pageIsValid = (numberOfPasses === this.display.numberOfControls);
     }

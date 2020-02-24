@@ -10,6 +10,22 @@ import { EventEmitter } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
+export function metaFormJsonReplacer(key: string, value: any) {
+    switch (key) {
+        case 'change':
+        case 'http':
+        case 'inError':
+        case 'isReferencedBy':
+        case 'references':
+        case 'referencesField':
+        case 'dependencies':
+        case 'errorMessage':
+            return undefined;
+        default:
+            return value;
+    }
+}
+
 export class MetaForm {
     name: string;
     title: string;
@@ -53,6 +69,10 @@ export class MetaForm {
         } else {
             return { isVariable: false, value: undefined };
         }
+    }
+
+    toJson(): string {
+        return JSON.stringify(this, metaFormJsonReplacer, 2);
     }
 
     // Initialise the form ready for use
@@ -143,7 +163,8 @@ export class MetaForm {
 
     getValueAsDate(name: string): Date {
         const dateValue = this.answers.getValue(name);
-        if (dateValue.length === 0) {
+        if (!dateValue || dateValue.length === 0) {
+            // console.warn(`Field ${name} doesn't have an entry`);
             return null;
         }
         return this.convertValueToDate(dateValue);
@@ -775,7 +796,7 @@ export class MFValidator {
     protected checkForReference(value: string) {
         const r = MetaForm.isFieldReference(value);
         if (r.isField) {
-            // console.log(`This validator has a field reference pointing at ${r.fieldName}`);
+            console.log(`Validator ${this.type} has a field reference pointing at ${r.fieldName}`);
             if (!this.referencesField) {
                 this.referencesField = [];
             }
@@ -1085,17 +1106,15 @@ export class MFOptionValue {
 }
 
 export class MetaFormAnswers {
-    private data: Map<string, string> = new Map<string, string>();
+    private data: Map<string, any> = new Map<string, any>();
 
-    getValue(name: string): string {
+    getValue(name: string): any {
         if (this.data[name.toLowerCase()]) {
             return this.data[name.toLowerCase()];
-        } else {
-            return '';
         }
     }
 
-    setValue(name: string, value: string) {
+    setValue(name: string, value: any) {
         this.data[name.toLowerCase()] = value;
     }
 

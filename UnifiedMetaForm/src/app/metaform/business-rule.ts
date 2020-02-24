@@ -56,10 +56,10 @@ export interface IRulePart {
 export class RulePart implements IRulePart {
     fieldName: string;
     comparison: RuleComparison;
-    value?: string;
+    value?: any;
 
-    min?: string;
-    max?: string;
+    min?: any;
+    max?: any;
 
     constructor(fieldName: string, comparison: RuleComparison, value?: string, min?: string, max?: string) {
         this.fieldName = fieldName;
@@ -70,19 +70,103 @@ export class RulePart implements IRulePart {
     }
 
     evaluate(data: MetaFormAnswers): boolean {
-        const enteredValue = data.getValue(this.fieldName);
+        const comparedValue = data.getValue(this.fieldName);
         let valid = false;
 
         switch (this.comparison) {
             case RuleComparison.Equals:
-                valid = this.value === enteredValue;
-                break;
+                // console.debug("#### Equals!");
+                if (typeof this.value === "string" || typeof this.value === "number") {
+                    return this.evaluateEquality(this.value, comparedValue);
+                } else if (this.value instanceof Date) {
+                    return this.evaluateEqualityDate(this.value, comparedValue);
+                } else if (typeof this.value === "boolean") {
+                    // console.info(`boolean equals`);
+                    return this.value === comparedValue;
+                }
+                break
+            case RuleComparison.NotEquals:
+                // console.debug("#### Not Equals!");
+                if (typeof this.value === "string" || typeof this.value === "number") {
+                    return !this.evaluateEquality(this.value, comparedValue);
+                } else if (this.value instanceof Date) {
+                    return !this.evaluateEqualityDate(this.value, comparedValue);
+                } else if (typeof this.value === "boolean") {
+                    return this.value !== comparedValue;
+                }
+                break
+            case RuleComparison.Between:
+                // // console.debug("#### Between!");
+                if (typeof this.min === "number") {
+                    return this.evaluateBetween(this.min, this.max, comparedValue);
+                } else if (this.min instanceof Date) {
+                    // // console.debug("This value is a date between");
+                    return this.evaluateBetweenDate(this.min, this.max, comparedValue);
+                }
+                break
+            case RuleComparison.Contains:
+                if (typeof this.value === "string" || typeof this.value === "number") {
+                    return this.evaluateContains(this.value, comparedValue);
+                } else if (this.value instanceof Date) {
+                    console.assert(`No implementation for evaluating dates on rule part with field '${this.fieldName}'`);
+                }
+                break
+            case RuleComparison.GreaterThan:
+                if (typeof this.value === 'number') {
+                    return this.evaluateGreaterThan(this.value, comparedValue)
+                } else {
+                    throw new Error('BusinessRulePart::evaluateRule: Greater than can be used only with numbers!')
+                }
             default:
-                console.error(`Unhandled comparison: ${this.comparison}`);
-                return false;
+                throw new Error("BusinessRulePart::evaluateRule: No comparison matches!");
         }
 
         return valid;
+    }
+
+
+    private evaluateEquality(value: any, comparedValue: any): boolean {
+        return value === comparedValue;
+    }
+
+    private evaluateEqualityDate(value: Date, comparedValue: Date): boolean {
+        return value.getTime() === comparedValue.getTime();
+    }
+
+    private evaluateBetween(lower: number, upper: number, comparedValue: number): boolean {
+        return lower <= comparedValue && upper >= comparedValue;
+    }
+
+    private evaluateGreaterThan(value: number, comparedValue: number): boolean {
+        return value > comparedValue
+    }
+
+    private evaluateBetweenDate(lower: Date, upper: Date, comparedValue: Date): boolean {
+        // if( lower.getTime() <= comparedValue.getTime())
+        //     // console.debug("Date is larger than lower bound");
+
+        // if( upper.getTime() >= comparedValue.getTime())
+        //     // console.debug("Date is smaller than upper bound");
+
+        return lower.getTime() <= comparedValue.getTime()
+            && upper.getTime() >= comparedValue.getTime();
+    }
+
+    /**
+     * Does the array have a particular item contained within?
+     * @param value (any) - value to find in array
+     * @param comparedValue (any) - array
+     */
+    private evaluateContains(value: any, comparedValue: any): boolean {
+        if (Array.isArray(comparedValue)) {
+            const arr = comparedValue || [];
+            let item = arr.find(v => v == value);
+
+            return (item);
+        } else {
+            // Bit weird, but if it's not an array, it should be a straight equality check
+            return this.evaluateEquality(value, comparedValue);
+        }
     }
 }
 
@@ -96,6 +180,7 @@ export enum RuleComparison {
     NotEquals,
     LessThan,
     GreaterThan,
+    Contains = 5,
     Between
 }
 

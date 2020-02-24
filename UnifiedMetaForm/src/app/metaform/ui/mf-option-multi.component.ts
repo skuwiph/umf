@@ -86,7 +86,7 @@ export class MetaFormOptionMultiComponent implements OnInit {
     isSelected(code: string): boolean {
         const item = this.form.getValue(this.control.name);
 
-        if (item.length > 0) {
+        if (item && item.length > 0) {
             return this.selectedItems.get(code);
         }
         return false;
@@ -124,7 +124,7 @@ export class MetaFormOptionMultiComponent implements OnInit {
 
         // This will be a comma-separated list
         const currentlySelected = this.form.getValue(this.control.name);
-        if (currentlySelected.indexOf(',') > -1) {
+        if (currentlySelected && currentlySelected.indexOf(',') > -1) {
             const split = currentlySelected.split(',');
             for (const sel of split) {
                 this.selectedItems.set(sel, true);

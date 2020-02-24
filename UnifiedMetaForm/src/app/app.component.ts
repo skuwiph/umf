@@ -96,12 +96,12 @@ export class AppComponent implements OnInit {
 
         this.form
             .getQuestion('addressHome')
-            .addTextControl('address3', MetaFormTextType.SingleLine, 50, 'Town/City')
+            .addTextControl('town', MetaFormTextType.SingleLine, 50, 'Town/City')
             .addValidator(MFValidator.Required('This field is required'));
 
         this.form
             .getQuestion('addressHome')
-            .addTextControl('address4', MetaFormTextType.SingleLine, 50, 'County/State')
+            .addTextControl('state', MetaFormTextType.SingleLine, 50, 'County/State')
             .addValidator(MFValidator.Required('This field is required'));
 
         this.form
@@ -113,7 +113,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .getQuestion('addressHome')
-            .addOptionControl('countryCode', MetaFormOptionType.SingleSelect, addressCountry)
+            .addOptionControl('addressCountryCode', MetaFormOptionType.SingleSelect, addressCountry)
             .addValidator(MFValidator.Required('Please select an option'));
 
         this.form

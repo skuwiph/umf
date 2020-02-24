@@ -43,7 +43,7 @@ export class MetaFormService {
                     }
 
                     for (const q of data.questions) {
-                        const fq = form.addQuestion(q.name, q.caption, q.footnote, q.controlLayout);
+                        const fq = form.addQuestion(q.name, q.caption, q.captionFootnote, q.controlLayout);
                         fq.sectionId = q.sectionId;
                         for (const c of q.controls) {
                             let fc: MFControl;

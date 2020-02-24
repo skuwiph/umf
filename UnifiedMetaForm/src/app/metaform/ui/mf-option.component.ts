@@ -102,7 +102,7 @@ export class MetaFormOptionComponent implements OnInit {
                     }
                     this.options = nv.concat(data);
                     this.loaded = true;
-                    if (value.length > 0) {
+                    if (value && value.length > 0) {
                         this.selectItem(value);
                     }
                 });
@@ -112,7 +112,7 @@ export class MetaFormOptionComponent implements OnInit {
     isSelected(code: string): boolean {
         const item = this.form.getValue(this.control.name);
 
-        if (item.length > 0) {
+        if (item && item.length > 0) {
             return item === code;
         }
         return false;

@@ -42,7 +42,7 @@ describe('BusinessRuleService', () => {
         expect(service.rules.size === 1).toEqual(true, 'Duplicate rule was allowed');
     });
 
-    it('should evaluate a comparison as true', () => {
+    it('should evaluate an Equal comparison as true', () => {
         service
             .addRule('IsInUnitedKingdom', RuleMatchType.MatchAll)
             .addPart('countryCode', RuleComparison.Equals, 'UK');
@@ -53,7 +53,7 @@ describe('BusinessRuleService', () => {
         expect(service.evaluateRule('IsInUnitedKingdom', data)).toEqual(true, 'Rule did not evaluate correctly');
     });
 
-    it('should evaluate a non comparison as false', () => {
+    it('should evaluate an Equal non comparison as false', () => {
         service
             .addRule('IsInUnitedKingdom', RuleMatchType.MatchAll)
             .addPart('countryCode', RuleComparison.Equals, 'UK');
@@ -63,6 +63,29 @@ describe('BusinessRuleService', () => {
 
         expect(service.evaluateRule('IsInUnitedKingdom', data)).toEqual(false, 'Rule did not evaluate correctly');
     });
+
+    it('should evaluate an NotEqual comparison as true', () => {
+        service
+            .addRule('IsNotInUnitedKingdom', RuleMatchType.MatchAll)
+            .addPart('countryCode', RuleComparison.NotEquals, 'UK');
+
+        const data = new MetaFormAnswers();
+        data.setValue('countryCode', 'DE');
+
+        expect(service.evaluateRule('IsNotInUnitedKingdom', data)).toEqual(true, 'Rule did not evaluate correctly');
+    });
+
+    it('should evaluate an NotEqual non comparison as false', () => {
+        service
+            .addRule('IsNotInUnitedKingdom', RuleMatchType.MatchAll)
+            .addPart('countryCode', RuleComparison.NotEquals, 'UK');
+
+        const data = new MetaFormAnswers();
+        data.setValue('countryCode', 'UK');
+
+        expect(service.evaluateRule('IsNotInUnitedKingdom', data)).toEqual(false, 'Rule did not evaluate correctly');
+    });
+
 
     it('should evaluate a match any comparison as true', () => {
         service

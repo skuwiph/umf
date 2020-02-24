@@ -57,7 +57,7 @@ export interface Question {
     controlLayout: number;
     name: string;
     caption: string;
-    footnote?: string;
+    captionFootnote?: string;
 }
 
 export interface IMetaFormV1 {
