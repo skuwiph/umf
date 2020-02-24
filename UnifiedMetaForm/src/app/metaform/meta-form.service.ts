@@ -256,6 +256,8 @@ export class MetaFormService {
         return this.http.get(url);
     }
 
+    // TODO(Ian): If two controls have the same name, this fails!
+    // must autogenerate an id (and hide it using the Json Replacer function)
     private checkDisplayQuestionControlStatus(form: MetaForm, dq: DisplayQuestion) {
         dq.controlStatus = new Map<string, boolean>();
         for (const q of dq.questions) {
