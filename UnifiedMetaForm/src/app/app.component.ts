@@ -3,6 +3,8 @@ import { MetaFormService } from './metaform/meta-form.service';
 import { MetaForm, MFValidator, MFOptionValue, MFOptions, MFValidatorAsync } from './metaform/meta-form';
 import { MetaFormControlType, MetaFormTextType, MetaFormDateType, MetaFormOptionType, MetaFormDrawType } from './metaform/meta-form-enums';
 import { HttpClient } from '@angular/common/http';
+import { analyzeAndValidateNgModules } from '@angular/compiler';
+import { BusinessRuleService } from './metaform/business-rule.service';
 
 @Component({
     selector: 'app-root',
@@ -15,23 +17,43 @@ export class AppComponent implements OnInit {
     displayType = 0;
     loading = true;
 
-    constructor(private http: HttpClient, private mfService: MetaFormService) { }
+    constructor(
+        private http: HttpClient,
+        private mfService: MetaFormService,
+        private ruleService: BusinessRuleService) { }
 
     ngOnInit() {
         this.loading = true;
-        this.loadFluentForm();
-        this.loading = false;
+
+        this.ruleService
+            .loadRules('http://localhost:3000/rules')
+            .subscribe(
+                b => {
+                    console.log(`Loaded ${this.ruleService.rules.size} rules`);
+                    this.loadFluentForm();
+                    this.loading = false;
+                });
     }
 
     changeType(type: number): void {
-        console.log(`Showing type: ${type}`);
         this.displayType = type;
         this.loading = true;
 
-        if (this.displayType === 1) {
+        if (this.displayType === 2) {
             this.form = null;
             this.mfService
                 .loadFormWithName('http://localhost:3000/form', 'test-form')
+                .subscribe(
+                    (f: MetaForm) => {
+                        console.log(`Got form`);
+                        this.form = f;
+                        this.loading = false;
+                    }
+                );
+        } else if (this.displayType === 1) {
+            this.form = null;
+            this.mfService
+                .loadFormWithName('http://localhost:3000/form', 'create-application')
                 .subscribe(
                     (f: MetaForm) => {
                         console.log(`Got form`);
@@ -48,6 +70,8 @@ export class AppComponent implements OnInit {
 
     loadFluentForm() {
         this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.EntireForm);
+        this.form
+            .addSection('Default');
 
         this.form
             .addQuestion('name', 'Please enter your name', 'Please enter exactly as they appear in your passport.')
@@ -176,4 +200,70 @@ export class AppComponent implements OnInit {
             .addOptionControl('region', MetaFormOptionType.SingleSelect, o4)
             .addValidator(MFValidator.Required('Please select a region'));
     }
+
+    // loadCreateApplicationForm() {
+    //     console.log(`creating application form`);
+
+    //     this.form = this.mfService.createForm('create-application', 'Create Application', MetaFormDrawType.SingleQuestion);
+    //     this.form
+    //         .addSection('Your Availability')
+    //         .addSection('Student Status')
+    //         .addSection('My Application');
+
+    //     const availOptions: MFOptionValue[] = [];
+    //     availOptions.push(new MFOptionValue('Y', 'YES - I am able to fly to the US by 30th June and stay until mid-August'));
+    //     availOptions.push(new MFOptionValue('N', 'NO - I am not able to fly to the US by 30th June and stay until mid-August'));
+
+    //     const ao = MFOptions.OptionFromList(availOptions);
+
+    //     const availOptions2: MFOptionValue[] = [];
+    //     availOptions2.push(new MFOptionValue('Y', 'YES - I am able to fly to the US by 25th June and stay until mid-August'));
+    //     availOptions2.push(new MFOptionValue('N', 'NO - I am not able to fly to the US by 25th June and stay until mid-August'));
+
+    //     const ao2 = MFOptions.OptionFromList(availOptions2);
+
+    //     const studentOptions: MFOptionValue[] = [];
+    //     studentOptions.push(new MFOptionValue('Y', 'YES - I am currently a full-time student'));
+    //     studentOptions.push(new MFOptionValue('N', 'NO - I am not a full-time student'));
+
+    //     const so = MFOptions.OptionFromList(studentOptions);
+
+    //     const returner: MFOptionValue[] = [];
+    //     returner.push(new MFOptionValue('FIRST', 'I want to go for the very first time'));
+    //     returner.push(new MFOptionValue('REPEAT', 'I have been before, but I want to go to a different camp'));
+    //     returner.push(new MFOptionValue('RETURNER', `Take me back to the same camp... it's my summer home`));
+
+    //     const ro = MFOptions.OptionFromList(returner);
+
+    //     this.form
+    //         .addQuestion('availabilityDEAUCH', 'Are you able to fly to the US by 30th June and stay until mid-August?')
+    //         .setDisplayRule('isApplyingFrom_Germany_Austria_Switzerland')
+    //         .addOptionControl('availableBeforeCutoff', MetaFormOptionType.SingleSelect, ao)
+    //         .addValidator(MFValidator.Required('Please select an option'))
+    //         .addValidator(MFValidator.AnswerMustMatch('Y',
+    //             'You must be available within these dates in order to participate on this programme!'));
+
+    //     this.form
+    //         .addQuestion('availabilityNotDEAUCH', 'Are you able to fly to the US by 25th June and stay until mid-August?')
+    //         .setDisplayRule('isNotApplyingFrom_Germany_Austria_Switzerland')
+    //         .addOptionControl('availableBeforeCutoff', MetaFormOptionType.SingleSelect, ao2)
+    //         .addValidator(MFValidator.Required('Please select an option'))
+    //         .addValidator(MFValidator.AnswerMustMatch('Y',
+    //             'You must be available within these dates in order to participate on this programme!'));
+
+    //     this.form
+    //         .addQuestion('isStudent', 'Are you a student?', `You don't need to be a student in order to take part!`)
+    //         .setSection(2)
+    //         .addOptionControl('student', MetaFormOptionType.SingleSelect, so)
+    //         .addValidator(MFValidator.Required('Please select an option'));
+
+    //     this.form
+    //         .addQuestion('previousParticipation', 'Have you worked at a US summer camp before?')
+    //         .setSection(3)
+    //         .addOptionControl('returnerStatus', MetaFormOptionType.SingleSelect, ro)
+    //         .addValidator(MFValidator.Required('Please select an option'));
+
+    //     console.log(this.form.toJson());
+
+    // }
 }

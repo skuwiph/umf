@@ -4,6 +4,7 @@ import { MetaForm, MFQuestion, MFValueChange, MFValueRequired, MFControlValidity
 import { MetaFormService, DisplayQuestion } from '../meta-form.service';
 import { BusinessRule } from '../business-rule';
 import { BusinessRuleService } from '../business-rule.service';
+import { MetaFormDrawType } from '../meta-form-enums';
 
 @Component({
     selector: 'app-metaform-display',
@@ -27,9 +28,11 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
     nextButtonText = 'Next';
 
     ngOnInit(): void {
+        // console.log(`Init: ${this.currentFormItem}`);
         if (!this.form) {
             this.form = MetaForm.create('empty');
         }
+
         this.form.initialise();
         this.getNextQuestions();
 
@@ -61,12 +64,19 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
     }
 
     ruleMatches(question: MFQuestion): boolean {
-        if (!question.ruleToMatch) {
+        // Don't bother asking for a single-question form
+
+        if (this.form.drawType === MetaFormDrawType.SingleQuestion || !question.ruleToMatch) {
             return true;
         }
 
         if (this.ruleService) {
             const rule = this.ruleService.getRule(question.ruleToMatch);
+            if (!rule) {
+                console.log(`I didn't find the rule ${question.ruleToMatch}`);
+            } else {
+                console.log(`Got rule ${rule.name}`);
+            }
             return rule.evaluate(this.form.answers);
         }
 
@@ -79,14 +89,14 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
     }
 
     private getNextQuestions() {
-        const result = this.formService.getNextQuestionToDisplay(this.form, this.currentFormItem);
+        const result = this.formService.getNextQuestionToDisplay(this.form, this.ruleService, this.currentFormItem);
         this.display = result;
 
         this.checkDisplayQuestions();
     }
 
     private getPreviousQuestions() {
-        const result = this.formService.getPreviousQuestionToDisplay(this.form, this.currentFormItem);
+        const result = this.formService.getPreviousQuestionToDisplay(this.form, this.ruleService, this.currentFormItem);
         this.display = result;
 
         this.checkDisplayQuestions();
@@ -109,16 +119,10 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
 
         // Check page validity
         for (const [key, value] of this.display.controlStatus) {
-            // console.log(`Key: ${key} = ${this.display.controlStatus.get(key)}`);
             if (this.display.controlStatus.get(key)) {
-                console.log(`Field ${key} PASSED`);
                 numberOfPasses++;
-            } else {
-                console.warn(`Field ${key} failed`);
             }
         }
-
-        console.log(`Number of passes: ${numberOfPasses}/${this.display.numberOfControls}`);
 
         this.pageIsValid = (numberOfPasses === this.display.numberOfControls);
     }

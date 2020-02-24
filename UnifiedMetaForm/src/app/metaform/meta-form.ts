@@ -10,22 +10,6 @@ import { EventEmitter } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-export function metaFormJsonReplacer(key: string, value: any) {
-    switch (key) {
-        case 'change':
-        case 'http':
-        case 'inError':
-        case 'isReferencedBy':
-        case 'references':
-        case 'referencesField':
-        case 'dependencies':
-        case 'errorMessage':
-            return undefined;
-        default:
-            return value;
-    }
-}
-
 export class MetaForm {
     name: string;
     title: string;
@@ -69,10 +53,6 @@ export class MetaForm {
         } else {
             return { isVariable: false, value: undefined };
         }
-    }
-
-    toJson(): string {
-        return JSON.stringify(this, metaFormJsonReplacer, 2);
     }
 
     // Initialise the form ready for use
@@ -223,8 +203,6 @@ export class MetaForm {
 
                 const date = new Date(Date.UTC(year, month, day, hh, mm, 0, 0));
 
-                // console.log(`${name}(${dateValue})=${date}`);
-
                 return date;
             } catch {
                 console.error(`Couldn't evaluate date`);
@@ -247,8 +225,6 @@ export class MetaForm {
             if (c && c.isReferencedBy) {
                 for (const referencedBy of c.isReferencedBy) {
                     if (referencedBy) {
-                        // console.log(`Referenced by: ${referencedBy}`);
-
                         const r = this.getControlByName(referencedBy);
                         r.isValid(this, true);
 
@@ -257,6 +233,10 @@ export class MetaForm {
                 }
             }
         }
+    }
+
+    toJson(): string {
+        return JSON.stringify(this, metaFormJsonReplacer, 2);
     }
 
     private pushQuestion(q: MFQuestion, name: string, caption: string) {
@@ -402,6 +382,16 @@ export class MFQuestion {
         return c;
     }
 
+    setSection(sectionId: number): MFQuestion {
+        this.sectionId = sectionId;
+        return this;
+    }
+
+    setDisplayRule(ruleToMatch: string): MFQuestion {
+        this.ruleToMatch = ruleToMatch;
+        return this;
+    }
+
     isValid(form: MetaForm, updateStatus = true): boolean {
         let valid = true;
 
@@ -426,6 +416,7 @@ export class MFSection {
 
 export class MFControl {
     controlType: MetaFormControlType;
+    controlId: string;
     name: string;
     validators?: MFValidator[];
     validatorsAsync?: MFValidatorAsync[];
@@ -796,7 +787,6 @@ export class MFValidator {
     protected checkForReference(value: string) {
         const r = MetaForm.isFieldReference(value);
         if (r.isField) {
-            console.log(`Validator ${this.type} has a field reference pointing at ${r.fieldName}`);
             if (!this.referencesField) {
                 this.referencesField = [];
             }
@@ -1140,4 +1130,22 @@ export class MFControlValidityChange {
 
 export class MFAsyncValidationResponse {
     valid: boolean;
+}
+
+export function metaFormJsonReplacer(key: string, value: any) {
+    switch (key) {
+        case 'answers':
+        case 'change':
+        case 'controlId':
+        case 'dependencies':
+        case 'errorMessage':
+        case 'http':
+        case 'inError':
+        case 'isReferencedBy':
+        case 'references':
+        case 'referencesField':
+            return undefined;
+        default:
+            return value;
+    }
 }

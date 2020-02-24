@@ -37,11 +37,13 @@ export class BusinessRule {
 
             // Short circuit
             if (success && this.matchType === RuleMatchType.MatchAny) {
+                console.log(`Match Any, evaluation true`);
                 return true;
             }
 
             // Short circuit
             if (!success && this.matchType === RuleMatchType.MatchAll) {
+                console.log(`Match All, evaluation false`);
                 return false;
             }
         }
@@ -71,57 +73,59 @@ export class RulePart implements IRulePart {
 
     evaluate(data: MetaFormAnswers): boolean {
         const comparedValue = data.getValue(this.fieldName);
-        let valid = false;
+
+        // console.log(`Got ${comparedValue}, looking for ${this.comparison} with value of ${this.value}`);
 
         switch (this.comparison) {
             case RuleComparison.Equals:
-                // console.debug("#### Equals!");
-                if (typeof this.value === "string" || typeof this.value === "number") {
+                // console.log('#### Equals!');
+                if (typeof this.value === 'string' || typeof this.value === 'number') {
                     return this.evaluateEquality(this.value, comparedValue);
                 } else if (this.value instanceof Date) {
                     return this.evaluateEqualityDate(this.value, comparedValue);
-                } else if (typeof this.value === "boolean") {
+                } else if (typeof this.value === 'boolean') {
                     // console.info(`boolean equals`);
                     return this.value === comparedValue;
                 }
-                break
+                break;
             case RuleComparison.NotEquals:
                 // console.debug("#### Not Equals!");
-                if (typeof this.value === "string" || typeof this.value === "number") {
+                if (typeof this.value === 'string' || typeof this.value === 'number') {
                     return !this.evaluateEquality(this.value, comparedValue);
                 } else if (this.value instanceof Date) {
                     return !this.evaluateEqualityDate(this.value, comparedValue);
-                } else if (typeof this.value === "boolean") {
+                } else if (typeof this.value === 'boolean') {
                     return this.value !== comparedValue;
                 }
-                break
+                break;
             case RuleComparison.Between:
                 // // console.debug("#### Between!");
-                if (typeof this.min === "number") {
+                if (typeof this.min === 'number') {
                     return this.evaluateBetween(this.min, this.max, comparedValue);
                 } else if (this.min instanceof Date) {
                     // // console.debug("This value is a date between");
                     return this.evaluateBetweenDate(this.min, this.max, comparedValue);
                 }
-                break
+                break;
             case RuleComparison.Contains:
-                if (typeof this.value === "string" || typeof this.value === "number") {
+                if (typeof this.value === 'string' || typeof this.value === 'number') {
                     return this.evaluateContains(this.value, comparedValue);
                 } else if (this.value instanceof Date) {
-                    console.assert(`No implementation for evaluating dates on rule part with field '${this.fieldName}'`);
+                    console.error(`No implementation for evaluating dates on rule part with field '${this.fieldName}'`);
                 }
-                break
+                break;
             case RuleComparison.GreaterThan:
                 if (typeof this.value === 'number') {
-                    return this.evaluateGreaterThan(this.value, comparedValue)
+                    return this.evaluateGreaterThan(this.value, comparedValue);
                 } else {
-                    throw new Error('BusinessRulePart::evaluateRule: Greater than can be used only with numbers!')
+                    console.error('BusinessRulePart::evaluateRule: Greater than can be used only with numbers!');
                 }
+                break;
             default:
-                throw new Error("BusinessRulePart::evaluateRule: No comparison matches!");
+                console.error('BusinessRulePart::evaluateRule: No comparison matches!');
         }
 
-        return valid;
+        return false;
     }
 
 
@@ -138,7 +142,7 @@ export class RulePart implements IRulePart {
     }
 
     private evaluateGreaterThan(value: number, comparedValue: number): boolean {
-        return value > comparedValue
+        return value > comparedValue;
     }
 
     private evaluateBetweenDate(lower: Date, upper: Date, comparedValue: Date): boolean {
@@ -160,7 +164,7 @@ export class RulePart implements IRulePart {
     private evaluateContains(value: any, comparedValue: any): boolean {
         if (Array.isArray(comparedValue)) {
             const arr = comparedValue || [];
-            let item = arr.find(v => v == value);
+            const item = arr.find(v => v === value);
 
             return (item);
         } else {
@@ -176,6 +180,7 @@ export enum RuleMatchType {
 }
 
 export enum RuleComparison {
+    Unknown,
     Equals,
     NotEquals,
     LessThan,

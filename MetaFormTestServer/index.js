@@ -7,6 +7,13 @@ var path = require('path');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+
 app.get("/url", (req, res, next) => {
     res.json(["Tony", "Lisa", "Michael", "Ginger", "Food"]);
 });
@@ -14,6 +21,7 @@ app.get("/url", (req, res, next) => {
 //allow OPTIONS on all resources
 app.options('*', cors());
 app.post('*', cors());
+
 
 app.get("/country", cors(), (req, res, next) => {
     res.json([
@@ -70,6 +78,12 @@ app.get("/form/:formName", cors(), (req, res, next) => {
     console.log(`Looking for ${req.params.formName.toLowerCase()}.json in ${__dirname}/forms`);
     res.sendFile(path.join(__dirname, '/forms', `${req.params.formName.toLowerCase()}.json`));
 });
+
+app.get("/rules", cors(), (req, res, next) => {
+    console.log(`Looking for ${path.join(__dirname, '/forms', `rules.json`)}`);
+    res.sendFile(path.join(__dirname, '/forms', `rules.json`));
+});
+
 
 app.listen(3000, () => {
     console.log("Server running on port 3000");

@@ -1,0 +1,171 @@
+{
+  "name": "create-application",
+  "drawType": 0,
+  "version": 1,
+  "allowSaves": false,
+  "dateModified": "2020-02-24T21:37:28.109Z",
+  "sections": [
+    {
+      "id": 1,
+      "title": "Your Availability"
+    },
+    {
+      "id": 2,
+      "title": "Student Status"
+    },
+    {
+      "id": 3,
+      "title": "My Application"
+    }
+  ],
+  "questions": [
+    {
+      "controls": [
+        {
+          "optionLayout": 1,
+          "controlType": 2,
+          "optionType": 0,
+          "options": {
+            "expandOptions": true,
+            "list": [
+              {
+                "code": "Y",
+                "description": "YES - I am able to fly to the US by 30th June and stay until mid-August"
+              },
+              {
+                "code": "N",
+                "description": "NO - I am not able to fly to the US by 30th June and stay until mid-August"
+              }
+            ]
+          },
+          "name": "availableBeforeCutoff",
+          "validators": [
+            {
+              "type": "Required",
+              "message": "Please select an option"
+            },
+            {
+              "type": "AnswerMustMatch",
+              "message": "You must be available within these dates in order to participate on this programme!",
+              "value": "Y"
+            }
+          ]
+        }
+      ],
+      "controlLayout": 1,
+      "name": "q_availabilityDEAUCH",
+      "caption": "Are you able to fly to the US by 30th June and stay until mid-August?",
+      "ruleToMatch": "isApplyingFrom_Germany_Austria_Switzerland"
+    },
+    {
+      "controls": [
+        {
+          "optionLayout": 1,
+          "controlType": 2,
+          "optionType": 0,
+          "options": {
+            "expandOptions": true,
+            "list": [
+              {
+                "code": "Y",
+                "description": "YES - I am able to fly to the US by 25th June and stay until mid-August"
+              },
+              {
+                "code": "N",
+                "description": "NO - I am not able to fly to the US by 25th June and stay until mid-August"
+              }
+            ]
+          },
+          "name": "availableBeforeCutoff",
+          "validators": [
+            {
+              "type": "Required",
+              "message": "Please select an option"
+            },
+            {
+              "type": "AnswerMustMatch",
+              "message": "You must be available within these dates in order to participate on this programme!",
+              "value": "Y"
+            }
+          ]
+        }
+      ],
+      "controlLayout": 1,
+      "name": "q_availabilityNotDEAUCH",
+      "caption": "Are you able to fly to the US by 25th June and stay until mid-August?",
+      "ruleToMatch": "isNotApplyingFrom_Germany_Austria_Switzerland"
+    },
+    {
+      "controls": [
+        {
+          "optionLayout": 1,
+          "controlType": 2,
+          "optionType": 0,
+          "options": {
+            "expandOptions": true,
+            "list": [
+              {
+                "code": "Y",
+                "description": "YES - I am currently a full-time student"
+              },
+              {
+                "code": "N",
+                "description": "NO - I am not a full-time student"
+              }
+            ]
+          },
+          "name": "student",
+          "validators": [
+            {
+              "type": "Required",
+              "message": "Please select an option"
+            }
+          ]
+        }
+      ],
+      "controlLayout": 1,
+      "captionFootnote": "You don't need to be a student in order to take part!",
+      "name": "q_isStudent",
+      "caption": "Are you a student?",
+      "sectionId": 2
+    },
+    {
+      "controls": [
+        {
+          "optionLayout": 1,
+          "controlType": 2,
+          "optionType": 0,
+          "options": {
+            "expandOptions": true,
+            "list": [
+              {
+                "code": "FIRST",
+                "description": "I want to go for the very first time"
+              },
+              {
+                "code": "REPEAT",
+                "description": "I have been before, but I want to go to a different camp"
+              },
+              {
+                "code": "RETURNER",
+                "description": "Take me back to the same camp... it's my summer home"
+              }
+            ]
+          },
+          "name": "returnerStatus",
+          "validators": [
+            {
+              "type": "Required",
+              "message": "Please select an option"
+            }
+          ]
+        }
+      ],
+      "controlLayout": 1,
+      "name": "q_previousParticipation",
+      "caption": "Have you worked at a US summer camp before?",
+      "sectionId": 3
+    }
+  ],
+  "title": "Create Application"
+}

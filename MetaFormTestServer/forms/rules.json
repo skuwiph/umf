@@ -1,0 +1,711 @@
+[
+    {
+        "name": "IsNotReturner",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "isReturner",
+                "comparison": 1,
+                "value": false
+            }
+        ]
+    },
+    {
+        "name": "IsReturner",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "isReturner",
+                "comparison": 1,
+                "value": true
+            }
+        ]
+    },
+    {
+        "name": "IsNotRepeatOrReturner",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "isReturner",
+                "comparison": 1,
+                "value": false
+            },
+            {
+                "name": "isRepeat",
+                "comparison": 1,
+                "value": false
+            }
+        ]
+    },
+    {
+        "name": "IsRepeatOrReturner",
+        "matchType": 0,
+        "parts": [
+            {
+                "name": "isReturner",
+                "comparison": 1,
+                "value": true
+            },
+            {
+                "name": "isRepeat",
+                "comparison": 1,
+                "value": true
+            }
+        ]
+    },
+    {
+        "name": "WasOtherJ1Organisation",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "previousAgency",
+                "comparison": 1,
+                "value": "7"
+            }
+        ]
+    },
+    {
+        "name": "HasProgrammeChoices",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "numberProgrammeOptions",
+                "comparison": 1,
+                "value": 2
+            },
+            {
+                "name": "isReturner",
+                "comparison": 1,
+                "value": true
+            },
+            {
+                "name": "isStudent",
+                "comparison": 1,
+                "value": true
+            }
+        ]
+    },
+    {
+        "name": "isApplyingFrom_Germany_Austria_Switzerland",
+        "matchType": 0,
+        "parts":[
+            {
+                "name": "countryCode",
+                "comparison": 1,
+                "value": "DE"
+            },
+            {
+                "name": "countryCode",
+                "comparison": 1,
+                "value": "AT"
+            },
+            {
+                "name": "countryCode",
+                "comparison": 1,
+                "value": "CH"
+            }
+        ]
+    },
+	{
+        "name": "isNotApplyingFrom_Germany_Austria_Switzerland",
+        "matchType": 1,
+        "parts":
+		[
+            {
+                "name": "countryCode",
+                "comparison": 2,
+                "value": "DE"
+            },
+            {
+                "name": "countryCode",
+                "comparison": 2,
+                "value": "AT"
+            },
+            {
+                "name": "countryCode",
+                "comparison": 2,
+                "value": "CH"
+            }
+        ]
+    },
+    {
+        "name": "IsApplyingFromPoland",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "countryCode",
+                "comparison": 1,
+                "value": "PL"
+            }
+        ]
+    },
+	{
+        "name": "IsNotApplyingFromPoland",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "countryCode",
+                "comparison": 2,
+                "value": "PL"
+            }
+        ]
+    },
+	{
+        "name": "IsApplyingFromUK",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "countryCode",
+                "comparison": 1,
+                "value": "GB"
+            }
+        ]
+    },
+    {
+        "name": "IsNotApplyingFromUK",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "countryCode",
+                "comparison": 2,
+                "value": "GB"
+            }
+        ]
+    },
+    {
+        "name": "HasMedicalIssue",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "hasMedicalIssue",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "HasCriminalIssue",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "hasCriminalIssue",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "NeedsChildcareQuestions",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "hasChildcareSkill",
+                "comparison": 2,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "HasOtherLanguages",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "otherLanguages",
+                "comparison": 5,
+                "value": "OT"
+            }
+        ]
+    },
+    {
+        "name": "PracticingChristian",
+        "matchType": 0,
+        "parts": [
+            {
+                "name": "religionCode",
+                "comparison": 1,
+                "value": "CS"
+            },
+            {
+                "name": "religionCode",
+                "comparison": 1,
+                "value": "CSC"
+            }
+        ]
+    },
+    {
+        "name": "NonPracticingChristian",
+        "matchType": 0,
+        "parts": [
+            {
+                "name": "religionCode",
+                "comparison": 1,
+                "value": "CHR"
+            },
+            {
+                "name": "religionCode",
+                "comparison": 1,
+                "value": "CTH"
+            }
+        ]
+    },
+    {
+        "name": "PracticingJewish",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "religionCode",
+                "comparison": 1,
+                "value": "JN"
+            }
+        ]
+    },
+    {
+        "name": "NonPracticingJewish",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "religionCode",
+                "comparison": 1,
+                "value": "JW"
+            }
+        ]
+    },
+    {
+        "name": "IsRepeat",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "isRepeat",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "HasCampInMind",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "firstConsiderationDesired",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "CollegeNameOther",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "countryCode",
+                "comparison": 1,
+                "value": "GB"
+            },
+            {
+                "name": "collegeCode",
+                "comparison": 1,
+                "value": "YYY"
+            }
+        ]
+    },
+    {
+        "name": "StudentNextTerm",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "studentNextTerm",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "IsCurrentStudent",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "fullTimeStudent",
+                "comparison": 1,
+                "value": true
+            }
+        ]
+    },
+    {
+        "name": "IsNotCurrentStudent",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "fullTimeStudent",
+                "comparison": 1,
+                "value": false
+            }
+        ]
+    },
+    {
+        "name": "HasCoachingExperience",
+        "matchType": 0,
+        "parts": [
+            {
+                "name": "coachingLevel",
+                "comparison": 1,
+                "value": "F"
+            },
+            {
+                "name": "coachingLevel",
+                "comparison": 1,
+                "value": "I"
+            }
+        ]
+    },
+    {
+        "name": "IsCounselorSkill",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "programmeCode",
+                "comparison": 1,
+                "value": "CC"
+            }
+        ]
+    },
+    {
+        "name": "DisplayAdvancedQualification",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "displayAdvancedQualification",
+                "comparison": 1,
+                "value": true
+            }
+        ]
+    },
+    {
+        "name": "HasGuidingExperience",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "guideScoutOrPioneer",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "RefereeStillKnown",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "currentlyPresent",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "IsSmoker",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "smoker",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "HasTattoo",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "piercingTattoo",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "HasDiet",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "dietary",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "HasAllergies",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "allergies",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "HasClaimedMentalIllness",
+        "matchType": 1,
+        "parts": [
+          {
+            "name": "claimsMentalIllness",
+            "comparison": 1,
+            "value": "Y"
+          }
+        ]
+    },
+    {
+        "name": "HasMedicalCondition",
+        "matchType": 0,
+      "parts": [
+        {
+          "name": "behaviourCondition",
+          "comparison": 1,
+          "value": "Y"
+        },
+        {
+          "name": "physicalImpairment",
+          "comparison": 1,
+          "value": "Y"
+        },
+        {
+          "name": "visualImpairment",
+          "comparison": 1,
+          "value": "Y"
+        },
+        {
+          "name": "hearingImpairment",
+          "comparison": 1,
+          "value": "Y"
+        },
+        {
+          "name": "selfHarm",
+          "comparison": 1,
+          "value": "Y"
+        },
+        {
+          "name": "medication",
+          "comparison": 1,
+          "value": "Y"
+        },
+        {
+          "name": "treatedForMentalIllness",
+          "comparison": 1,
+          "value": "Y"
+        },
+        {
+          "name": "claimsMentalIllness",
+          "comparison": 1,
+          "value": "Y"
+        },
+        {
+          "name": "eatingDisorders",
+          "comparison": 1,
+          "value": "Y"
+        },
+        {
+          "name": "healthProblems",
+          "comparison": 1,
+          "value": "Y"
+        },
+        {
+          "name": "sexualAbuse",
+          "comparison": 1,
+          "value": "Y"
+        }
+      ]
+    },
+    {
+        "name": "IsTakingMedication",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "takingMedication",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "IsNotTakingMedication",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "takingMedication",
+                "comparison": 1,
+                "value": "N"
+            }
+        ]
+    },
+    {
+        "name": "MedicationSideEffects",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "takingMedication",
+                "comparison": 1,
+                "value": "Y"
+            },
+            {
+                "name": "sideEffects",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "PreviousMedicationTaken",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "takingMedication",
+                "comparison": 1,
+                "value": "N"
+            },
+            {
+                "name": "previousMedication",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "ReceiveMedicalTreatment",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "medicalTreatment",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "Suffered12",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "sufferedInLastMonths",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "SpecialConsiderations",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "specialConsideration",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "ConditionEnded",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "conditionCurrent",
+                "comparison": 1,
+                "value": "N"
+            }
+        ]
+    },
+    {
+        "name": "HospitalAdmission",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "everAdmitted",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "ConditionTypeOther",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "behaviourCondition",
+                "comparison": 5,
+                "value": "OT"
+            }
+        ]
+    },
+    {
+        "name": "AntibioticsLongTerm",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "antibioticsLongTerm",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "OtherMedication",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "otherMedication",
+                "comparison": 1,
+                "value": "Y"
+            }
+        ]
+    },
+    {
+        "name": "IsNotLondonEmbassy",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "embassyBookingByOffice",
+                "comparison": 1,
+                "value": false
+            }
+        ]
+    },
+    {
+        "name": "IsLondonEmbassy",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "embassyBookingByOffice",
+                "comparison": 1,
+                "value": true
+            }
+        ]
+    },
+    {
+        "name": "VisaStep2",
+        "matchType": 0,
+        "parts": [
+            {
+                "name": "visaUpdateStep",
+                "comparison": 1,
+                "value": 2
+            },
+            {
+                "name": "visaUpdateStep",
+                "comparison": 1,
+                "value": 3
+            }
+        ]
+    },
+    {
+        "name": "VisaStep3",
+        "matchType": 1,
+        "parts": [
+            {
+                "name": "visaUpdateStep",
+                "comparison": 1,
+                "value": 3
+            }
+        ]
+    }
+]

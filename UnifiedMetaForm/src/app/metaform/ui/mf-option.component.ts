@@ -163,11 +163,11 @@ export class MetaFormOptionComponent implements OnInit {
                 (valid: boolean) => {
                     // console.log(`async validator finished: ${valid}`);
                     this.inError = !valid;
-                    this.changeValidity.emit(new MFControlValidityChange(this.control.name, !this.inError));
+                    this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !this.inError));
                 }
             );
         }
-        this.changeValidity.emit(new MFControlValidityChange(this.control.name, !this.inError));
+        this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !this.inError));
     }
 
 }

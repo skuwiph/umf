@@ -5,6 +5,7 @@ import { MetaFormDrawType, MetaFormControlType, MetaFormOptionType } from './met
 import { HttpClient } from '@angular/common/http';
 import { IMetaFormV1 } from './serialisation/v1.interfaces';
 import { Meta } from '@angular/platform-browser';
+import { BusinessRuleService } from './business-rule.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +18,7 @@ export class MetaFormService {
         const form = MetaForm.create(name, drawType ?? MetaFormDrawType.EntireForm);
 
         form.title = title;
-        form.addSection('Default');
+        // form.addSection('Default');
 
         return form;
     }
@@ -45,6 +46,7 @@ export class MetaFormService {
                     for (const q of data.questions) {
                         const fq = form.addQuestion(q.name, q.caption, q.captionFootnote, q.controlLayout);
                         fq.sectionId = q.sectionId;
+                        fq.ruleToMatch = q.ruleToMatch;
                         for (const c of q.controls) {
                             let fc: MFControl;
                             switch (c.controlType) {
@@ -125,7 +127,7 @@ export class MetaFormService {
         return subject;
     }
 
-    getNextQuestionToDisplay(form: MetaForm, lastItem: number): DisplayQuestion {
+    getNextQuestionToDisplay(form: MetaForm, ruleService: BusinessRuleService, lastItem: number): DisplayQuestion {
         let dq: DisplayQuestion;
 
         // the last question displayed was 'lastQuestion'. since we are going
@@ -137,7 +139,7 @@ export class MetaFormService {
         }
 
         if (form.drawType === MetaFormDrawType.SingleQuestion) {
-            dq = this.getSingleQuestion(form, lastItem);
+            dq = this.getSingleQuestion(form, ruleService, lastItem);
         } else if (form.drawType === MetaFormDrawType.SingleSection) {
             dq = this.getQuestionsInSection(form, lastItem);
         } else if (form.drawType === MetaFormDrawType.EntireForm) {
@@ -149,7 +151,7 @@ export class MetaFormService {
         return dq;
     }
 
-    getPreviousQuestionToDisplay(form: MetaForm, lastItem: number): DisplayQuestion {
+    getPreviousQuestionToDisplay(form: MetaForm, ruleService: BusinessRuleService, lastItem: number): DisplayQuestion {
         let dq: DisplayQuestion;
 
         // the last question displayed was 'lastQuestion'. since we are going
@@ -161,7 +163,7 @@ export class MetaFormService {
         }
 
         if (form.drawType === MetaFormDrawType.SingleQuestion) {
-            dq = this.getSingleQuestion(form, lastItem, -1);
+            dq = this.getSingleQuestion(form, ruleService, lastItem, -1);
         } else if (form.drawType === MetaFormDrawType.SingleSection) {
             dq = this.getQuestionsInSection(form, lastItem, -1);
         } else if (form.drawType === MetaFormDrawType.EntireForm) {
@@ -173,20 +175,29 @@ export class MetaFormService {
         return dq;
     }
 
-    getSingleQuestion(form: MetaForm, lastQuestion: number, direction: number = 1): DisplayQuestion {
+    getSingleQuestion(form: MetaForm, ruleService: BusinessRuleService, lastQuestion: number, direction: number = 1): DisplayQuestion {
         // Get the next question; simples
         const dq = new DisplayQuestion();
 
         const startQuestion = lastQuestion;
-        const currentQuestion = lastQuestion + direction;
+        let found = false;
+        let currentQuestion = lastQuestion + direction;
         let question: MFQuestion;
         let controlCount = 0;
 
-        if (direction > 0 && currentQuestion < form.questions.length || direction < 0 && currentQuestion > -1) {
+        // console.log(`Starting with question ${currentQuestion}`);
+        while (!found && (direction > 0 && currentQuestion < form.questions.length || direction < 0 && currentQuestion > -1)) {
             question = form.questions[currentQuestion];
-
-            dq.questions.push(question);
-            controlCount += question.controls.length;
+            // console.log(`Checking question ${currentQuestion}`);
+            if (!question.ruleToMatch || ruleService.evaluateRule(question.ruleToMatch, form.answers)) {
+                // console.log(`Question matches`);
+                dq.questions.push(question);
+                controlCount += question.controls.length;
+                found = true;
+            } else {
+                // console.log(`Question does not match, stepping ${direction}`);
+                currentQuestion += direction;
+            }
         }
 
         dq.atEnd = currentQuestion === form.questions.length - 1;
@@ -264,7 +275,8 @@ export class MetaFormService {
             for (const c of q.controls) {
                 const valid = c.isValid(form, false);
                 // console.log(`Setting control/valid: ${c.name}=${valid}`);
-                dq.controlStatus.set(c.name, valid);
+                c.controlId = `${q.name}:${c.name}`;
+                dq.controlStatus.set(c.controlId, valid);
             }
         }
     }

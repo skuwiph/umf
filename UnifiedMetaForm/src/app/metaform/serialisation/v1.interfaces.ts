@@ -58,6 +58,7 @@ export interface Question {
     name: string;
     caption: string;
     captionFootnote?: string;
+    ruleToMatch?: string;
 }
 
 export interface IMetaFormV1 {
@@ -72,3 +73,14 @@ export interface IMetaFormV1 {
     title: string;
 }
 
+export interface IRulePart {
+    name: string;
+    comparison: number;
+    value: any;
+}
+
+export interface IBusinessRule {
+    name: string;
+    matchType: number;
+    parts: IRulePart[];
+}
