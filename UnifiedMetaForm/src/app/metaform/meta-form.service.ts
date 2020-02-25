@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { MetaForm, MFQuestion, MFControl, MFSection, MFValidator, MFValidatorAsync } from './meta-form';
+import { MetaForm, MFQuestion, MFControl, MFSection, MFValidator, MFValidatorAsync, MetaFormAnswers } from './meta-form';
 import { throwError, queueScheduler, Observable, Subject } from 'rxjs';
 import { MetaFormDrawType, MetaFormControlType, MetaFormOptionType } from './meta-form-enums';
 import { HttpClient } from '@angular/common/http';
 import { IMetaFormV1 } from './serialisation/v1.interfaces';
 import { Meta } from '@angular/platform-browser';
 import { BusinessRuleService } from './business-rule.service';
+import { RangeValueAccessor } from '@angular/forms';
 
 @Injectable({
     providedIn: 'root'
@@ -179,17 +180,14 @@ export class MetaFormService {
         // Get the next question; simples
         const dq = new DisplayQuestion();
 
-        const startQuestion = lastQuestion;
         let found = false;
         let currentQuestion = lastQuestion + direction;
         let question: MFQuestion;
         let controlCount = 0;
 
-        // console.log(`Starting with question ${currentQuestion}`);
         while (!found && (direction > 0 && currentQuestion < form.questions.length || direction < 0 && currentQuestion > -1)) {
             question = form.questions[currentQuestion];
-            // console.log(`Checking question ${currentQuestion}`);
-            if (!question.ruleToMatch || ruleService.evaluateRule(question.ruleToMatch, form.answers)) {
+            if (this.isValidForDisplay(form.answers, question, ruleService)) {
                 // console.log(`Question matches`);
                 dq.questions.push(question);
                 controlCount += question.controls.length;
@@ -200,13 +198,55 @@ export class MetaFormService {
             }
         }
 
-        dq.atEnd = currentQuestion === form.questions.length - 1;
-        dq.atStart = currentQuestion === 0;
+        // TODO(Ian): Okay, we have to actually continue in the same
+        // direction in case we find that the question we found was the last (or first)
+        // available
+        const atStart = (this.findBoundary(form, ruleService, currentQuestion, -1) < 0);
+        console.log(`Are we at the start of the possible questions? ${atStart}`);
+
+        const atEnd = (this.findBoundary(form, ruleService, currentQuestion, +1) >= form.questions.length);
+        console.log(`Are we at the end of the possible questions? ${atEnd}`);
+
+        dq.atEnd = atEnd;
+        dq.atStart = atStart;
         dq.numberOfControls = controlCount;
 
         dq.lastItem = currentQuestion;
 
         return dq;
+    }
+
+    findBoundary(form: MetaForm, ruleService: BusinessRuleService, startQuestion: number, direction: number): number {
+        let boundary = direction < 0 ? -1 : form.questions.length;
+        let found = false;
+        let outOfBounds = false;
+        let current = startQuestion + direction;
+
+        if (current < 0 || current >= form.questions.length) {
+            return boundary;
+        }
+
+        // From 'startQuestion' backwards or forwards, is there a valid question?
+        // Or do we got out of bounds in the 'direction' of travel?
+        do {
+            const question = form.questions[current];
+            if (this.isValidForDisplay(form.answers, question, ruleService)) {
+                found = true;
+                break;
+            } else {
+                current += direction;
+                outOfBounds = (current < 0);
+            }
+        } while (!found && !outOfBounds);
+
+        boundary = current;
+
+        return boundary;
+    }
+
+    isValidForDisplay(answers: MetaFormAnswers, question: MFQuestion, ruleService: BusinessRuleService): boolean {
+        // console.log(`Checking question ${currentQuestion}`);
+        return (!question.ruleToMatch || ruleService.evaluateRule(question.ruleToMatch, answers));
     }
 
     getQuestionsInSection(form: MetaForm, lastSection: number, direction: number = 1): DisplayQuestion {

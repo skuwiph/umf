@@ -28,7 +28,6 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
     nextButtonText = 'Next';
 
     ngOnInit(): void {
-        // console.log(`Init: ${this.currentFormItem}`);
         if (!this.form) {
             this.form = MetaForm.create('empty');
         }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MetaFormService } from './metaform/meta-form.service';
 import { MetaForm, MFValidator, MFOptionValue, MFOptions, MFValidatorAsync } from './metaform/meta-form';
-import { MetaFormControlType, MetaFormTextType, MetaFormDateType, MetaFormOptionType, MetaFormDrawType } from './metaform/meta-form-enums';
+import { MetaFormControlType, MetaFormTextType, MetaFormDateType, MetaFormOptionType, MetaFormDrawType, ControlLayoutStyle } from './metaform/meta-form-enums';
 import { HttpClient } from '@angular/common/http';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
 import { BusinessRuleService } from './metaform/business-rule.service';

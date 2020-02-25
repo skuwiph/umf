@@ -1,5 +1,5 @@
 <h2>{{form.title}}</h2>
-<div class="mf-form">
+<div class="mf-form" [ngClass]="{'mf-single-question': form.drawType === 0}">
     <ng-container *ngIf="display?.questions">
         <ng-container *ngFor="let q of display.questions">
             <div class="mf-question" *ngIf="q.canBeDisplayed() && ruleMatches(q)">

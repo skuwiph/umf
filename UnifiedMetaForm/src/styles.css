@@ -4,3 +4,13 @@
 *, input, select, select option {
     font-family: 'Raleway', 'Sans-Serif' ;
 }
+
+body {
+    max-height: 100vh;
+}
+
+.animate-popin {
+    transition-duration: 250ms;
+    transition-property: opacity;
+    transition-timing-function: ease-in;
+}
