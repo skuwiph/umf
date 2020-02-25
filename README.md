@@ -10,6 +10,8 @@ The following is an incomplete list of changes which need to be made:
 
 * Refactor of controls to minimise duplicated functions
 
+  * Possibly break the existing controls down a bit more for clarity in HTML
+
 * Provide styling at a higher level if possible
 
 * Refactor loading from JSON and converting to internal object model

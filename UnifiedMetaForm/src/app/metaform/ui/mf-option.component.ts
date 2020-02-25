@@ -1,27 +1,22 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
-import { MFControl, MetaForm, MFLabelControl, MFControlValidityChange, MFOptionControl, MFOptionValue, MFValueChange } from '../meta-form';
-import { MetaFormService } from '../meta-form.service';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { EventEmitter } from '@angular/core';
-import { MetaFormOptionType, ControlLayoutStyle } from '../meta-form-enums';
 import { filter } from 'rxjs/operators';
+
+import { MetaFormService } from '../meta-form.service';
+import { MetaFormControlBase } from './mf-control-base';
+import { MFControlValidityChange, MFOptionControl, MFOptionValue, MFValueChange } from '../meta-form';
+import { MetaFormOptionType, ControlLayoutStyle } from '../meta-form-enums';
 
 @Component({
     selector: 'app-mf-option',
     templateUrl: './mf-option.component.html',
     styleUrls: ['./mf-option.component.css']
 })
-export class MetaFormOptionComponent implements OnInit {
-
-    @Input() form: MetaForm;
-    @Input() control: MFControl;
-    @Output() changeValidity: EventEmitter<MFControlValidityChange> = new EventEmitter<MFControlValidityChange>();
+export class MetaFormOptionComponent extends MetaFormControlBase implements OnInit {
 
     formControl: FormControl;
-    name: string;
     optionType: string;
 
-    inError = false;
     loaded = false;
     expandOptions = false;
 
@@ -31,7 +26,7 @@ export class MetaFormOptionComponent implements OnInit {
     options: MFOptionValue[];
     selectedItem: string;
 
-    constructor(private mfService: MetaFormService) { }
+    constructor(private mfService: MetaFormService) { super(); }
 
     ngOnInit(): void {
         this.formControl = new FormControl('');
@@ -155,19 +150,4 @@ export class MetaFormOptionComponent implements OnInit {
     onControlValidityChange(event: MFControlValidityChange): void {
         this.checkControlStatus();
     }
-
-    private checkControlStatus() {
-        this.inError = !this.control.isValid(this.form);
-        if (!this.inError) {
-            this.control.isValidAsync(this.form).subscribe(
-                (valid: boolean) => {
-                    // console.log(`async validator finished: ${valid}`);
-                    this.inError = !valid;
-                    this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !this.inError));
-                }
-            );
-        }
-        this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !this.inError));
-    }
-
 }

@@ -1,32 +1,23 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
-import { MFControl, MetaForm, MFControlValidityChange, MFDateControl, MFTimeControl } from '../meta-form';
-import { MetaFormService } from '../meta-form.service';
-import { MetaFormDateType } from '../meta-form-enums';
-
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { EventEmitter } from '@angular/core';
+
+import { MetaFormControlBase } from './mf-control-base';
+import { MetaFormService } from '../meta-form.service';
+import { MFTimeControl } from '../meta-form';
+
 
 @Component({
     selector: 'app-mf-time',
     templateUrl: './mf-time.component.html',
     styleUrls: ['./mf-time.component.css']
 })
-export class MetaFormTimeComponent implements OnInit {
-
-    @Input() form: MetaForm;
-    @Input() control: MFControl;
-
-    @Output() changeValidity: EventEmitter<MFControlValidityChange> = new EventEmitter<MFControlValidityChange>();
+export class MetaFormTimeComponent extends MetaFormControlBase implements OnInit {
 
     formGroup: FormGroup;
-    name: string;
-
-    inError = false;
-
     hourList: string[];
     minuteList: string[];
 
-    constructor(private mfService: MetaFormService) { }
+    constructor(private mfService: MetaFormService) { super(); }
 
     ngOnInit(): void {
         if (this.control) {
@@ -53,25 +44,4 @@ export class MetaFormTimeComponent implements OnInit {
 
         }
     }
-
-    onFocusLost() {
-        // console.log(`Focus lost: ${this.control.name}`);
-        this.checkControlStatus();
-    }
-
-    private checkControlStatus() {
-        this.inError = !this.control.isValid(this.form);
-        if (!this.inError) {
-            this.control.isValidAsync(this.form).subscribe(
-                (valid: boolean) => {
-                    // console.log(`async validator finished: ${valid}`);
-                    this.inError = !valid;
-                    this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !this.inError));
-                }
-            );
-        }
-        this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !this.inError));
-    }
-
-
 }

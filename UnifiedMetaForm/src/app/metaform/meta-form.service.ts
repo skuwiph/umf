@@ -155,10 +155,6 @@ export class MetaFormService {
     getPreviousQuestionToDisplay(form: MetaForm, ruleService: BusinessRuleService, lastItem: number): DisplayQuestion {
         let dq: DisplayQuestion;
 
-        // the last question displayed was 'lastQuestion'. since we are going
-        // backwards from there, decrement to find the first available question
-        // and check whether it can be displayed
-
         if (!form.questions || form.questions.length === 0) {
             throwError(`The form ${form.name} does not have any questions`);
         }
@@ -177,7 +173,6 @@ export class MetaFormService {
     }
 
     getSingleQuestion(form: MetaForm, ruleService: BusinessRuleService, lastQuestion: number, direction: number = 1): DisplayQuestion {
-        // Get the next question; simples
         const dq = new DisplayQuestion();
 
         let found = false;
@@ -188,24 +183,18 @@ export class MetaFormService {
         while (!found && (direction > 0 && currentQuestion < form.questions.length || direction < 0 && currentQuestion > -1)) {
             question = form.questions[currentQuestion];
             if (this.isValidForDisplay(form.answers, question, ruleService)) {
-                // console.log(`Question matches`);
                 dq.questions.push(question);
                 controlCount += question.controls.length;
                 found = true;
             } else {
-                // console.log(`Question does not match, stepping ${direction}`);
                 currentQuestion += direction;
             }
         }
 
-        // TODO(Ian): Okay, we have to actually continue in the same
-        // direction in case we find that the question we found was the last (or first)
-        // available
+        // We have to continue in the same  direction in case the question 
+        // we found was the last (or first)  available
         const atStart = (this.findBoundary(form, ruleService, currentQuestion, -1) < 0);
-        console.log(`Are we at the start of the possible questions? ${atStart}`);
-
         const atEnd = (this.findBoundary(form, ruleService, currentQuestion, +1) >= form.questions.length);
-        console.log(`Are we at the end of the possible questions? ${atEnd}`);
 
         dq.atEnd = atEnd;
         dq.atStart = atStart;
