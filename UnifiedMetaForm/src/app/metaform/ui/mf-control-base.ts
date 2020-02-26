@@ -18,16 +18,20 @@ export abstract class MetaFormControlBase {
     }
 
     protected checkControlStatus(updateStatus = true) {
-        this.inError = !this.control.isValid(this.form, updateStatus);
-        if (!this.inError) {
+        let error = !this.control.isValid(this.form, updateStatus);
+        if (!error) {
             this.control.isValidAsync(this.form).subscribe(
                 (valid: boolean) => {
                     // console.log(`async validator finished: ${valid}`);
-                    this.inError = !valid;
-                    this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !this.inError));
+                    error = !valid;
+                    this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !error));
                 }
             );
         }
-        this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !this.inError));
+        this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !error));
+
+        if (updateStatus) {
+            this.inError = error;
+        }
     }
 }

@@ -69,7 +69,7 @@ export class AppComponent implements OnInit {
     }
 
     loadFluentForm() {
-        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.EntireForm);
+        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.SingleSection);
         this.form
             .addSection('First')
             .addSection('Second')

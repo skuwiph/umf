@@ -140,10 +140,12 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
                     this.optionLoadComplete.emit(new MFOptionsChanged(this.name, this.options.length));
 
                     this.loaded = true;
-                    if (this.hasOptions && value && value.length > 0) {
-                        this.selectItem(value, false);
+                    if (this.hasOptions) {
+                        console.log(`${this.name}: options returned`);
+                        this.selectItem(value ?? '', false);
                     } else {
                         // If there are no options, clear this data item
+                        console.log(`${this.name}: no options returned`);
                         this.selectItem('', false);
                     }
                 });
@@ -199,6 +201,7 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
         } else {
             this.form.setValue(this.control.name, '');
         }
+
         this.checkControlStatus(updateStatus);
     }
 
