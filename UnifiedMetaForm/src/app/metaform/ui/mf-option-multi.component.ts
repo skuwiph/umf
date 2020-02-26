@@ -124,8 +124,12 @@ export class MetaFormOptionMultiComponent extends MetaFormControlBase implements
         // Concat all selected items
         for (const [key, value] of this.selectedItems) {
             if (this.selectedItems.get(key)) {
-                selection += `${this.selectedItems.get(key)},`;
+                selection += `${key},`;
             }
+        }
+
+        if (selection.length > 1) {
+            selection = selection.slice(0, -1);
         }
 
         this.form.setValue(this.control.name, selection);

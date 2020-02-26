@@ -76,7 +76,8 @@ export class AppComponent implements OnInit {
             .addSection('Third')
             .addSection('Fourth')
             .addSection('Fifth')
-            .addSection('Sixth');
+            .addSection('Sixth')
+            .addSection('Seventh');
 
         this.form
             .addQuestion('name', 'Please enter your name', 'Please enter exactly as they appear in your passport.')
@@ -169,11 +170,13 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('timeStart', 'Please enter a start time')
+            .setSection(5)
             .addTimeControl('startTime', 15, 8, 18)
             .addValidator(MFValidator.Time('Please enter a valid time'));
 
         this.form
             .addQuestion('timeEnd', 'Please enter an end time')
+            .setSection(5)
             .addTimeControl('endTime', 15, 8, 18)
             .addValidator(MFValidator.Time('Please enter a valid time'))
             .addValidator(MFValidator.AnswerAfterTime('[startTime]', 'End time must be after Start time'));
@@ -199,7 +202,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('option2', 'Please select all applicable options')
-            .setSection(5)
+            .setSection(6)
             .addOptionControl('option2', MetaFormOptionType.MultiSelect, o2)
             .addValidator(MFValidator.Required('Please select an option'));
 
@@ -207,7 +210,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('country', 'Please select a country from URL')
-            .setSection(6)
+            .setSection(7)
             .addOptionControl('countryCode', MetaFormOptionType.SingleSelect, o3)
             .addValidator(MFValidator.Required('Please select an option'));
 
@@ -215,7 +218,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('region', 'Please select a region from URL')
-            .setSection(6)
+            .setSection(7)
             .addOptionControl('region', MetaFormOptionType.SingleSelect, o4)
             .addValidator(MFValidator.Required('Please select a region'));
     }
