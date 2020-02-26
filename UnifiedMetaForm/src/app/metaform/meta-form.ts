@@ -107,7 +107,7 @@ export class MetaForm {
         return true;
     }
 
-    addSection(title: string): MetaForm {
+    addSection(title: string, ruleToMatch?: string): MetaForm {
         if (!this.sections) {
             this.sections = [];
         }
@@ -115,6 +115,7 @@ export class MetaForm {
         const s = new MFSection();
         s.id = this.sections.length + 1;
         s.title = title;
+        s.ruleToMatch = ruleToMatch;
 
         this.sections.push(s);
 
@@ -442,6 +443,7 @@ export class MFQuestion {
 export class MFSection {
     id: number;
     title: string;
+    ruleToMatch?: string;
 }
 
 export class MFControl {
