@@ -235,7 +235,6 @@ export class MetaForm {
 
         if (oldValue !== value) {
             this.answers.setValue(name, value);
-            console.log(`Emitting value ${name}, '${value}'`);
             this.change.emit(new MFValueChange(name, value));
 
             // Check for referencing values
@@ -244,7 +243,6 @@ export class MetaForm {
                 for (const referencedBy of c.isReferencedBy) {
                     if (referencedBy) {
                         const r = this.getControlByName(referencedBy);
-                        // console.log(`Updating ${r.name}`);
                         r.isValid(this, true);
 
                         this.change.emit(new MFValueChange(r.name, this.getValue(r.name)));
@@ -517,7 +515,7 @@ export class MFControl {
         }
 
         if (updateStatus) {
-            console.log(`Setting error status on control ${this.name}`);
+            // console.log(`Setting error status on control ${this.name}`);
             this.inError = !valid;
         }
 
