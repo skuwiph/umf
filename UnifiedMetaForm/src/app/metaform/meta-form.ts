@@ -210,12 +210,10 @@ export class MetaForm {
 
                 // Check february
                 if (!isLeap && month === 1 && day > 28) {
-                    // console.log(`Month is February, and day is ${day} not correct for not leap year ${year}`);
                     return null;
                 }
 
                 if (isLeap && month === 1 && day > 29) {
-                    // console.log(`Month is February, and day is ${day} not correct for leap year ${year}`);
                     return null;
                 }
 
