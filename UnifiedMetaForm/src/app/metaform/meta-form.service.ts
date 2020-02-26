@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { throwError, Observable, Subject } from 'rxjs';
 import { BusinessRuleService } from './business-rule.service';
-import { MetaForm, MFQuestion, MFControl, MFValidator, MFValidatorAsync, MetaFormAnswers } from './meta-form';
+import { MetaForm, MFQuestion, MFControl, MFValidator, MFValidatorAsync, MetaFormAnswers, MFSection } from './meta-form';
 import { MetaFormDrawType, MetaFormControlType } from './meta-form-enums';
 import { IMetaFormV1 } from './serialisation/v1.interfaces';
 
@@ -45,7 +45,7 @@ export class MetaFormService {
         return this.getDisplayQuestions(form, ruleService, lastItem, -1);
     }
 
-    getSingleQuestion(form: MetaForm, ruleService: BusinessRuleService, lastQuestion: number, direction: number = 1): DisplayQuestion {
+    private getSingleQuestion(form: MetaForm, ruleService: BusinessRuleService, lastQuestion: number, direction = 1): DisplayQuestion {
         const dq = new DisplayQuestion();
 
         let found = false;
@@ -55,7 +55,7 @@ export class MetaFormService {
 
         while (!found && (direction > 0 && currentQuestion < form.questions.length || direction < 0 && currentQuestion > -1)) {
             question = form.questions[currentQuestion];
-            if (this.isValidForDisplay(form.answers, question, ruleService)) {
+            if (this.isQuestionValidForDisplay(form.answers, question, ruleService)) {
                 dq.questions.push(question);
                 controlCount += question.controls.length;
                 found = true;
@@ -64,10 +64,10 @@ export class MetaFormService {
             }
         }
 
-        // We have to continue in the same  direction in case the question
-        // we found was the last (or first)  available
-        const atStart = (this.findBoundary(form, ruleService, currentQuestion, -1) < 0);
-        const atEnd = (this.findBoundary(form, ruleService, currentQuestion, +1) >= form.questions.length);
+        // We have to continue in the same direction in case the question
+        // we found was the last (or first) available
+        const atStart = (this.findQuestionBoundary(form, ruleService, currentQuestion, -1) < 0);
+        const atEnd = (this.findQuestionBoundary(form, ruleService, currentQuestion, +1) >= form.questions.length);
 
         dq.atEnd = atEnd;
         dq.atStart = atStart;
@@ -78,7 +78,37 @@ export class MetaFormService {
         return dq;
     }
 
-    findBoundary(form: MetaForm, ruleService: BusinessRuleService, startQuestion: number, direction: number): number {
+    private getQuestionsInSection(form: MetaForm, ruleService: BusinessRuleService, lastSection: number, direction = 1): DisplayQuestion {
+        let activeSection: MFSection;
+        let checkSection = 0;
+        let found = false;
+
+        console.log(`lastSection: ${lastSection}, checking ${lastSection + direction}`);
+
+        checkSection = lastSection + direction;
+        while (!found && (direction > 0 && checkSection < form.sections.length || direction < 0 && checkSection > -1)) {
+            const currentSection = form.sections[checkSection];
+            console.log(`Check ${currentSection.title}`);
+            if (this.isSectionValidForDisplay(form.answers, currentSection, ruleService)) {
+                activeSection = currentSection;
+                found = true;
+            } else {
+                checkSection += direction;
+            }
+        }
+
+        const atStart = (this.findSectionBoundary(form, ruleService, checkSection, -1) < 0);
+        const atEnd = (this.findSectionBoundary(form, ruleService, checkSection, 1) >= form.sections.length);
+
+        const dq = this.getQuestionsForSection(form, activeSection);
+
+        dq.lastItem = checkSection;
+        dq.atStart = atStart;
+        dq.atEnd = atEnd;
+        return dq;
+    }
+
+    private findQuestionBoundary(form: MetaForm, ruleService: BusinessRuleService, startQuestion: number, direction: number): number {
         let boundary = direction < 0 ? -1 : form.questions.length;
         let found = false;
         let outOfBounds = false;
@@ -92,7 +122,7 @@ export class MetaFormService {
         // Or do we got out of bounds in the 'direction' of travel?
         do {
             const question = form.questions[current];
-            if (this.isValidForDisplay(form.answers, question, ruleService)) {
+            if (this.isQuestionValidForDisplay(form.answers, question, ruleService)) {
                 found = true;
                 break;
             } else {
@@ -106,41 +136,61 @@ export class MetaFormService {
         return boundary;
     }
 
-    isValidForDisplay(answers: MetaFormAnswers, question: MFQuestion, ruleService: BusinessRuleService): boolean {
+    private findSectionBoundary(form: MetaForm, ruleService: BusinessRuleService, startSection: number, direction: number): number {
+        let boundary = direction < 0 ? -1 : form.sections.length;
+        let found = false;
+        let outOfBounds = false;
+        let current = startSection + direction;
+
+        if (current < 0 || current >= form.sections.length) {
+            return boundary;
+        }
+
+        // From 'startSection' backwards or forwards, is there a valid section?
+        // Or do we got out of bounds in the 'direction' of travel?
+        do {
+            const section = form.sections[current];
+            if (this.isSectionValidForDisplay(form.answers, section, ruleService)) {
+                found = true;
+                break;
+            } else {
+                current += direction;
+                outOfBounds = (current < 0);
+            }
+        } while (!found && !outOfBounds);
+
+        boundary = current;
+
+        return boundary;
+    }
+
+    private isQuestionValidForDisplay(answers: MetaFormAnswers, question: MFQuestion, ruleService: BusinessRuleService): boolean {
         return (!question.ruleToMatch || ruleService.evaluateRule(question.ruleToMatch, answers));
     }
 
-    getQuestionsInSection(form: MetaForm, lastSection: number, direction: number = 1): DisplayQuestion {
+    private isSectionValidForDisplay(answers: MetaFormAnswers, section: MFSection, ruleService: BusinessRuleService): boolean {
+        return (!section.ruleToMatch || ruleService.evaluateRule(section.ruleToMatch, answers));
+    }
+
+    private getQuestionsForSection(form: MetaForm, section: MFSection): DisplayQuestion {
         const dq = new DisplayQuestion();
-
-        let checkSection = 0;
-        if (lastSection <= 0) {
-            lastSection = 0;
-        }
-
-        checkSection = lastSection + direction;
         let controlCount = 0;
 
-        for (const s of form.sections) {
-            if (s.id === checkSection) {
-                const questionsInSection = form.questions?.filter(q => q.sectionId === checkSection);
-                dq.questions = questionsInSection.slice();
+        if (section) {
+            const questionsInSection = form.questions?.filter(q => q.sectionId === section.id);
+            dq.questions = questionsInSection.slice();
 
-                for (const q of dq.questions) {
-                    controlCount += q.controls.length;
-                }
-                break;
+            for (const q of dq.questions) {
+                controlCount += q.controls.length;
             }
         }
 
-        dq.lastItem = checkSection;
         dq.numberOfControls = controlCount;
-        dq.atStart = checkSection === 1;
-        dq.atEnd = checkSection === form.sections.length;
+
         return dq;
     }
 
-    getQuestionsInForm(form: MetaForm): DisplayQuestion {
+    private getQuestionsInForm(form: MetaForm): DisplayQuestion {
         const dq = new DisplayQuestion();
 
         let controlCount = 0;
@@ -179,7 +229,7 @@ export class MetaFormService {
         if (form.drawType === MetaFormDrawType.SingleQuestion) {
             dq = this.getSingleQuestion(form, ruleService, lastItem, direction);
         } else if (form.drawType === MetaFormDrawType.SingleSection) {
-            dq = this.getQuestionsInSection(form, lastItem, direction);
+            dq = this.getQuestionsInSection(form, ruleService, lastItem, direction);
         } else if (form.drawType === MetaFormDrawType.EntireForm) {
             dq = this.getQuestionsInForm(form);
         }

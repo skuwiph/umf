@@ -13,7 +13,6 @@ export abstract class MetaFormControlBase {
     constructor() { }
 
     onFocusLost() {
-        // console.log(`Focus lost: ${this.control.name}`);
         this.checkControlStatus();
     }
 
@@ -25,9 +24,16 @@ export abstract class MetaFormControlBase {
                     // console.log(`async validator finished: ${valid}`);
                     error = !valid;
                     this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !error));
+
+                    if (updateStatus) {
+                        this.inError = error;
+                    }
+
+                    return;
                 }
             );
         }
+
         this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !error));
 
         if (updateStatus) {
