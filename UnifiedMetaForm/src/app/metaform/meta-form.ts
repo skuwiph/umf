@@ -75,18 +75,37 @@ export class MetaForm {
                     for (const name of c.dependencies) {
                         this.addReference(c.name, name);
                     }
-
-                    q.canBeDisplayed = () => {
-                        for (const dep of c.dependencies) {
-                            if (!this.getValue(dep)) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    };
                 }
+
+                this.determineQuestionDisplay(q, c.dependencies);
             }
         }
+    }
+
+    determineQuestionDisplay(question: MFQuestion, dependencies: string[]): void {
+        question.canBeDisplayed = () => {
+            for (const c of question.controls) {
+                if (dependencies) {
+                    for (const dep of c.dependencies) {
+                        if (!this.getValue(dep)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        };
+    }
+
+    hasOptions(question: MFQuestion): boolean {
+        for (const c of question.controls) {
+            if (c.controlType === MetaFormControlType.Option) {
+                const opt = c as MFOptionControl;
+                return opt.hasAvailableOptions;
+            }
+        }
+        return true;
     }
 
     addSection(title: string): MetaForm {
@@ -226,6 +245,7 @@ export class MetaForm {
                 for (const referencedBy of c.isReferencedBy) {
                     if (referencedBy) {
                         const r = this.getControlByName(referencedBy);
+                        // console.log(`Updating ${r.name}`);
                         r.isValid(this, true);
 
                         this.change.emit(new MFValueChange(r.name, this.getValue(r.name)));
@@ -292,6 +312,8 @@ export class MFQuestion {
     animation?: MFAnimation[];
     controls: MFControl[] = [];
     controlLayout: ControlLayoutStyle = ControlLayoutStyle.Horizontal;
+
+    available = true;
 
     canBeDisplayed = () => true;
 
@@ -545,17 +567,16 @@ export class MFTextControl extends MFControl {
 
 export class MFOptionControl extends MFControl {
     optionType: MetaFormOptionType;
-    // expandOptions = true;
-    // nullItem?: string;
-    // options?: MFOptionValue[];
-    // optionSource?: string;
-
     options?: MFOptions;
 
     optionLayout = ControlLayoutStyle.Vertical;
 
     get hasOptionList(): boolean {
         return this.options?.list !== null;
+    }
+
+    get hasAvailableOptions(): boolean {
+        return (this.options?.list && this.options.list.length > 0);
     }
 
     get hasUrl(): boolean {
@@ -576,7 +597,7 @@ export class MFOptionControl extends MFControl {
             console.error(`Was asked for an invalid url!`);
             return null;
         }
-        // console.log(`Got url ${baseUrl}`);
+
         if (baseUrl.indexOf('[') === -1) {
             return baseUrl;
         } else {
@@ -605,8 +626,6 @@ export class MFOptionControl extends MFControl {
             if (url.endsWith('/')) {
                 url = url.substr(0, url.length - 1);
             }
-
-            // console.log(`Url: ${url}`);
 
             return url;
         }
@@ -900,6 +919,16 @@ export class MFValueRequired extends MFValidator {
             valid = true;
         }
 
+        // Interesting edge case - if this is an option-based
+        // control, but we have no options, we assume that the question
+        // cannot be displayed and should pass this validator
+        if (control.controlType === MetaFormControlType.Option) {
+            const opt = control as MFOptionControl;
+            if (!opt.hasAvailableOptions) {
+                valid = true;
+            }
+        }
+
         return valid;
     }
 }
@@ -1119,6 +1148,15 @@ export class MFValueChange {
     }
 }
 
+export class MFOptionsChanged {
+    name: string;
+    countOfOptions: number;
+    constructor(name: string, count: number) {
+        this.name = name;
+        this.countOfOptions = count;
+    }
+}
+
 export class MFControlValidityChange {
     name: string;
     valid: boolean;
@@ -1132,7 +1170,7 @@ export class MFAsyncValidationResponse {
     valid: boolean;
 }
 
-export function metaFormJsonReplacer(key: string, value: any) {
+function metaFormJsonReplacer(key: string, value: any) {
     switch (key) {
         case 'answers':
         case 'change':

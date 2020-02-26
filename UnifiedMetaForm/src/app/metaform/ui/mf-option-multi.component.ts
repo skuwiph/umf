@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { filter } from 'rxjs/operators';
 
 import { MetaFormService } from '../meta-form.service';
 import { MetaFormControlBase } from './mf-control-base';
-import { MFControlValidityChange, MFOptionControl, MFOptionValue, MFValueChange } from '../meta-form';
+import { MFControlValidityChange, MFOptionControl, MFOptionValue, MFValueChange, MFOptionsChanged } from '../meta-form';
 import { ControlLayoutStyle } from '../meta-form-enums';
 
 @Component({
@@ -13,6 +14,8 @@ import { ControlLayoutStyle } from '../meta-form-enums';
     styleUrls: ['./mf-option.component.css']
 })
 export class MetaFormOptionMultiComponent extends MetaFormControlBase implements OnInit {
+
+    @Output() optionLoadComplete: EventEmitter<MFOptionsChanged> = new EventEmitter<MFOptionsChanged>();
 
     formControl: FormControl;
     optionType: string;
@@ -68,13 +71,28 @@ export class MetaFormOptionMultiComponent extends MetaFormControlBase implements
             this.mfService.loadOptionsFromUrl(this.form, url)
                 .subscribe((data: MFOptionValue[]) => {
                     const nv: MFOptionValue[] = [];
-                    if (optionControl.options.nullItem) {
-                        nv.push(new MFOptionValue('', optionControl.options.nullItem));
+                    if (data.length > 0) {
+                        if (optionControl.options.nullItem) {
+                            nv.push(new MFOptionValue('', optionControl.options.nullItem));
+                        }
+                        this.options = nv.concat(data).slice();
+                    } else {
+                        this.options = [];
                     }
 
-                    this.options = nv.concat(data);
+                    optionControl.options.list = this.options.slice();
+
+                    this.optionLoadComplete.emit(new MFOptionsChanged(this.name, this.options.length));
+
+                    this.loaded = true;
                     this.extractSelectedOptions();
                 });
+        } else {
+            this.options = [];
+            optionControl.options.list = [];
+
+            this.optionLoadComplete.emit(new MFOptionsChanged(this.name, 0));
+            this.loaded = true;
         }
     }
 

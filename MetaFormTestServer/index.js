@@ -54,7 +54,6 @@ app.get("/country/:countryCode/regions", cors(), (req, res, next) => {
         ]);
     } else {
         res.json([
-            { 'code': '99', 'description': 'Default Region' }
         ]);
     }
 });

@@ -1,17 +1,16 @@
 
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { MetaForm, MFQuestion, MFValueChange, MFValueRequired, MFControlValidityChange, MFControl } from '../meta-form';
-import { MetaFormService, DisplayQuestion } from '../meta-form.service';
-import { BusinessRule } from '../business-rule';
+import { Component, OnInit, Input } from '@angular/core';
 import { BusinessRuleService } from '../business-rule.service';
+import { MetaFormService, DisplayQuestion } from '../meta-form.service';
 import { MetaFormDrawType } from '../meta-form-enums';
+import { MetaForm, MFQuestion, MFControlValidityChange, MFControl, MFOptionsChanged } from '../meta-form';
 
 @Component({
     selector: 'app-metaform-display',
     templateUrl: './metaform-display.component.html',
     styleUrls: ['./metaform-display.component.css']
 })
-export class MetaFormDisplayComponent implements OnInit, OnDestroy {
+export class MetaFormDisplayComponent implements OnInit {
 
     constructor(private formService: MetaFormService, private ruleService: BusinessRuleService) { }
 
@@ -27,6 +26,8 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
 
     nextButtonText = 'Next';
 
+    questionAvailable: Map<string, boolean> = new Map<string, boolean>();
+
     ngOnInit(): void {
         if (!this.form) {
             this.form = MetaForm.create('empty');
@@ -34,49 +35,43 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
 
         this.form.initialise();
         this.getNextQuestions();
-
-        // console.log(`Form: ${this.form.toJson()}`);
-
-        // this.form.change.subscribe((chg: MFValueChange) => {
-        //     console.log(`Changed: ${chg.name}`);
-        // });
-
-    }
-
-    ngOnDestroy(): void {
-        // NOTE(Ian): Check whether this should be unsubscribed here
-        if (this.form) {
-            // console.log(`onDestroy`);
-            // this.form.change?.unsubscribe();
-        }
     }
 
     previousPage() {
-        // console.log(`Clicked previous page`);
         this.getPreviousQuestions();
     }
 
     nextPage() {
-        // console.log(`Clicked next page`);
-        this.getNextQuestions();
-        // console.log(`Back from getQuestionstoDisplay`);
+        if (this.atEndOfForm) {
+            console.log(`Submitting data: ${JSON.stringify(this.form.answers, null, 2)}`);
+        } else {
+            this.getNextQuestions();
+        }
+    }
+
+    displayIf(q: MFQuestion): boolean {
+        const display = q.canBeDisplayed();
+        const rule = this.ruleMatches(q);
+        const avail = q.available;
+
+        // console.log(`${q.name}: ${display}, ${rule}, ${avail}`);
+
+        return display && rule && avail;
+
+        // //return q.canBeDisplayed() && this.ruleMatches(q) && q.available;
     }
 
     ruleMatches(question: MFQuestion): boolean {
         // Don't bother asking for a single-question form
-
         if (this.form.drawType === MetaFormDrawType.SingleQuestion || !question.ruleToMatch) {
             return true;
         }
 
         if (this.ruleService) {
             const rule = this.ruleService.getRule(question.ruleToMatch);
-            if (!rule) {
-                console.log(`I didn't find the rule ${question.ruleToMatch}`);
-            } else {
-                console.log(`Got rule ${rule.name}`);
+            if (rule) {
+                return rule.evaluate(this.form.answers);
             }
-            return rule.evaluate(this.form.answers);
         }
 
         return false;
@@ -85,6 +80,13 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
     onControlValidityChange(event: MFControlValidityChange): void {
         this.display.controlStatus.set(event.name, event.valid);
         this.checkPageStatus();
+    }
+
+    optionLoadComplete(q: MFQuestion, c: MFControl, change: MFOptionsChanged) {
+        // console.log(`Load of options for ${change.name} complete with ${change.countOfOptions} options returned`);
+        q.available = this.form.hasOptions(q);
+        // console.log(`${change.name} available: ${q.available}`);
+        //this.questionAvailable.set(q.name, change.countOfOptions > 0);
     }
 
     private getNextQuestions() {
@@ -110,6 +112,12 @@ export class MetaFormDisplayComponent implements OnInit, OnDestroy {
         } else {
             this.nextButtonText = 'Next ᐅ';
         }
+
+        this.questionAvailable.clear();
+        for (const q of this.display.questions) {
+            this.questionAvailable.set(q.name, true);
+        }
+
         this.checkPageStatus();
     }
 

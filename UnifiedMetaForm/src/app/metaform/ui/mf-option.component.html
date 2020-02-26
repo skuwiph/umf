@@ -1,4 +1,4 @@
-<div *ngIf="loaded">
+<div *ngIf="loaded && hasOptions">
     <ng-container [ngSwitch]="optionType">
         <ng-container *ngSwitchCase="'single'">
             <ng-container *ngIf="expandOptions; else dropdown">
@@ -13,7 +13,9 @@
             </ng-template>
         </ng-container>
         <ng-container *ngSwitchCase="'multi'">
-            <app-mf-option-multi [form]="form" [control]="control" (changeValidity)="onControlValidityChange($event)"></app-mf-option-multi>
+            <app-mf-option-multi [form]="form" [control]="control" 
+            (changeValidity)="onControlValidityChange($event)"
+            (optionLoadComplete)="multiOptionLoadComplete($event)"></app-mf-option-multi>
         </ng-container>
     </ng-container>
 </div>

@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { filter } from 'rxjs/operators';
 
 import { MetaFormService } from '../meta-form.service';
 import { MetaFormControlBase } from './mf-control-base';
-import { MFControlValidityChange, MFOptionControl, MFOptionValue, MFValueChange } from '../meta-form';
+import { MFControlValidityChange, MFOptionControl, MFOptionValue, MFValueChange, MFOptionsChanged } from '../meta-form';
 import { MetaFormOptionType, ControlLayoutStyle } from '../meta-form-enums';
 
 @Component({
@@ -14,6 +15,8 @@ import { MetaFormOptionType, ControlLayoutStyle } from '../meta-form-enums';
 })
 export class MetaFormOptionComponent extends MetaFormControlBase implements OnInit {
 
+    @Output() optionLoadComplete: EventEmitter<MFOptionsChanged> = new EventEmitter<MFOptionsChanged>();
+
     formControl: FormControl;
     optionType: string;
 
@@ -22,11 +25,11 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
 
     isHorizontal = false;
     isVertical = true;
-
+    hasOptions = false;
     options: MFOptionValue[];
     selectedItem: string;
 
-    constructor(private mfService: MetaFormService) { super(); }
+    constructor(private formService: MetaFormService) { super(); }
 
     ngOnInit(): void {
         this.formControl = new FormControl('');
@@ -56,6 +59,10 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
             if (optionControl.hasOptionList) {
                 this.options = optionControl.optionList;
                 this.loaded = true;
+
+                this.hasOptions = this.options.length > 0;
+                this.optionLoadComplete.emit(new MFOptionsChanged(this.name, this.options.length));
+
             } else if (optionControl.hasUrl) {
                 this.loadOptions(optionControl);
             }
@@ -72,11 +79,13 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
     checkControlDependencies(): void {
         if (this.control.dependencies) {
             for (const dep of this.control.dependencies) {
+                // console.log(`${this.control.name} Checking for changes on ${dep}`);
                 this.form.change
                     .pipe(
                         filter((c: MFValueChange) => c.name === dep)
                     )
                     .subscribe((chg: MFValueChange) => {
+                        // console.log(`Value change on ${chg.name} to ${chg.value}`);
                         this.loadOptions(this.control as MFOptionControl);
                     });
             }
@@ -84,23 +93,43 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
     }
 
     loadOptions(optionControl: MFOptionControl): void {
-
+        // console.log(`load options`);
         const url = optionControl.urlForService(this.form, this.control);
         if (url) {
-            this.mfService.loadOptionsFromUrl(this.form, url)
+            this.formService.loadOptionsFromUrl(this.form, url)
                 .subscribe((data: MFOptionValue[]) => {
                     const value = this.form.getValue(this.name);
                     const nv: MFOptionValue[] = [];
 
-                    if (optionControl.options.nullItem) {
-                        nv.push(new MFOptionValue('', optionControl.options.nullItem));
+                    if (data.length > 0) {
+                        if (optionControl.options.nullItem) {
+                            nv.push(new MFOptionValue('', optionControl.options.nullItem));
+                        }
+                        this.options = nv.concat(data).slice();
+                    } else {
+                        this.options = [];
                     }
-                    this.options = nv.concat(data);
+
+                    optionControl.options.list = this.options.slice();
+
+                    this.hasOptions = this.options.length > 0;
+                    this.optionLoadComplete.emit(new MFOptionsChanged(this.name, this.options.length));
+
                     this.loaded = true;
-                    if (value && value.length > 0) {
+                    if (this.hasOptions && value && value.length > 0) {
                         this.selectItem(value);
+                    } else {
+                        // If there are no options, clear this data item
+                        this.form.setValue(this.name, '');
                     }
                 });
+        } else {
+            this.options = [];
+            optionControl.options.list = [];
+
+            this.hasOptions = false;
+            this.optionLoadComplete.emit(new MFOptionsChanged(this.name, 0));
+            this.loaded = true;
         }
     }
 
@@ -150,4 +179,10 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
     onControlValidityChange(event: MFControlValidityChange): void {
         this.checkControlStatus();
     }
+
+    // Pass on the event from the multi-choice option
+    multiOptionLoadComplete(change: MFOptionsChanged) {
+        this.optionLoadComplete.emit(change);
+    }
+
 }

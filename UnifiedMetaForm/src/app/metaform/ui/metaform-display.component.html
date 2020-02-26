@@ -2,7 +2,7 @@
 <div class="mf-form" [ngClass]="{'mf-single-question': form.drawType === 0}">
     <ng-container *ngIf="display?.questions">
         <ng-container *ngFor="let q of display.questions">
-            <div class="mf-question" *ngIf="q.canBeDisplayed() && ruleMatches(q)">
+            <div class="mf-question" [hidden]="!displayIf(q)">
                 <div class="mf-caption"><label class="caption">{{q.caption}}</label></div>
                 <div class="mf-controls"
                     [ngClass]="{'layout-horiz': q.controlLayout === 0, 'layout-vert': q.controlLayout === 1}">
@@ -17,7 +17,8 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="2">
                                 <app-mf-option [form]="form" [control]="c"
-                                    (changeValidity)="onControlValidityChange($event)"></app-mf-option>
+                                    (changeValidity)="onControlValidityChange($event)"
+                                    (optionLoadComplete)="optionLoadComplete(q, c, $event)"></app-mf-option>
                             </ng-container>
                             <ng-container *ngSwitchCase="3">
                                 <app-mf-date [form]="form" [control]="c"
