@@ -136,6 +136,9 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
 
     private setFocusOnFirstControl(): void {
         setTimeout(() => {
+            // We're not manipulating the DOM, so I'm not too
+            // bothered about this. However, willing to be proved
+            // wrong and to have a more 'angular' way of doing this!
             const firstControl = this.el.nativeElement.querySelectorAll('.mfc');
             if (firstControl && firstControl.length > 0) {
                 firstControl[0].focus();
