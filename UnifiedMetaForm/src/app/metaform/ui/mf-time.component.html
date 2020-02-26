@@ -1,6 +1,6 @@
 <form [ngClass]="{ 'error': inError }" [formGroup]="formGroup">
     <div class="time">
-        <select class="hh" [ngClass]="{ 'error': inError }" formControlName="hh" class="mf-control-item" (blur)="onFocusLost()">
+        <select class="mfc hh" [ngClass]="{ 'error': inError }" formControlName="hh" class="mf-control-item" (blur)="onFocusLost()">
             <option *ngFor="let h of hourList; let i=index" value="{{h}}">{{h}}</option>
         </select>
         <span class="separator">:</span>

@@ -20,3 +20,7 @@ input, select, option {
     padding: 0.25rem;
     border-radius: 5px;
 }
+
+select.error {
+    border: 1px solid red;
+}

@@ -117,10 +117,10 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
 
                     this.loaded = true;
                     if (this.hasOptions && value && value.length > 0) {
-                        this.selectItem(value);
+                        this.selectItem(value, false);
                     } else {
                         // If there are no options, clear this data item
-                        this.form.setValue(this.name, '');
+                        this.selectItem('', false);
                     }
                 });
         } else {
@@ -130,6 +130,8 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
             this.hasOptions = false;
             this.optionLoadComplete.emit(new MFOptionsChanged(this.name, 0));
             this.loaded = true;
+
+            this.selectItem('', false);
         }
     }
 
@@ -155,7 +157,7 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
         this.selectItem('');
     }
 
-    selectItem(code: string): void {
+    selectItem(code: string, updateStatus = true): void {
         // console.log(`Selecting item ${code}`);
         let found = false;
         if (code.length > 0) {
@@ -173,7 +175,7 @@ export class MetaFormOptionComponent extends MetaFormControlBase implements OnIn
         } else {
             this.form.setValue(this.control.name, '');
         }
-        this.checkControlStatus();
+        this.checkControlStatus(updateStatus);
     }
 
     onControlValidityChange(event: MFControlValidityChange): void {

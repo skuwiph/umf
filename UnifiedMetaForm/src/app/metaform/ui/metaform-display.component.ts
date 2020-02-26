@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, AfterViewInit } from '@angular/core';
 import { BusinessRuleService } from '../business-rule.service';
 import { MetaFormService, DisplayQuestion } from '../meta-form.service';
 import { MetaFormDrawType } from '../meta-form-enums';
@@ -10,9 +10,12 @@ import { MetaForm, MFQuestion, MFControlValidityChange, MFControl, MFOptionsChan
     templateUrl: './metaform-display.component.html',
     styleUrls: ['./metaform-display.component.css']
 })
-export class MetaFormDisplayComponent implements OnInit {
+export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
 
-    constructor(private formService: MetaFormService, private ruleService: BusinessRuleService) { }
+    constructor(
+        private el: ElementRef,
+        private formService: MetaFormService,
+        private ruleService: BusinessRuleService) { }
 
     @Input() form: MetaForm;
 
@@ -37,6 +40,10 @@ export class MetaFormDisplayComponent implements OnInit {
         this.getNextQuestions();
     }
 
+    ngAfterViewInit(): void {
+        this.setFocusOnFirstControl();
+    }
+
     previousPage() {
         this.getPreviousQuestions();
     }
@@ -50,15 +57,7 @@ export class MetaFormDisplayComponent implements OnInit {
     }
 
     displayIf(q: MFQuestion): boolean {
-        const display = q.canBeDisplayed();
-        const rule = this.ruleMatches(q);
-        const avail = q.available;
-
-        // console.log(`${q.name}: ${display}, ${rule}, ${avail}`);
-
-        return display && rule && avail;
-
-        // //return q.canBeDisplayed() && this.ruleMatches(q) && q.available;
+        return q.canBeDisplayed() && this.ruleMatches(q) && q.available;
     }
 
     ruleMatches(question: MFQuestion): boolean {
@@ -83,10 +82,9 @@ export class MetaFormDisplayComponent implements OnInit {
     }
 
     optionLoadComplete(q: MFQuestion, c: MFControl, change: MFOptionsChanged) {
-        // console.log(`Load of options for ${change.name} complete with ${change.countOfOptions} options returned`);
+        console.log(`${c.name} has changed ${change.countOfOptions}`);
         q.available = this.form.hasOptions(q);
-        // console.log(`${change.name} available: ${q.available}`);
-        //this.questionAvailable.set(q.name, change.countOfOptions > 0);
+        this.checkPageStatus();
     }
 
     private getNextQuestions() {
@@ -119,6 +117,8 @@ export class MetaFormDisplayComponent implements OnInit {
         }
 
         this.checkPageStatus();
+
+        this.setFocusOnFirstControl();
     }
 
     private checkPageStatus() {
@@ -132,5 +132,14 @@ export class MetaFormDisplayComponent implements OnInit {
         }
 
         this.pageIsValid = (numberOfPasses === this.display.numberOfControls);
+    }
+
+    private setFocusOnFirstControl(): void {
+        setTimeout(() => {
+            const firstControl = this.el.nativeElement.querySelectorAll('.mfc');
+            if (firstControl && firstControl.length > 0) {
+                firstControl[0].focus();
+            }
+        }, 250);
     }
 }

@@ -17,8 +17,8 @@ export abstract class MetaFormControlBase {
         this.checkControlStatus();
     }
 
-    protected checkControlStatus() {
-        this.inError = !this.control.isValid(this.form);
+    protected checkControlStatus(updateStatus = true) {
+        this.inError = !this.control.isValid(this.form, updateStatus);
         if (!this.inError) {
             this.control.isValidAsync(this.form).subscribe(
                 (valid: boolean) => {

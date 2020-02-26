@@ -1,12 +1,12 @@
 <form [ngClass]="{ 'error': inError }" [formGroup]="formGroup">
 <ng-container [ngSwitch]="dateType">
     <div class="date" *ngSwitchCase="'full'">
-        <input class="dd" [ngClass]="{ 'error': inError }" formControlName="dd" size="2" class="mf-control-item" type="number" name="{{name}}_dd"  placeholder="DD" maxLength="2" (blur)="onFocusLost()">
+        <input class="dd" [ngClass]="{ 'error': inError }" formControlName="dd" size="2" class="mfc mf-control-item" type="number" name="{{name}}_dd"  placeholder="DD" maxLength="2" (blur)="onFocusLost()">
         <input class="mm" [ngClass]="{ 'error': inError }" formControlName="mm" size="2" class="mf-control-item" type="number" name="{{name}}_mm"  placeholder="MM" maxLength="2" (blur)="onFocusLost()">
         <input class="yy" [ngClass]="{ 'error': inError }" formControlName="yyyy" size="4" class="mf-control-item" type="number" name="{{name}}_yyyy"  placeholder="YYYY" maxLength="4" (blur)="onFocusLost()">
     </div>
     <div class="shortdate" *ngSwitchCase="'short'">
-        <select class="month" [ngClass]="{ 'error': inError }" formControlName="month" class="mf-control-item" (blur)="onFocusLost()">
+        <select class="month" [ngClass]="{ 'error': inError }" formControlName="month" class="mfc mf-control-item" (blur)="onFocusLost()">
             <option *ngFor="let m of monthList; let i=index" value="{{i}}">{{m}}</option>
         </select>
         <input class="yy" [ngClass]="{ 'error': inError }" formControlName="yyyy" size="4" class="mf-control-item" type="number" name="{{name}}_yyyy"  placeholder="YYYY" maxLength="4" (blur)="onFocusLost()">

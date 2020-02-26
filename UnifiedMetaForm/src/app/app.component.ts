@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MetaFormService } from './metaform/meta-form.service';
 import { MetaForm, MFValidator, MFOptionValue, MFOptions, MFValidatorAsync } from './metaform/meta-form';
-import { MetaFormControlType, MetaFormTextType, MetaFormDateType, MetaFormOptionType, MetaFormDrawType, ControlLayoutStyle } from './metaform/meta-form-enums';
+import { MetaFormControlType, MetaFormTextType, MetaFormDateType, MetaFormOptionType, MetaFormDrawType } from './metaform/meta-form-enums';
 import { HttpClient } from '@angular/common/http';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
 import { BusinessRuleService } from './metaform/business-rule.service';
@@ -69,12 +69,18 @@ export class AppComponent implements OnInit {
     }
 
     loadFluentForm() {
-        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.EntireForm);
+        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.SingleSection);
         this.form
-            .addSection('Default');
+            .addSection('First')
+            .addSection('Second')
+            .addSection('Third')
+            .addSection('Fourth')
+            .addSection('Fifth')
+            .addSection('Sixth');
 
         this.form
             .addQuestion('name', 'Please enter your name', 'Please enter exactly as they appear in your passport.')
+            .setSection(1)
             .addTextControl('firstName', MetaFormTextType.SingleLine, 50, 'First or given name')
             .addValidator(MFValidator.Required('This field is required'));
 
@@ -89,6 +95,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('email', 'Please enter your email address')
+            .setSection(2)
             .addTextControl('email', MetaFormTextType.Email, 255, 'email@example.com')
             .addValidator(MFValidator.Required('This field is required'))
             .addValidator(MFValidator.Email('Please enter a valid email address'))
@@ -98,6 +105,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('password', 'Please choose a password')
+            .setSection(2)
             .addTextControl('password', MetaFormTextType.Password, 255, 'Password')
             .addValidator(MFValidator.Required('This field is required'));
 
@@ -111,6 +119,7 @@ export class AppComponent implements OnInit {
             .addQuestion('addressHome',
                 'Please enter your contact address',
                 'This should be your correspondence address, or where you will be staying during your application period.')
+            .setSection(3)
             .addTextControl('address1', MetaFormTextType.SingleLine, 50, 'Address')
             .addValidator(MFValidator.Required('This field is required'));
 
@@ -142,6 +151,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('dates', 'Please enter some dates')
+            .setSection(4)
             .addDateControl('leavingDate', MetaFormDateType.Full, '2010-01-01', '2016-06-04')
             .addValidator(MFValidator.Date('Please enter a valid date'));
 
@@ -183,6 +193,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('option2', 'Please select all applicable options')
+            .setSection(5)
             .addOptionControl('option2', MetaFormOptionType.MultiSelect, o2)
             .addValidator(MFValidator.Required('Please select an option'));
 
@@ -190,6 +201,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('country', 'Please select a country from URL')
+            .setSection(6)
             .addOptionControl('countryCode', MetaFormOptionType.SingleSelect, o3)
             .addValidator(MFValidator.Required('Please select an option'));
 
@@ -197,6 +209,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('region', 'Please select a region from URL')
+            .setSection(6)
             .addOptionControl('region', MetaFormOptionType.SingleSelect, o4)
             .addValidator(MFValidator.Required('Please select a region'));
     }

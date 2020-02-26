@@ -118,7 +118,7 @@ export class MetaFormService {
             lastSection = 0;
         }
 
-        checkSection = lastSection + 1;
+        checkSection = lastSection + direction;
         let controlCount = 0;
 
         for (const s of form.sections) {
@@ -135,7 +135,8 @@ export class MetaFormService {
 
         dq.lastItem = checkSection;
         dq.numberOfControls = controlCount;
-
+        dq.atStart = checkSection === 1;
+        dq.atEnd = checkSection === form.sections.length;
         return dq;
     }
 

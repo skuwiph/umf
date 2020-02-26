@@ -3,11 +3,11 @@
         <ng-container *ngSwitchCase="'single'">
             <ng-container *ngIf="expandOptions; else dropdown">
                 <div class="mf-options" [ngClass]="{'opt-horiz': isHorizontal, 'opt-vert': isVertical, 'error': inError }">
-                    <button type="button" *ngFor="let o of options" class="mf-option-item" [ngClass]="{'opt-selected': isSelected(o.code)}" (click)="selectItem(o.code)">{{o.description}}</button>
+                    <button type="button" *ngFor="let o of options" class="mfc mf-option-item" [ngClass]="{'opt-selected': isSelected(o.code)}" (click)="selectItem(o.code)">{{o.description}}</button>
                 </div>
             </ng-container>
             <ng-template #dropdown>
-                <select class="mf-option-select" [ngClass]="{'error': inError }" (change)="onChange($event.target.value)">
+                <select class="mfc mf-option-select" [ngClass]="{'error': inError }" (change)="onChange($event.target.value)" (blur)="onFocusLost()">
                     <option *ngFor="let o of options" class="mf-option-select-item" [ngClass]="{'opt-selected': isSelected(o.code)}">{{o.description}}</option>
                 </select>
             </ng-template>
