@@ -1,5 +1,5 @@
 <h2>{{form.title}}</h2>
-<div class="mf-form" [ngClass]="{'mf-single-question': form.drawType === 0}">
+<form class="mf-form" [ngClass]="{'mf-single-question': form.drawType === 0}">
     <ng-container *ngIf="display?.questions">
         <ng-container *ngFor="let q of display.questions">
             <div class="mf-question" [hidden]="!displayIf(q)">
@@ -28,6 +28,10 @@
                                 <app-mf-time [form]="form" [control]="c"
                                     (changeValidity)="onControlValidityChange($event)"></app-mf-time>
                             </ng-container>
+                            <ng-container *ngSwitchCase="5">
+                                <app-mf-telephone [form]="form" [control]="c"
+                                    (changeValidity)="onControlValidityChange($event)"></app-mf-telephone>
+                            </ng-container>
                             <ng-container *ngSwitchDefault><b>No control implementation: {{c.controlType}}</b>
                             </ng-container>
                         </ng-container>
@@ -38,7 +42,7 @@
             </div>
         </ng-container>
     </ng-container>
-</div>
+</form>
 <div class="buttons">
     <button class="btn btn-next" [ngClass]="{'btn-error': !pageIsValid}" [disabled]="!pageIsValid" (click)="nextPage()">
         <ng-container *ngIf="pageIsValid">{{nextButtonText}}</ng-container>

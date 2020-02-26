@@ -82,7 +82,7 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     }
 
     optionLoadComplete(q: MFQuestion, c: MFControl, change: MFOptionsChanged) {
-        console.log(`${c.name} has changed ${change.countOfOptions}`);
+        // console.log(`${c.name} has changed ${change.countOfOptions}`);
         q.available = this.form.hasOptions(q);
         this.checkPageStatus();
     }

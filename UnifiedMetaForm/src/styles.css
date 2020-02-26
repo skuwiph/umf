@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap');
 
-*, input, select, select option {
+*, input, select, option, optgroup {
     font-family: 'Raleway', 'Sans-Serif' ;
 }
 
@@ -14,3 +14,4 @@ body {
     transition-property: opacity;
     transition-timing-function: ease-in;
 }
+

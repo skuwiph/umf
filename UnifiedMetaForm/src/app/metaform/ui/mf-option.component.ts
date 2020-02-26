@@ -10,8 +10,32 @@ import { MetaFormOptionType, ControlLayoutStyle } from '../meta-form-enums';
 
 @Component({
     selector: 'app-mf-option',
-    templateUrl: './mf-option.component.html',
-    styleUrls: ['./mf-option.component.css']
+    template: `
+<div *ngIf="loaded && hasOptions">
+    <ng-container [ngSwitch]="optionType">
+        <ng-container *ngSwitchCase="'single'">
+            <ng-container *ngIf="expandOptions; else dropdown">
+                <div class="mf-options" [ngClass]="{'opt-horiz': isHorizontal, 'opt-vert': isVertical, 'error': inError }">
+                    <button type="button" *ngFor="let o of options" class="mfc mf-option-item"
+                     [ngClass]="{'opt-selected': isSelected(o.code)}" (click)="selectItem(o.code)">{{o.description}}</button>
+                </div>
+            </ng-container>
+            <ng-template #dropdown>
+                <select class="mfc mf-option-select" [ngClass]="{'error': inError }" (change)="onChange($event.target.value)"
+                 (blur)="onFocusLost()">
+                    <option *ngFor="let o of options" class="mf-option-select-item"
+                    [ngClass]="{'opt-selected': isSelected(o.code)}">{{o.description}}</option>
+                </select>
+            </ng-template>
+        </ng-container>
+        <ng-container *ngSwitchCase="'multi'">
+            <app-mf-option-multi [form]="form" [control]="control"
+            (changeValidity)="onControlValidityChange($event)"
+            (optionLoadComplete)="multiOptionLoadComplete($event)"></app-mf-option-multi>
+        </ng-container>
+    </ng-container>
+</div>`,
+    styleUrls: ['./mf.components.css']
 })
 export class MetaFormOptionComponent extends MetaFormControlBase implements OnInit {
 

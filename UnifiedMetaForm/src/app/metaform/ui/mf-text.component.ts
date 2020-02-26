@@ -10,8 +10,10 @@ import { MetaFormControlBase } from './mf-control-base';
 
 @Component({
     selector: 'app-mf-text',
-    templateUrl: './mf-text.component.html',
-    styleUrls: ['./mf-text.component.css']
+    template: `<input [ngClass]="{ 'error': inError }" [formControl]="formControl" class="mfc mf-control-item"
+     type="{{textType}}" name="{{name}}" autocomplete="{{autocomplete}}" placeholder="{{placeholder}}"
+      maxLength="{{maxLength}}" (blur)="onFocusLost()">`,
+    styleUrls: ['./mf.components.css']
 })
 export class MetaFormTextComponent extends MetaFormControlBase implements OnInit {
 

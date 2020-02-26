@@ -69,7 +69,7 @@ export class AppComponent implements OnInit {
     }
 
     loadFluentForm() {
-        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.SingleSection);
+        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.EntireForm);
         this.form
             .addSection('First')
             .addSection('Second')
@@ -92,6 +92,12 @@ export class AppComponent implements OnInit {
             .getQuestion('name')
             .addTextControl('lastName', MetaFormTextType.SingleLine, 50, 'Last or family name')
             .addValidator(MFValidator.Required('This field is required'));
+
+        this.form
+            .addQuestion('contactPhone', 'Please enter a contact number', 'This can be a mobile or landline.')
+            .setSection(1)
+            .addTelephoneAndIddControl('contactPhone', 20, 'Number')
+            .addValidator(MFValidator.Required('Please enter your contact number'));
 
         this.form
             .addQuestion('email', 'Please enter your email address')

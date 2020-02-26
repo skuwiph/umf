@@ -10,7 +10,8 @@ export enum MetaFormControlType {
     Text,
     Option,
     Date,
-    Time
+    Time,
+    TelephoneAndIddCode
 }
 
 export enum MetaFormTextType {

@@ -1,0 +1,117 @@
+.mf-control-item {
+    width: calc(100% - 1rem);   
+    border: 1px solid #bbbbbb;
+    border-radius: 5px;
+    padding: 0.5rem 0.25rem;
+}
+
+input.error, input.error, select.error {
+    border: 1px solid red;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
+}
+
+/* Option Components */
+
+.mf-option-item {
+    width: calc(100% - 0.25rem);
+    background-color: white;
+    color: black;
+    border: 1px solid rgb(0.4, 0.4, 0.5);
+    border-radius: 5px;
+    padding: 0.5rem 0.25rem;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.opt-selected {
+    background-color: rgb(42, 42, 116);
+    border: 1px solid rgb(42, 42, 116);
+    color: white;   
+}
+
+input, select, option { 
+    width: calc(100% - 0.25rem);    
+    padding: 0.25rem;
+    border-radius: 5px;
+}
+
+/* Date Component */
+
+.date {
+    display: grid;
+    grid-template-columns: 3rem 3rem 5rem;
+    column-gap: 0.5rem;
+}
+
+.shortdate {
+    display: grid;
+    column-gap: 0rem;
+    grid-template-columns: 12rem 5rem;
+}
+
+.dd, .mm {
+     width: 3em;
+     padding: 0.5rem 0.25rem;
+ }
+
+.month {
+     width: 100%;
+     padding: 0.5rem 0;
+ }
+
+.yy {
+     max-width: 4rem;
+     padding: 0.5rem 0.25rem;
+ }
+
+
+/* Time Component */
+
+.time {
+    display: grid;
+    column-gap: 0rem;
+    grid-template-columns: 3.5rem 0.5rem 3.5rem;
+}
+
+.hh, .mm {
+     max-width: 3.5em;
+     margin: 0;
+     padding: 0.5rem 0.25rem;
+ }
+
+.separator {
+    padding: 0.5rem 0.25rem 0 0;
+    font-weight: 600;
+}
+
+/* Telephone Component */
+
+.telephone {
+    display: flex;
+    flex-direction: row wrap;
+    flex-shrink: 1;
+}
+
+select.idd {
+    max-width: calc(100% - 25% - 1.25rem);
+    border-radius: 5px;
+    min-height: 1.25rem;
+    margin-right: 0.25rem;
+    padding: 0.5rem 0.25rem;
+}
+
+input.telnum {
+    max-width: 25%;
+    height: 1.25rem;
+    padding: 0.5rem 0.25rem;
+}
+

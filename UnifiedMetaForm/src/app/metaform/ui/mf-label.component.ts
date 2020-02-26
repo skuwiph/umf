@@ -4,8 +4,8 @@ import { MetaFormService } from '../meta-form.service';
 
 @Component({
     selector: 'app-mf-label',
-    templateUrl: './mf-label.component.html',
-    styleUrls: ['./mf-label.component.css']
+    template: `<div class="mf-label"><label>{{text}}</label></div>`,
+    styleUrls: ['./mf.components.css']
 })
 export class MetaFormLabelComponent implements OnInit {
 

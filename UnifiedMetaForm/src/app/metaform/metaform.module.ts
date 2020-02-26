@@ -11,7 +11,7 @@ import { MetaFormDateComponent } from './ui/mf-date.component';
 import { MetaFormTimeComponent } from './ui/mf-time.component';
 import { MetaFormOptionComponent } from './ui/mf-option.component';
 import { MetaFormOptionMultiComponent } from './ui/mf-option-multi.component';
-
+import { MetaFormTelephoneAndIddComponent } from './ui/mf-telephone.component';
 
 @NgModule({
     declarations: [
@@ -21,7 +21,8 @@ import { MetaFormOptionMultiComponent } from './ui/mf-option-multi.component';
         MetaFormOptionComponent,
         MetaFormOptionMultiComponent,
         MetaFormDateComponent,
-        MetaFormTimeComponent
+        MetaFormTimeComponent,
+        MetaFormTelephoneAndIddComponent
     ],
     imports: [
         CommonModule,
