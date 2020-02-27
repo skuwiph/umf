@@ -90,7 +90,7 @@ export class MetaFormService {
             const currentSection = form.sections[checkSection];
             console.log(`Check ${currentSection.title}`);
             if (this.isSectionValidForDisplay(form.answers, currentSection, ruleService)) {
-                console.log(`Section ${currentSection.title} passes`);
+                console.log(`Section ${currentSection.title} passes rule ${currentSection.ruleToMatch}`);
                 activeSection = currentSection;
                 found = true;
             } else {

@@ -10,9 +10,17 @@ import { MetaFormControlBase } from './mf-control-base';
 
 @Component({
     selector: 'app-mf-text',
-    template: `<input [ngClass]="{ 'error': inError }" [formControl]="formControl" class="mfc mf-control-item"
-     type="{{textType}}" name="{{name}}" autocomplete="{{autocomplete}}" placeholder="{{placeholder}}"
-      maxLength="{{maxLength}}" (blur)="onFocusLost()">`,
+    template: `
+    <ng-container *ngIf="textType == 'multi'; else single">
+        <textarea [ngClass]="{ 'error': inError }" [formControl]="formControl" class="mfc mf-control-item-multi"
+        name="{{name}}" placeholder="{{placeholder}}"
+        maxLength="{{maxLength}}" (blur)="onFocusLost()"></textarea>
+    </ng-container>
+    <ng-template #single>
+        <input [ngClass]="{ 'error': inError }" [formControl]="formControl" class="mfc mf-control-item"
+        type="{{textType}}" name="{{name}}" autocomplete="{{autocomplete}}" placeholder="{{placeholder}}"
+        maxLength="{{maxLength}}" (blur)="onFocusLost()">
+    </ng-template>`,
     styleUrls: ['./mf.components.css']
 })
 export class MetaFormTextComponent extends MetaFormControlBase implements OnInit {
@@ -45,6 +53,9 @@ export class MetaFormTextComponent extends MetaFormControlBase implements OnInit
                     break;
                 case MetaFormTextType.Email:
                     this.textType = 'email';
+                    break;
+                case MetaFormTextType.MultiLine:
+                    this.textType = 'multi';
                     break;
                 default:
                     this.textType = 'text';

@@ -69,7 +69,7 @@ export class AppComponent implements OnInit {
     }
 
     loadFluentForm() {
-        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.SingleSection);
+        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.EntireForm);
         this.form
             .addSection('First')
             .addSection('Second')
@@ -77,7 +77,9 @@ export class AppComponent implements OnInit {
             .addSection('Fourth')
             .addSection('Fifth')
             .addSection('Sixth')
-            .addSection('Seventh');
+            .addSection('Seventh', 'HasAllergies')
+            .addSection('Eighth')
+            .addSection('Ninth');
 
         this.form
             .addQuestion('name', 'Please enter your name', 'Please enter exactly as they appear in your passport.')
@@ -188,9 +190,16 @@ export class AppComponent implements OnInit {
         const o1 = MFOptions.OptionFromList(options);
 
         this.form
-            .addQuestion('option1', 'Please answer the option question')
-            .addOptionControl('option1', MetaFormOptionType.SingleSelect, o1)
+            .addQuestion('option1', 'Please answer the allergy question')
+            .setSection(6)
+            .addOptionControl('allergies', MetaFormOptionType.SingleSelect, o1)
             .addValidator(MFValidator.Required('Please select an option'));
+
+        this.form
+            .addQuestion('allergyDetails', 'What allergies do you have?', `Please don't worry about hayfever.`)
+            .setSection(7)
+            .addTextControl('allergyDetails', MetaFormTextType.MultiLine, 150, 'Details')
+            .addValidator(MFValidator.Required('This field is required'));
 
         const options2: MFOptionValue[] = [];
         options2.push(new MFOptionValue('en', 'English'));
@@ -202,7 +211,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('option2', 'Please select all applicable options')
-            .setSection(6)
+            .setSection(8)
             .addOptionControl('option2', MetaFormOptionType.MultiSelect, o2)
             .addValidator(MFValidator.Required('Please select an option'));
 
@@ -210,7 +219,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('country', 'Please select a country from URL')
-            .setSection(7)
+            .setSection(9)
             .addOptionControl('countryCode', MetaFormOptionType.SingleSelect, o3)
             .addValidator(MFValidator.Required('Please select an option'));
 
@@ -218,7 +227,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('region', 'Please select a region from URL')
-            .setSection(7)
+            .setSection(9)
             .addOptionControl('region', MetaFormOptionType.SingleSelect, o4)
             .addValidator(MFValidator.Required('Please select a region'));
     }
