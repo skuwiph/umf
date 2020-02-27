@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MFControl, MetaForm, MFLabelControl } from '../meta-form';
 import { MetaFormService } from '../meta-form.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-mf-label',
@@ -15,7 +16,7 @@ export class MetaFormLabelComponent implements OnInit {
     name: string;
     text: string;
 
-    constructor(private mfService: MetaFormService) { }
+    constructor(private formService: MetaFormService) { }
 
     ngOnInit(): void {
         console.log(`LabelControl`);

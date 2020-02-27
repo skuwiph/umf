@@ -190,7 +190,17 @@ export class AppComponent implements OnInit {
         const o1 = MFOptions.OptionFromList(options);
 
         this.form
-            .addQuestion('option1', 'Please answer the allergy question')
+            .addQuestion('option1', 'Medical Question')
+            .addHtml(`As part of your application to the Program, we need to collect, use, store and share certain information
+             about your health (including information contained in the medical report we ask you to provide).
+              We do so to enable us to assess your fitness to take part in the Program (including allergies, etc.),
+               and so that we or your host family can provide assistance if a medical emergency arises whilst you are
+                taking part in the Program. Please read AIFS's <a href="https://www.aupairinamerica.co.uk/privacy-policy/index.asp"
+                 target="_blank"> Privacy Policy</a> carefully for full details on how we process your health information,
+                  the grounds we rely on to process that information and how long we retain it.`);
+
+        this.form
+            .getQuestion('option1')
             .setSection(6)
             .addOptionControl('allergies', MetaFormOptionType.SingleSelect, o1)
             .addValidator(MFValidator.Required('Please select an option'));

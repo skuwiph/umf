@@ -7,6 +7,7 @@ export enum MetaFormDrawType {
 
 export enum MetaFormControlType {
     Label,
+    Html,
     Text,
     Option,
     OptionMulti,

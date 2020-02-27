@@ -11,6 +11,9 @@
                             <ng-container *ngSwitchCase="controlType.Label">
                                 <app-mf-label [form]="form" [control]="c"></app-mf-label>
                             </ng-container>
+                            <ng-container *ngSwitchCase="controlType.Html">
+                                <app-mf-html [form]="form" [control]="c"></app-mf-html>
+                            </ng-container>
                             <ng-container *ngSwitchCase="controlType.Text">
                                 <app-mf-text [form]="form" [control]="c"
                                     (changeValidity)="onControlValidityChange($event)"></app-mf-text>

@@ -26,6 +26,15 @@ input, select, option, textarea, .mf-option-item {
     padding: 0.5rem 0.25rem;
     border-color: #bbbbbb;
 }
+
+/* Html */
+.mf-html-content {
+    line-height: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: black;
+}
+
 /* Option Components */
 
 .mf-option-item {

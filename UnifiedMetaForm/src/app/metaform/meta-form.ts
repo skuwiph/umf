@@ -382,6 +382,17 @@ export class MFQuestion {
         return this;
     }
 
+    addHtml(html: string): MFQuestion {
+        const c = new MFHtmlTextControl();
+
+        c.controlType = MetaFormControlType.Html;
+        c.name = `html`;
+        c.html = html;
+
+        this.pushControl(c);
+
+        return this;
+    }
     addOptionControl(name: string, optionType: MetaFormOptionType, options?: MFOptions): MFOptionControl {
         const c = new MFOptionControl();
 
@@ -565,6 +576,16 @@ export class MFControl {
 
 export class MFLabel extends MFControl {
     text: string;
+    isValid(form: MetaForm, updateStatus = true): boolean {
+        return true;
+    }
+}
+
+export class MFHtmlTextControl extends MFControl {
+    html: string;
+    isValid(form: MetaForm, updateStatus = true): boolean {
+        return true;
+    }
 }
 
 export class MFTextControl extends MFControl {

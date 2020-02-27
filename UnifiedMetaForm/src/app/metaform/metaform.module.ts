@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { MetaFormDisplayComponent } from './ui/metaform-display.component';
 import { MetaFormLabelComponent } from './ui/mf-label.component';
+import { MetaFormHtmlComponent } from './ui/mf-html-content.component';
 import { MetaFormTextComponent } from './ui/mf-text.component';
 import { MetaFormDateComponent } from './ui/mf-date.component';
 import { MetaFormTimeComponent } from './ui/mf-time.component';
@@ -17,6 +18,7 @@ import { MetaFormTelephoneAndIddComponent } from './ui/mf-telephone.component';
     declarations: [
         MetaFormDisplayComponent,
         MetaFormLabelComponent,
+        MetaFormHtmlComponent,
         MetaFormTextComponent,
         MetaFormOptionComponent,
         MetaFormOptionMultiComponent,
