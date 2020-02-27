@@ -212,7 +212,7 @@ export class AppComponent implements OnInit {
         this.form
             .addQuestion('option2', 'Please select all applicable options')
             .setSection(8)
-            .addOptionControl('option2', MetaFormOptionType.MultiSelect, o2)
+            .addOptionMultiControl('option2', o2)
             .addValidator(MFValidator.Required('Please select an option'));
 
         const o3 = MFOptions.OptionFromUrl('http://localhost:3000/country', 'Please Select', false);

@@ -2,7 +2,7 @@
 import { Component, OnInit, Input, ElementRef, AfterViewInit } from '@angular/core';
 import { BusinessRuleService } from '../business-rule.service';
 import { MetaFormService, DisplayQuestion } from '../meta-form.service';
-import { MetaFormDrawType } from '../meta-form-enums';
+import { MetaFormDrawType, MetaFormControlType } from '../meta-form-enums';
 import { MetaForm, MFQuestion, MFControlValidityChange, MFControl, MFOptionsChanged } from '../meta-form';
 
 @Component({
@@ -20,6 +20,7 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     @Input() form: MetaForm;
 
     display: DisplayQuestion;
+    controlType = MetaFormControlType;
 
     currentFormItem = -1;
 

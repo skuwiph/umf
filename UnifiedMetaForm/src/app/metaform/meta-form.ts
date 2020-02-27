@@ -390,23 +390,21 @@ export class MFQuestion {
         c.options = options;
         c.name = name;
         c.validators = [];
+        c.checkDependencies();
 
-        // Check options for referencing
-        if (c.hasUrl) {
-            // console.log(`looking for references for ${c.name}`);
-            // Find any field references
-            const r = c.urlFieldReferences();
-            if (r.length > 0) {
-                // console.log(`Adding ${r.length} references to ${c.name}`);
-                if (!c.dependencies) {
-                    c.dependencies = [];
-                }
-                for (const referencedField of r) {
-                    // console.log(`Adding ${referencedField}`);
-                    c.dependencies.push(referencedField);
-                }
-            }
-        }
+        this.pushControl(c);
+
+        return c;
+    }
+
+    addOptionMultiControl(name: string, options?: MFOptions): MFOptionMultiControl {
+        const c = new MFOptionMultiControl();
+
+        c.controlType = MetaFormControlType.OptionMulti;
+        c.options = options;
+        c.name = name;
+        c.validators = [];
+        c.checkDependencies();
 
         this.pushControl(c);
 
@@ -575,8 +573,7 @@ export class MFTextControl extends MFControl {
     placeholder?: string;
 }
 
-export class MFOptionControl extends MFControl {
-    optionType: MetaFormOptionType;
+export class MFOptionControlBase extends MFControl {
     options?: MFOptions;
 
     optionLayout = ControlLayoutStyle.Vertical;
@@ -599,6 +596,25 @@ export class MFOptionControl extends MFControl {
 
     get optionUrl(): string {
         return this.options?.optionSource?.url;
+    }
+
+    checkDependencies(): void {
+        // Check options for referencing
+        if (this.hasUrl) {
+            // console.log(`looking for references for ${c.name}`);
+            // Find any field references
+            const r = this.urlFieldReferences();
+            if (r.length > 0) {
+                // console.log(`Adding ${r.length} references to ${c.name}`);
+                if (!this.dependencies) {
+                    this.dependencies = [];
+                }
+                for (const referencedField of r) {
+                    // console.log(`Adding ${referencedField}`);
+                    this.dependencies.push(referencedField);
+                }
+            }
+        }
     }
 
     urlForService(form: MetaForm, control: MFControl): string {
@@ -660,6 +676,14 @@ export class MFOptionControl extends MFControl {
         return s;
     }
 }
+
+export class MFOptionControl extends MFOptionControlBase {
+    optionType: MetaFormOptionType;
+}
+
+export class MFOptionMultiControl extends MFOptionControlBase {
+}
+
 
 export class MFDateControl extends MFControl {
     dateType: MetaFormDateType;

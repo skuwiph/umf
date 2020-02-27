@@ -9,6 +9,7 @@ export enum MetaFormControlType {
     Label,
     Text,
     Option,
+    OptionMulti,
     Date,
     Time,
     TelephoneAndIddCode
@@ -32,7 +33,6 @@ export enum MetaFormDateType {
 
 export enum MetaFormOptionType {
     SingleSelect,
-    MultiSelect,
     Typeahead
 }
 
