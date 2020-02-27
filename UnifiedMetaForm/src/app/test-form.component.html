@@ -1,0 +1,15 @@
+<div class="content" role="main">
+    <div class="buttons">
+        <button type="button" class="btn tab" [ngClass]="{'selected': displayType == 0}" (click)="changeType(0)">Fluent</button>
+        <button type="button" class="btn tab" [ngClass]="{'selected': displayType == 1}" (click)="changeType(1)">JSON: Create Application</button>
+        <button type="button" class="btn tab" [ngClass]="{'selected': displayType == 2}" (click)="changeType(2)">JSON: Test</button>
+    </div>
+    <ng-container  *ngIf="!loading">
+        <ng-container *ngIf="displayType === 0; else jsonType">
+            <app-metaform-display [form]='form' (formEvent)='formChange($event)'></app-metaform-display>
+        </ng-container>
+        <ng-template #jsonType>
+            <app-metaform-display [form]='form' (formEvent)='formChange($event)'></app-metaform-display>
+        </ng-template>
+    </ng-container>
+</div>

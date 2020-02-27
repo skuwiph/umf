@@ -1,5 +1,6 @@
+import { Component, OnInit, Input, ElementRef, AfterViewInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 
-import { Component, OnInit, Input, ElementRef, AfterViewInit } from '@angular/core';
 import { BusinessRuleService } from '../business-rule.service';
 import { MetaFormService, DisplayQuestion } from '../meta-form.service';
 import { MetaFormDrawType, MetaFormControlType } from '../meta-form-enums';
@@ -18,6 +19,7 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
         private ruleService: BusinessRuleService) { }
 
     @Input() form: MetaForm;
+    @Output() formEvent: EventEmitter<MetaFormUserEvent> = new EventEmitter<MetaFormUserEvent>();
 
     display: DisplayQuestion;
     controlType = MetaFormControlType;
@@ -42,6 +44,8 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+        this.formEvent.emit(new MetaFormUserEvent(MetaFormUserEventType.FormInitialised, this.form));
+
         this.setFocusOnFirstControl();
     }
 
@@ -52,6 +56,8 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     nextPage() {
         if (this.atEndOfForm) {
             console.log(`Submitting data: ${JSON.stringify(this.form.answers, null, 2)}`);
+
+            this.formEvent.emit(new MetaFormUserEvent(MetaFormUserEventType.FormSubmit, this.form));
         } else {
             this.getNextQuestions();
         }
@@ -146,4 +152,18 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
             }
         }, 250);
     }
+}
+
+export class MetaFormUserEvent {
+    event: MetaFormUserEventType;
+    form: MetaForm;
+    constructor(event: MetaFormUserEventType, form: MetaForm) {
+        this.event = event;
+        this.form = form;
+    }
+}
+
+export enum MetaFormUserEventType {
+    FormInitialised,
+    FormSubmit
 }

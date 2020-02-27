@@ -2,14 +2,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { MetaFormModule } from './metaform/metaform.module';
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+import { TestFormComponent } from './test-form.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TestFormComponent
   ],
   imports: [
     BrowserModule,
-    MetaFormModule
+    MetaFormModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
