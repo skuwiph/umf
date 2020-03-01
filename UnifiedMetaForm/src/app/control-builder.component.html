@@ -5,7 +5,6 @@
             <button [ngClass]="{'disabled':!controlEditFormIsValid}" class="btn btn-save" type="button" (click)="updateSelectedControl()" [disabled]="!controlEditFormIsValid">Save</button>
             <button class="btn btn-cancel" type="button" (click)="cancelChanges()">Cancel</button>
         </div>
-        <pre>{{controlEditForm.answers | json}}</pre>
     </div>
     <div class="control-add">
         <select class="control-select" (change)="controlChange($event.target.value)">
