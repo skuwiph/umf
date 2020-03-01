@@ -327,13 +327,53 @@ export class MFQuestion {
         return c;
     }
 
-    addTelephoneAndIddControl(name: string, maxLength?: number, placeholderText?: string): MFControl {
-        const c = new MFTelephoneAndIddControl();
-        c.controlType = MetaFormControlType.TelephoneAndIddCode;
+    addLabel(text: string): MFQuestion {
+        const c = new MFLabelControl();
+
+        c.controlType = MetaFormControlType.Label;
+        c.name = `Label`;
+        c.text = text;
+
+        this.pushControl(c);
+
+        return this;
+    }
+
+    addHtml(html: string): MFQuestion {
+        const c = new MFHtmlTextControl();
+
+        c.controlType = MetaFormControlType.Html;
+        c.name = `html`;
+        c.html = html;
+
+        this.pushControl(c);
+
+        return this;
+    }
+
+    addOptionControl(name: string, optionType: MetaFormOptionType, options?: MFOptions): MFOptionControl {
+        const c = new MFOptionControl();
+
+        c.controlType = MetaFormControlType.Option;
+        c.optionType = optionType;
+        c.options = options;
         c.name = name;
-        c.placeholder = placeholderText;
-        c.maxLength = maxLength ?? 0;
         c.validators = [];
+        c.checkDependencies();
+
+        this.pushControl(c);
+
+        return c;
+    }
+
+    addOptionMultiControl(name: string, options?: MFOptions): MFOptionMultiControl {
+        const c = new MFOptionMultiControl();
+
+        c.controlType = MetaFormControlType.OptionMulti;
+        c.options = options;
+        c.name = name;
+        c.validators = [];
+        c.checkDependencies();
 
         this.pushControl(c);
 
@@ -370,53 +410,25 @@ export class MFQuestion {
         return c;
     }
 
-    addLabel(text: string): MFQuestion {
-        const c = new MFLabelControl();
-
-        c.controlType = MetaFormControlType.Label;
-        c.name = `Label`;
-        c.text = text;
-
-        this.pushControl(c);
-
-        return this;
-    }
-
-    addHtml(html: string): MFQuestion {
-        const c = new MFHtmlTextControl();
-
-        c.controlType = MetaFormControlType.Html;
-        c.name = `html`;
-        c.html = html;
-
-        this.pushControl(c);
-
-        return this;
-    }
-    addOptionControl(name: string, optionType: MetaFormOptionType, options?: MFOptions): MFOptionControl {
-        const c = new MFOptionControl();
-
-        c.controlType = MetaFormControlType.Option;
-        c.optionType = optionType;
-        c.options = options;
+    addTelephoneAndIddControl(name: string, maxLength?: number, placeholderText?: string): MFControl {
+        const c = new MFTelephoneAndIddControl();
+        c.controlType = MetaFormControlType.TelephoneAndIddCode;
         c.name = name;
+        c.placeholder = placeholderText;
+        c.maxLength = maxLength ?? 0;
         c.validators = [];
-        c.checkDependencies();
 
         this.pushControl(c);
 
         return c;
     }
 
-    addOptionMultiControl(name: string, options?: MFOptions): MFOptionMultiControl {
-        const c = new MFOptionMultiControl();
-
-        c.controlType = MetaFormControlType.OptionMulti;
-        c.options = options;
+    addToggleControl(name: string, text: string): MFToggleControl {
+        const c = new MFToggleControl();
+        c.controlType = MetaFormControlType.Toggle;
         c.name = name;
+        c.text = text;
         c.validators = [];
-        c.checkDependencies();
-
         this.pushControl(c);
 
         return c;
@@ -787,7 +799,6 @@ export class MFTelephoneAndIddControl extends MFControl {
     placeholder?: string;
     iddList: IddCode[] = [];
 
-
     getIdd(form: MetaForm): string {
         const value = form.getValue(this.name);
         const separator = value?.indexOf(':');
@@ -804,6 +815,10 @@ export class MFTelephoneAndIddControl extends MFControl {
             return value.substr(separator + 1);
         }
     }
+}
+
+export class MFToggleControl extends MFControl {
+    text: string;
 }
 
 export class MFLabelControl extends MFControl {

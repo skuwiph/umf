@@ -1,0 +1,31 @@
+.control-list {
+    border: 1px solid rgb(27, 48, 87);
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    background-color: rgb(221, 230, 240);
+    padding: 0.5rem 0.25rem 0.5rem 0.25rem;
+}
+
+.control-edit-buttons {
+    display: flex;
+    flex-flow: row-reverse;
+
+}
+
+.control-add {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+.control-select {
+    margin: 1rem 0;
+    width: calc(100% - 1.75rem);
+    height: 1.75rem;
+}
+
+.btn-control-add {
+    width: 1.5rem;
+    height: 1.75rem;
+    padding: 0;
+}

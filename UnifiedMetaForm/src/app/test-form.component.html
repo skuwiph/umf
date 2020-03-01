@@ -6,10 +6,10 @@
     </div>
     <ng-container  *ngIf="!loading">
         <ng-container *ngIf="displayType === 0; else jsonType">
-            <app-metaform-display [form]='form' (formEvent)='formChange($event)'></app-metaform-display>
+            <app-metaform-display [form]='form' [showButtons]="true" (formEvent)='formChange($event)'></app-metaform-display>
         </ng-container>
         <ng-template #jsonType>
-            <app-metaform-display [form]='form' (formEvent)='formChange($event)'></app-metaform-display>
+            <app-metaform-display [form]='form' [showButtons]="true" (formEvent)='formChange($event)'></app-metaform-display>
         </ng-template>
     </ng-container>
 </div>

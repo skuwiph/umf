@@ -13,6 +13,7 @@ import { MetaFormTimeComponent } from './ui/mf-time.component';
 import { MetaFormOptionComponent } from './ui/mf-option.component';
 import { MetaFormOptionMultiComponent } from './ui/mf-option-multi.component';
 import { MetaFormTelephoneAndIddComponent } from './ui/mf-telephone.component';
+import { MetaFormToggleComponent } from './ui/mf-toggle.component';
 
 @NgModule({
     declarations: [
@@ -24,7 +25,8 @@ import { MetaFormTelephoneAndIddComponent } from './ui/mf-telephone.component';
         MetaFormOptionMultiComponent,
         MetaFormDateComponent,
         MetaFormTimeComponent,
-        MetaFormTelephoneAndIddComponent
+        MetaFormTelephoneAndIddComponent,
+        MetaFormToggleComponent
     ],
     imports: [
         CommonModule,

@@ -1,11 +1,8 @@
 import { Component, OnInit, Output } from '@angular/core';
-import { EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { filter } from 'rxjs/operators';
 
 import { MetaFormService } from '../meta-form.service';
-import { MFOptionControl, MFOptionValue, MFValueChange, MFOptionsChanged, MFOptionControlBase } from '../meta-form';
-import { MetaFormOptionType, ControlLayoutStyle } from '../meta-form-enums';
+import { MFOptionControl } from '../meta-form';
+import { MetaFormOptionType } from '../meta-form-enums';
 import { MetaFormOptionControlBase } from './mf-option-control-base';
 
 @Component({
@@ -41,7 +38,7 @@ export class MetaFormOptionComponent extends MetaFormOptionControlBase implement
 
     ngOnInit(): void {
         super.ngOnInit();
-        console.log(`Init in OptionComponent for ${this.name}`);
+
         if (this.control) {
             const optionControl = this.control as MFOptionControl;
             switch (optionControl.optionType) {
@@ -63,11 +60,9 @@ export class MetaFormOptionComponent extends MetaFormOptionControlBase implement
         const value = this.form.getValue(this.name);
 
         if (this.hasOptions) {
-            console.log(`${this.name}: options returned`);
             this.selectItem(value ?? '', false);
         } else {
             // If there are no options, clear this data item
-            console.log(`${this.name}: no options returned`);
             this.selectItem('', false);
         }
     }

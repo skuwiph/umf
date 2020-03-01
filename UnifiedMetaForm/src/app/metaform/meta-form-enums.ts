@@ -13,7 +13,8 @@ export enum MetaFormControlType {
     OptionMulti,
     Date,
     Time,
-    TelephoneAndIddCode
+    TelephoneAndIddCode,
+    Toggle
 }
 
 export enum MetaFormTextType {

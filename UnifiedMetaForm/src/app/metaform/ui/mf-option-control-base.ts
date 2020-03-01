@@ -26,7 +26,7 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
         if (this.control) {
             const optionControl = this.control as MFOptionControlBase;
             this.name = this.control.name;
-            console.log(`Init for ${this.name}`);
+
             this.isHorizontal = optionControl.optionLayout === ControlLayoutStyle.Horizontal;
             this.isVertical = !this.isHorizontal;
 

@@ -19,7 +19,6 @@ export class MetaFormHtmlComponent implements OnInit {
     constructor(private formService: MetaFormService, private sanitiser: DomSanitizer) { }
 
     ngOnInit(): void {
-        console.log(`LabelControl`);
         if (this.control) {
             const htmlControl = this.control as MFHtmlTextControl;
             this.name = this.control.name;

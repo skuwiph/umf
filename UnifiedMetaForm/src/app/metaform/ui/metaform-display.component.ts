@@ -19,7 +19,11 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
         private ruleService: BusinessRuleService) { }
 
     @Input() form: MetaForm;
+    @Input() showButtons = false;
+    @Input() preventFocus = false;
     @Output() formEvent: EventEmitter<MetaFormUserEvent> = new EventEmitter<MetaFormUserEvent>();
+    @Output() questionSelected: EventEmitter<MFQuestion> = new EventEmitter<MFQuestion>();
+    @Output() controlSelected: EventEmitter<ControlSelectedEvent> = new EventEmitter<ControlSelectedEvent>();
 
     display: DisplayQuestion;
     controlType = MetaFormControlType;
@@ -84,14 +88,42 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     }
 
     onControlValidityChange(event: MFControlValidityChange): void {
+        if (!this.display.controlStatus) {
+            return;
+        }
         this.display.controlStatus.set(event.name, event.valid);
         this.checkPageStatus();
     }
 
     optionLoadComplete(q: MFQuestion, c: MFControl, change: MFOptionsChanged) {
         // console.log(`${c.name} has changed ${change.countOfOptions}`);
-        q.available = this.form.hasOptions(q);
-        this.checkPageStatus();
+        setTimeout(() => {
+            q.available = this.form.hasOptions(q);
+            this.checkPageStatus();
+        }, 250);
+    }
+
+    refreshCurrentDisplay() {
+        // console.log(`Refreshing`);
+        this.display = null;
+
+        setTimeout(() => {
+            const result = this.formService.getNextQuestionToDisplay(this.form, this.ruleService, this.currentFormItem - 1);
+            this.display = result;
+
+            this.checkDisplayQuestions();
+            // console.log(`Refreshed`, this.display.questions);
+        }, 100);
+    }
+
+    questionClicked(event, q: MFQuestion): void {
+        this.questionSelected.emit(q);
+        event.stopPropagation();
+    }
+
+    controlClicked(event, q: MFQuestion, c: MFControl): void {
+        this.controlSelected.emit(new ControlSelectedEvent(q, c));
+        event.stopPropagation();
     }
 
     private getNextQuestions() {
@@ -139,18 +171,25 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
         }
 
         this.pageIsValid = (numberOfPasses === this.display.numberOfControls);
+
+        this.formEvent.emit(
+            new MetaFormUserEvent(
+                this.pageIsValid ? MetaFormUserEventType.FormValid : MetaFormUserEventType.FormInvalid,
+                this.form));
     }
 
     private setFocusOnFirstControl(): void {
-        setTimeout(() => {
-            // We're not manipulating the DOM, so I'm not too
-            // bothered about this. However, willing to be proved
-            // wrong and to have a more 'angular' way of doing this!
-            const firstControl = this.el.nativeElement.querySelectorAll('.mfc');
-            if (firstControl && firstControl.length > 0) {
-                firstControl[0].focus();
-            }
-        }, 250);
+        if (!this.preventFocus) {
+            setTimeout(() => {
+                // We're not manipulating the DOM, so I'm not too
+                // bothered about this. However, willing to be proved
+                // wrong and to have a more 'angular' way of doing this!
+                const firstControl = this.el.nativeElement.querySelectorAll('.mfc');
+                if (firstControl && firstControl.length > 0) {
+                    firstControl[0].focus();
+                }
+            }, 250);
+        }
     }
 }
 
@@ -165,5 +204,16 @@ export class MetaFormUserEvent {
 
 export enum MetaFormUserEventType {
     FormInitialised,
+    FormInvalid,
+    FormValid,
     FormSubmit
+}
+
+export class ControlSelectedEvent {
+    question: MFQuestion;
+    control: MFControl;
+    constructor(q: MFQuestion, c: MFControl) {
+        this.question = q;
+        this.control = c;
+    }
 }

@@ -69,7 +69,7 @@ export class TestFormComponent implements OnInit {
     }
 
     formChange(event: MetaFormUserEvent): void {
-        console.log(`Got event ${event.event}`, event.form.answers);
+        console.log(`Got event ${event.event}`, event.form);
         if (event.event === MetaFormUserEventType.FormSubmit) {
             console.log(`Form submit process: ${JSON.stringify(event.form.answers, null, 2)}`);
         }
@@ -118,6 +118,20 @@ export class TestFormComponent implements OnInit {
             .addValidatorAsync(MFValidatorAsync.AsyncValidator(this.http,
                 'http://localhost:3000/validate/email',
                 'Please enter a different email!'));
+
+        this.form
+            .getQuestion('email')
+            .addToggleControl('isPrimary', 'Primary email address');
+
+        this.form
+            .getQuestion('email')
+            .addToggleControl('marketing', 'Please send me marketing details');
+
+        this.form
+            .getQuestion('email')
+            .addToggleControl('suspicious', 'Please send me suspicious packages');
+
+        this.form.answers.setValue('isPrimary', true);
 
         this.form
             .addQuestion('password', 'Please choose a password')

@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TestFormComponent } from './test-form.component';
+import { FormBuilderComponent } from './form-builder.component';
 
 const routes: Routes = [
-    { path: '', component: TestFormComponent }
+    { path: '', component: FormBuilderComponent },
+    { path: 'test', component: TestFormComponent }
 ];
 
 @NgModule({

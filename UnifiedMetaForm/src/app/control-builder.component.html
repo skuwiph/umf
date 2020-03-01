@@ -1,0 +1,16 @@
+<div class="control-list">
+    <div class="control-edit" *ngIf="control && controlEditForm">
+        <app-metaform-display #controlMetaForm [form]='controlEditForm' (formEvent)='selectedControlChange($event)'></app-metaform-display>
+        <div class="control-edit-buttons">
+            <button [ngClass]="{'disabled':!controlEditFormIsValid}" class="btn btn-save" type="button" (click)="updateSelectedControl()" [disabled]="!controlEditFormIsValid">Save</button>
+            <button class="btn btn-cancel" type="button" (click)="cancelChanges()">Cancel</button>
+        </div>
+        <pre>{{controlEditForm.answers | json}}</pre>
+    </div>
+    <div class="control-add">
+        <select class="control-select" (change)="controlChange($event.target.value)">
+            <option *ngFor="let o of possibleControls" [value]="o.code">{{o.description}}</option>
+        </select>
+        <button class="btn btn-control-add" type="button" [disabled]="noSelectedControl" (click)="addSelectedControl()">+</button>
+    </div>
+</div>

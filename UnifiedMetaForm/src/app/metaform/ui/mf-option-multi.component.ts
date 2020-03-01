@@ -6,15 +6,15 @@ import { MetaFormOptionControlBase } from './mf-option-control-base';
 @Component({
     selector: 'app-mf-option-multi',
     template: `
-<ng-container *ngIf="loaded; else loading">
-    <div class="mf-options" [ngClass]="{'opt-horiz': isHorizontal, 'opt-vert': isVertical, 'error': inError }">
-        <button type="button" *ngFor="let o of options" class="mfc mf-option-item"
-            [ngClass]="{'opt-selected': isSelected(o.code)}" (click)="selectItem(o.code)">{{o.description}}</button>
-    </div>
-</ng-container>
-<ng-template #loading>
-    <p>Loading data...</p>
-</ng-template>`,
+            <ng-container *ngIf="loaded; else loading">
+                <div class="mf-options" [ngClass]="{'opt-horiz': isHorizontal, 'opt-vert': isVertical, 'error': inError }">
+                    <button type="button" *ngFor="let o of options" class="mfc mf-option-item"
+                        [ngClass]="{'opt-selected': isSelected(o.code)}" (click)="selectItem(o.code)">{{o.description}}</button>
+                </div>
+            </ng-container>
+            <ng-template #loading>
+                <p>Loading data...</p>
+            </ng-template>`,
     styleUrls: ['./mf.components.css']
 })
 export class MetaFormOptionMultiComponent extends MetaFormOptionControlBase implements OnInit {
@@ -24,7 +24,6 @@ export class MetaFormOptionMultiComponent extends MetaFormOptionControlBase impl
     constructor(formService: MetaFormService) { super(formService); }
 
     ngOnInit(): void {
-        console.log(`Option Multi`);
         super.ngOnInit();
     }
 
