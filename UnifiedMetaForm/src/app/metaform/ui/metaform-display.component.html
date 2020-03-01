@@ -21,11 +21,13 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.Option">
                                 <app-mf-option [form]="form" [control]="c"
+                                    [displayIfEmpty]="alwaysShowOptions"
                                     (changeValidity)="onControlValidityChange($event)"
                                     (optionLoadComplete)="optionLoadComplete(q, c, $event)"></app-mf-option>
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.OptionMulti">
                             <app-mf-option-multi [form]="form" [control]="c"
+                                [displayIfEmpty]="alwaysShowOptions"
                                 (changeValidity)="onControlValidityChange($event)"
                                 (optionLoadComplete)="optionLoadComplete(q, c, $event)"></app-mf-option-multi>
                             </ng-container>

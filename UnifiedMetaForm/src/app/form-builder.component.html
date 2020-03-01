@@ -6,7 +6,7 @@
     <div class="main">
     <div class="formDetails">
     </div>
-    <app-metaform-display #mainForm [form]='form' [preventFocus]="true" (formEvent)='formChange($event)' (questionSelected)="questionSelected($event)" (controlSelected)="controlSelected($event)"></app-metaform-display>
+    <app-metaform-display #mainForm [form]='form' [preventFocus]="true" [alwaysShowOptions]="true" (formEvent)='formChange($event)' (questionSelected)="questionSelected($event)" (controlSelected)="controlSelected($event)"></app-metaform-display>
     </div>
     <div class="question">
         <ng-container *ngIf="selectedQuestion || selectedControl">

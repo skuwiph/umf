@@ -37,13 +37,13 @@ export class BusinessRule {
 
             // Short circuit
             if (success && this.matchType === RuleMatchType.MatchAny) {
-                console.log(`Match Any, evaluation true`);
+                // console.log(`Match Any, evaluation true`);
                 return true;
             }
 
             // Short circuit
             if (!success && this.matchType === RuleMatchType.MatchAll) {
-                console.log(`Match All, evaluation false`);
+                // console.log(`Match All, evaluation false`);
                 return false;
             }
         }

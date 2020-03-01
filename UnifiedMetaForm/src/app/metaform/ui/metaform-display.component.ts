@@ -21,6 +21,7 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     @Input() form: MetaForm;
     @Input() showButtons = false;
     @Input() preventFocus = false;
+    @Input() alwaysShowOptions = false;
     @Output() formEvent: EventEmitter<MetaFormUserEvent> = new EventEmitter<MetaFormUserEvent>();
     @Output() questionSelected: EventEmitter<MFQuestion> = new EventEmitter<MFQuestion>();
     @Output() controlSelected: EventEmitter<ControlSelectedEvent> = new EventEmitter<ControlSelectedEvent>();
@@ -68,6 +69,7 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     }
 
     displayIf(q: MFQuestion): boolean {
+        // console.log(`q.canBeDisplayed() ${q.canBeDisplayed()} && this.ruleMatches(q) ${this.ruleMatches(q)} && q.available ${q.available}`);
         return q.canBeDisplayed() && this.ruleMatches(q) && q.available;
     }
 
@@ -98,7 +100,7 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     optionLoadComplete(q: MFQuestion, c: MFControl, change: MFOptionsChanged) {
         // console.log(`${c.name} has changed ${change.countOfOptions}`);
         setTimeout(() => {
-            q.available = this.form.hasOptions(q);
+            q.available = this.alwaysShowOptions || this.form.hasOptions(q);
             this.checkPageStatus();
         }, 250);
     }
