@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "UnifiedMetaForm": {
@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "UnifiedMetaForm"
+    }
+  },
+  "defaultProject": "UnifiedMetaForm",
+  "cli": {
+    "analytics": "11256249-7bf2-460b-aaee-1d4a77373f3a"
+  }
 }

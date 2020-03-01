@@ -2,17 +2,16 @@
   grid-area: header;
   background-color: rgb(153, 153, 226);
 }
-.main {
-  grid-area: main;
-  background-color: rgb(171, 171, 201);
+.question {
+  grid-area: question;
   align-self: stretch;
   padding: 0 0.25rem;
 }
-.lhs {
-  grid-area: outline;
+.form {
+  grid-area: form;
 }
-.rhs {
-  grid-area: sidebar;
+.control {
+  grid-area: control;
 }
 .footer {
   grid-area: footer;
@@ -24,11 +23,11 @@
     height: 100vh;
     display: grid;
     grid-gap: 0.25rem;;
-    grid-template-columns: 1fr 2fr 2fr;
-    grid-template-rows: 1fr 90% 1fr;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 2rem auto 1rem;
     grid-template-areas: 
         "header header header"
-        "outline main sidebar"
+        "form question control"
         "footer footer footer";
 }
 
