@@ -3,6 +3,7 @@
         <select class="form-select" (change)="formControlChange($event.target.value)">
             <option *ngFor="let o of formList" [value]="o.code">{{o.description}}</option>
         </select>
+        <button *ngIf="form" type="button" class="btn tab" (click)="logJson()">JSON</button>
     </div>
     <ng-container  *ngIf="!loading">
         <app-metaform-display #formDisplay [form]='form' [showButtons]="true" (formEvent)='formChange($event)'></app-metaform-display>

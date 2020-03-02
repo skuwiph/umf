@@ -84,6 +84,9 @@ export class TestFormComponent implements OnInit {
         this.loading = false;
     }
 
+    logJson(): void {
+        console.log(this.form.toJson());
+    }
     // changeType(type: number): void {
     //     this.displayType = type;
     //     this.loading = true;
