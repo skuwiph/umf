@@ -124,7 +124,7 @@ export class TestFormComponent implements OnInit {
         this.form.addQuestion('info')
             .addHtml(`<b>Note</b>:All controls have a required validator, so will be set up in such a fashion that `
                 + `would mirror real-world use (e.g. the controls have been set up as though it were a real fluent form `
-                + `and the form itself is set to readonly after data has been added).`)
+                + `and the form itself is set to readonly after data has been added).`);
 
         this.form.addQuestion('textTest', 'A Single-Line Text Field')
             .addTextControl('basicText', MetaFormTextType.SingleLine)
