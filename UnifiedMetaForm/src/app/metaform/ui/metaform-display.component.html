@@ -29,10 +29,10 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.OptionMulti">
                             <app-mf-option-multi [form]="form" [control]="c"
-                                [displayIfEmpty]="alwaysShowOptions"
+                                    [displayIfEmpty]="alwaysShowOptions"
                                     [readonly]="q.readonly"
-                                (changeValidity)="onControlValidityChange($event)"
-                                (optionLoadComplete)="optionLoadComplete(q, c, $event)"></app-mf-option-multi>
+                                    (changeValidity)="onControlValidityChange($event)"
+                                    (optionLoadComplete)="optionLoadComplete(q, c, $event)"></app-mf-option-multi>
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.Date">
                                 <app-mf-date [form]="form" [control]="c"
