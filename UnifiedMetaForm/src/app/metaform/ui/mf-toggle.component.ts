@@ -51,8 +51,8 @@ export class MetaFormToggleComponent extends MetaFormControlBase implements OnIn
 
     protected setReadonlyValue(): void {
         if (this.readonly) {
+            const c = this.control as MFToggleControl;
             if (this.control.hasValue(this.form)) {
-                const c = this.control as MFToggleControl;
                 const value = this.form.getValue(this.name);
                 let displayValue = value;
 
@@ -63,9 +63,9 @@ export class MetaFormToggleComponent extends MetaFormControlBase implements OnIn
                     displayValue = 'No';
                 }
 
-                this.readonlyValue = displayValue;
+                this.readonlyValue = `${c.text}: ${displayValue}`;
             } else {
-                this.readonlyValue = 'No';
+                this.readonlyValue = `${c.text}: No`;
             }
         }
     }
