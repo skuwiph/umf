@@ -63,6 +63,10 @@ export class MetaFormTextComponent extends MetaFormControlBase implements OnInit
                 case MetaFormTextType.MultiLine:
                     this.textType = 'multi';
                     break;
+                case MetaFormTextType.TelephoneNumber:
+                case MetaFormTextType.Numeric:
+                    this.textType = 'number';
+                    break;
                 default:
                     this.textType = 'text';
                     break;

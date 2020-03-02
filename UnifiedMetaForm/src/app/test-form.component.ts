@@ -5,6 +5,7 @@ import { MetaFormTextType, MetaFormDateType, MetaFormOptionType, MetaFormDrawTyp
 import { HttpClient } from '@angular/common/http';
 import { BusinessRuleService } from './metaform/business-rule.service';
 import { MetaFormUserEvent, MetaFormUserEventType, MetaFormDisplayComponent } from './metaform/ui/metaform-display.component';
+import { RuleMatchType, RuleComparison } from './metaform/business-rule';
 
 @Component({
     selector: 'app-test-form',
@@ -43,7 +44,10 @@ export class TestFormComponent implements OnInit {
             { code: 'T1', description: 'Read-Only form with values' },
             { code: 'T2', description: 'Read/Write form with values' },
             { code: 'T3', description: 'Read/Write form with a couple of RO questions' },
-            { code: 'T4', description: 'Read/Write form with a RO control' }
+            { code: 'T4', description: 'Read/Write form with a RO control' },
+
+            { code: 'AP1', description: 'Au Pair - About You' },
+
         ];
     }
 
@@ -70,6 +74,9 @@ export class TestFormComponent implements OnInit {
             case 'T4':
                 this.loadT1(false);
                 this.form.setReadOnlyControl('toggleOff', true);
+                break;
+            case 'AP1':
+                this.loadAPAboutYou();
                 break;
         }
 
@@ -243,6 +250,213 @@ export class TestFormComponent implements OnInit {
         this.form.setValue('language2', 'fr');
 
         this.form.setReadOnly(readonly);
+    }
+
+    loadAPAboutYou() {
+        this.form = this.mfService.createForm('about-you', 'About You', MetaFormDrawType.EntireForm);
+        this.form.addSection('Default');
+
+        this.form
+            .addQuestion('yourBackground', `Please tell us about your background, who you are, your friends, your family and upbringing`)
+            .addTextControl('yourBackground', MetaFormTextType.MultiLine, 8000)
+            .addValidator(MFValidator.AnswerMustExceedWordCount(50, 'Please write at least fifty words'));
+
+        this.form
+            .addQuestion('whyAuPair', `Why do you want to become an au pair and live with an American host family?`)
+            .addTextControl('whyAuPair', MetaFormTextType.MultiLine, 2000)
+            .addValidator(MFValidator.AnswerMustExceedWordCount(50, 'Please write at least fifty words'));
+
+        this.form
+            .addQuestion('freeTime', `Please describe how you spend your free time, including hobbies and interests`)
+            .addTextControl('freeTime', MetaFormTextType.MultiLine, 2000)
+            .addValidator(MFValidator.AnswerMustExceedWordCount(50, 'Please write at least fifty words'));
+
+        const swimming: MFOptionValue[] = [
+            { code: '1', description: 'I cannot swim / Not at all' },
+            { code: '2', description: 'Beginner' },
+            { code: '3', description: 'Intermediate' },
+            { code: '4', description: 'Advanced' }
+        ];
+
+        this.form
+            .addQuestion('swimmingLevel', `How well do you swim?`)
+            .addOptionControl('swimmingLevel', MetaFormOptionType.SingleSelect, MFOptions.OptionFromList(swimming, null, true))
+            .addValidator(MFValidator.Required('Please select an answer'));
+
+        const yesno: MFOptionValue[] = [
+            { code: 'Y', description: 'Yes - I haved lived away from home for more than two months' },
+            { code: 'N', description: 'No - I have not lived away from home for more than two months' }
+        ];
+
+        this.form
+            .addQuestion('livedAway', `Have you lived away from home for two months or more?`)
+            .addOptionControl('livedAway', MetaFormOptionType.SingleSelect, MFOptions.OptionFromList(yesno, null, true))
+            .addValidator(MFValidator.Required('Please select an answer'));
+
+        this.ruleService
+            .addRule('HasLivedAway', RuleMatchType.MatchAll)
+            .addPart('livedAway', RuleComparison.Equals, 'Y');
+
+        this.form
+            .addQuestion('livedAwayDetails', 'Please provide details')
+            .setDisplayRule('HasLivedAway')
+            .addTextControl('livedAwayDetails', MetaFormTextType.MultiLine, 500)
+            .addValidator(MFValidator.Required('This field is required'));
+
+        const languages: MFOptionValue[] = [
+            { code: 'AFR', description: 'Afrikaans' },
+            { code: 'ALB', description: 'Albanian' },
+            { code: 'AMH', description: 'Amharic' },
+            { code: 'ARA', description: 'Arabic' },
+            { code: 'ARM', description: 'Armenian' },
+            { code: 'BAQ', description: 'Basque' },
+            { code: 'BEL', description: 'Belorussian' },
+            { code: 'BOS', description: 'Bosnian' },
+            { code: 'BUL', description: 'Bulgarian' },
+            { code: 'CAT', description: 'Catalan' },
+            { code: 'CHI', description: 'Chinese' },
+            { code: 'CRO', description: 'Croatian' },
+            { code: 'CZE', description: 'Czech' },
+            { code: 'DAN', description: 'Danish' },
+            { code: 'DUT', description: 'Dutch' },
+            { code: 'ENG', description: 'English' },
+            { code: 'EST', description: 'Estonian' },
+            { code: 'FAR', description: 'Faroese' },
+            { code: 'FIJ', description: 'Fijian' },
+            { code: 'FIN', description: 'Finnish' },
+            { code: 'FLE', description: 'Flemish' },
+            { code: 'FRE', description: 'French' },
+            { code: 'GAE', description: 'Gaelic' },
+            { code: 'GEO', description: 'Georgian' },
+            { code: 'GER', description: 'German' },
+            { code: 'GRE', description: 'Greek' },
+            { code: 'HEB', description: 'Hebrew' },
+            { code: 'HER', description: 'Herero' },
+            { code: 'HIN', description: 'Hindi' },
+            { code: 'HUN', description: 'Hungarian' },
+            { code: 'ICE', description: 'Icelandic' },
+            { code: 'IND', description: 'Indonesian' },
+            { code: 'IRI', description: 'Irish' },
+            { code: 'ITA', description: 'Italian' },
+            { code: 'JAP', description: 'Japanese' },
+            { code: 'JAV', description: 'Javanese' },
+            { code: 'KAZ', description: 'Kazakh' },
+            { code: 'KOR', description: 'Korean' },
+            { code: 'KUA', description: 'Oshiwambo' },
+            { code: 'KUR', description: 'Kurdish' },
+            { code: 'LAV', description: 'Latvian' },
+            { code: 'LIT', description: 'Lithuanian' },
+            { code: 'LTZ', description: 'Luxembourgish' },
+            { code: 'MAC', description: 'Macedonian' },
+            { code: 'MAN', description: 'Mandarin' },
+            { code: 'MAY', description: 'Malay' },
+            { code: 'MLT', description: 'Maltese' },
+            { code: 'MOL', description: 'Moldovan' },
+            { code: 'NAM', description: 'Nama / Damara' },
+            { code: 'NDE', description: 'Ndebele' },
+            { code: 'NDO', description: 'Ndonga' },
+            { code: 'NEP', description: 'Nepalese' },
+            { code: 'NOR', description: 'Norwegian' },
+            { code: 'NSO', description: 'Northern Sotho' },
+            { code: 'NYA', description: 'Chewa / nyanga' },
+            { code: 'OKW', description: 'Oshikwanyana' },
+            { code: 'PER', description: 'Persian / farsi' },
+            { code: 'PHI', description: 'Philippine' },
+            { code: 'POL', description: 'Polish' },
+            { code: 'POR', description: 'Portuguese' },
+            { code: 'ROM', description: 'Romanian' },
+            { code: 'RUS', description: 'Russian' },
+            { code: 'SAO', description: 'Samoan' },
+            { code: 'SCR', description: 'Serbo - croat' },
+            { code: 'SER', description: 'Serbian' },
+            { code: 'SHO', description: 'Shona' },
+            { code: 'SLO', description: 'Slovak' },
+            { code: 'SLV', description: 'Slovenian' },
+            { code: 'SPA', description: 'Spanish' },
+            { code: 'SSO', description: 'Sotho' },
+            { code: 'SWA', description: 'Swahili' },
+            { code: 'SWE', description: 'Swedish' },
+            { code: 'SWZ', description: 'Swazi' },
+            { code: 'TAH', description: 'Tahitian' },
+            { code: 'TAM', description: 'Tamil' },
+            { code: 'TEG', description: 'Tegrenah' },
+            { code: 'THA', description: 'Thai' },
+            { code: 'TSO', description: 'Tsonga' },
+            { code: 'TSW', description: 'Tswana' },
+            { code: 'TUR', description: 'Turkish' },
+            { code: 'UKR', description: 'Ukrainian' },
+            { code: 'URD', description: 'Urdu' },
+            { code: 'VEN', description: 'Venda' },
+            { code: 'VIE', description: 'Vietnamese' },
+            { code: 'WEL', description: 'Welsh' },
+            { code: 'WOL', description: 'Wolof' },
+            { code: 'XHO', description: 'Xhosa' },
+            { code: 'ZUL', description: 'Zulu' }
+        ];
+
+        this.form
+            .addQuestion('nativeLanguage', `What is your native language?`)
+            .addOptionControl('nativeLanguage', MetaFormOptionType.SingleSelect,
+                MFOptions.OptionFromList(languages, 'Please Select', false))
+            .addValidator(MFValidator.Required('Please select an answer'));
+
+        this.form
+            .addQuestion('otherLanguages', `Please list any languages you can speak other than English and your native language`)
+            .addTextControl('otherLanguages', MetaFormTextType.SingleLine, 100, 'Other languages');
+
+        this.form
+            .addQuestion('siblings', `How many brothers and sisters do you have?`)
+            .addTextControl('siblings', MetaFormTextType.Numeric, 3, 'Siblings');
+
+        const maritalStatus: MFOptionValue[] = [
+            { code: 'S', description: 'Single' },
+            { code: 'M', description: 'Married' },
+            { code: 'D', description: 'Divorced' },
+            { code: 'X', description: 'Separated' },
+            { code: 'W', description: 'Widowed' }
+        ];
+
+        this.form
+            .addQuestion('maritalStatus', `Marital status`)
+            .addOptionControl('maritalStatus', MetaFormOptionType.SingleSelect,
+                MFOptions.OptionFromList(maritalStatus, null, true))
+            .addValidator(MFValidator.Required('Please select an answer'));
+
+        const religion: MFOptionValue[] = [
+            { code: 'AT', description: 'Atheist' },
+            { code: 'BA', description: 'Baptist' },
+            { code: 'BU', description: 'Buddhist' },
+            { code: 'CA', description: 'Catholic' },
+            { code: 'EX', description: 'Episcopalian / Anglican' },
+            { code: 'HI', description: 'Hindu' },
+            { code: 'JE', description: 'Jewish' },
+            { code: 'JW', description: 'Jehovahs Witness' },
+            { code: 'LU', description: 'Lutheran' },
+            { code: 'ME', description: 'Methodist' },
+            { code: 'MO', description: 'Mormon' },
+            { code: 'MU', description: 'Muslim' },
+            { code: 'NR', description: 'No Religion' },
+            { code: 'OC', description: 'Other Christian' },
+            { code: 'ON', description: 'Other Non - Christian' },
+            { code: 'OP', description: 'Other Protestant' },
+            { code: 'OX', description: 'Orthodox' },
+            { code: 'PN', description: 'Prefer not to say' },
+            { code: 'PR', description: 'Presbyterian / Calvinist' },
+            { code: 'SK', description: 'Sikh' },
+            { code: 'TA', description: 'Tamil' },
+        ];
+
+        this.form
+            .addQuestion('religion', `What is your religion?`)
+            .addOptionControl('religion', MetaFormOptionType.SingleSelect,
+                MFOptions.OptionFromList(religion, 'Please Select', false))
+            .addValidator(MFValidator.Required('Please select an answer'));
+
+        this.form
+            .addQuestion('religionDetails',
+                'Please enter any additional information regarding your religion that you would like host families to know')
+            .addTextControl('religionDetails', MetaFormTextType.MultiLine, 1000);
+
     }
 
     loadFluentForm() {

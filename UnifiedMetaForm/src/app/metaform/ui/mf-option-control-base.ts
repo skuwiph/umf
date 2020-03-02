@@ -85,7 +85,12 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
     }
 
     populateOptions(optionControl: MFOptionControlBase): void {
-        this.options = optionControl.optionList;
+        const nv: MFOptionValue[] = [];
+        if (optionControl.options.nullItem) {
+            nv.push(new MFOptionValue('', optionControl.options.nullItem));
+        }
+
+        this.options = nv.concat(optionControl.optionList); // optionControl.optionList;
 
         this.hasOptions = this.options.length > 0 || this.displayIfEmpty;
 
