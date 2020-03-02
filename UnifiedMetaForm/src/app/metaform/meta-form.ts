@@ -773,15 +773,17 @@ export class MFTimeControl extends MFControl {
 
     getHours(form: MetaForm): string {
         const value = form.getValue(this.name);
-        if (value && value.length > 4) {
-            return value.substr(0, 2);
+        if (value && value.length > 3) {
+            const semiIdx = value.indexOf(':');
+            return value.substr(0, semiIdx);
         }
     }
 
     getMinutes(form: MetaForm): string {
         const value = form.getValue(this.name);
-        if (value && value.length > 4) {
-            return value.substr(3, 2);
+        if (value && value.length > 3) {
+            const semiIdx = value.indexOf(':');
+            return value.substr(semiIdx);
         }
     }
 

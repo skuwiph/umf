@@ -145,6 +145,18 @@ export class TestFormComponent implements OnInit {
         this.form.setValue('short', '2020-6');
 
         this.form
+            .addQuestion('timeTest', 'Time Fields', 'Example of various times')
+            .addTimeControl('time')
+            .addValidator(MFValidator.Required('Please enter a time'));
+        this.form
+            .getQuestion('timeTest')
+            .addTimeControl('time2')
+            .addValidator(MFValidator.Required('Please enter a time'));
+
+        this.form.setValue('time', '18:45');
+        this.form.setValue('time2', '9:00');
+
+        this.form
             .addQuestion('teltest', 'A readonly telephone number')
             .addTelephoneAndIddControl('telnum', 10, 'Number')
             .addValidator(MFValidator.Required('Please enter your telephone number'));
