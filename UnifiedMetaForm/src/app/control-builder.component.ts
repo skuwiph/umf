@@ -114,6 +114,7 @@ export class ControlBuilderComponent implements OnInit, OnChanges {
 
     addSelectedControl() {
         // console.log(`Add: ${this.selectedControlType}`);
+        const ql = this.question.controls.length;
 
         switch (this.selectedControlType) {
             case '0':
@@ -123,7 +124,10 @@ export class ControlBuilderComponent implements OnInit, OnChanges {
                 this.question.addHtml('New <b>html</b> Control');
                 break;
             case '2':
-                this.question.addTextControl(`text${this.question.controls.length}`, MetaFormTextType.SingleLine, 0, 'Placeholder');
+                this.question.addTextControl(`text${ql}`, MetaFormTextType.SingleLine, 0, 'Placeholder');
+                break;
+            case '3':
+                this.question.addOptionControl(`option${ql}`, MetaFormOptionType.SingleSelect, MFOptions.OptionFromList([], 'none selected', true));
                 break;
         }
     }

@@ -1,18 +1,22 @@
-.control-list {
-    border: 1px solid rgb(27, 48, 87);
-    margin-bottom: 1rem;
-    border-radius: 5px;
-    background-color: rgb(221, 230, 240);
-    padding: 0.5rem 0.25rem 0.5rem 0.25rem;
-}
-
 .control-edit-buttons {
     display: flex;
     flex-flow: row-reverse;
-
+    margin-bottom: 1.25rem;
 }
 
 .control-add {
+    border: 1px solid rgb(27, 48, 87);
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    padding: 0 0.25rem;
+    background-color: rgb(221, 230, 240);    
+}
+
+.control-add h2 {
+    font-size: 10pt;
+}
+
+.new-control-add {
     display: flex;
     flex-flow: row;
     align-items: center;

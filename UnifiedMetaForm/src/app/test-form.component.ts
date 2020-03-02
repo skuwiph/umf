@@ -69,7 +69,7 @@ export class TestFormComponent implements OnInit {
     }
 
     formChange(event: MetaFormUserEvent): void {
-        console.log(`Got event ${event.event}`, event.form);
+        // console.log(`Got event ${event.event}`, event.form);
         if (event.event === MetaFormUserEventType.FormSubmit) {
             console.log(`Form submit process: ${JSON.stringify(event.form.answers, null, 2)}`);
         }
@@ -229,6 +229,7 @@ export class TestFormComponent implements OnInit {
         this.form
             .addQuestion('allergyDetails', 'What allergies do you have?', `Please don't worry about hayfever.`)
             .setSection(7)
+            .setDisplayRule('HasAllergies')
             .addTextControl('allergyDetails', MetaFormTextType.MultiLine, 150, 'Details')
             .addValidator(MFValidator.Required('This field is required'));
 

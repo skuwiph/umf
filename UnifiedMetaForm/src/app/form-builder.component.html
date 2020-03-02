@@ -1,22 +1,23 @@
 <div class="container">
-    <div class="header"></div>
-    <div class="lhs">
-    </div>
-    <div class="main">
-    <div class="formDetails">
+    <div class="header">
         <!-- have the add question button here, and/or edit form details -->
         <button class="btn" type="button" (click)="addQuestion()">Add Question</button>
     </div>
-    <app-metaform-display #mainForm [form]='form' [preventFocus]="true" (formEvent)='formChange($event)' (questionSelected)="questionSelected($event)" (controlSelected)="controlSelected($event)"></app-metaform-display>
+    <div class="main">
+    <div class="formDetails">
     </div>
-    <div class="rhs">
+    <app-metaform-display #mainForm [form]='form' [preventFocus]="true" [alwaysShowOptions]="true" (formEvent)='formChange($event)' (questionSelected)="questionSelected($event)" (controlSelected)="controlSelected($event)"></app-metaform-display>
+    </div>
+    <div class="question">
         <ng-container *ngIf="selectedQuestion || selectedControl">
             <app-metaform-display #questionForm [form]='selectedQuestionForm' (formEvent)='selectedQuestionChange($event)'></app-metaform-display>
             <div class="question-edit-buttons">
-                <button class="btn" type="button" (click)="updateQuestion()" [disabled]="!canUpdateQuestion">Update</button>
+                <button [ngClass]="{'disabled':!canUpdateQuestion}" class="btn" type="button" (click)="updateQuestion()" [disabled]="!canUpdateQuestion">Update</button>
             </div>
-            <app-control-builder [question]="selectedQuestion" [control]="selectedControl" (controlUpdated)="controlUpdate($event)"></app-control-builder>
         </ng-container>
+    </div>
+    <div class="control">
+        <app-control-builder [question]="selectedQuestion" [control]="selectedControl" (controlUpdated)="controlUpdate($event)"></app-control-builder>
     </div>
     <div class="footer"></div>
 </div>

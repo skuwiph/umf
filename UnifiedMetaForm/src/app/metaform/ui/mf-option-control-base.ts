@@ -1,4 +1,4 @@
-import { OnInit, Output, EventEmitter } from '@angular/core';
+import { OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MFControlValidityChange, MFOptionValue, MFValueChange, MFOptionsChanged, MFOptionControlBase } from '../meta-form';
 import { MetaFormControlBase } from './mf-control-base';
 import { FormControl } from '@angular/forms';
@@ -8,6 +8,7 @@ import { MetaFormService } from '../meta-form.service';
 
 export abstract class MetaFormOptionControlBase extends MetaFormControlBase implements OnInit {
 
+    @Input() displayIfEmpty = false;
     @Output() optionLoadComplete: EventEmitter<MFOptionsChanged> = new EventEmitter<MFOptionsChanged>();
 
     formControl: FormControl;
@@ -86,7 +87,9 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
     populateOptions(optionControl: MFOptionControlBase): void {
         this.options = optionControl.optionList;
 
-        this.hasOptions = this.options.length > 0;
+        this.hasOptions = this.options.length > 0 || this.displayIfEmpty;
+
+        // console.log(`Has options? ${this.hasOptions} displayIfEmpty: ${this.displayIfEmpty}`);
 
         this.postOptionLoadProcessing();
 
