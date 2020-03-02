@@ -66,7 +66,6 @@ export class MetaFormTelephoneAndIddComponent extends MetaFormControlBase implem
 
     protected setReadonlyValue(): void {
         if (this.readonly) {
-            console.log(`Telephone is readonly`);
             if (this.control.hasValue(this.form)) {
                 const c = this.control as MFTelephoneAndIddControl;
                 const idd = c.getIdd(this.form);

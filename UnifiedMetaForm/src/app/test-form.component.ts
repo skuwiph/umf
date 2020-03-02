@@ -40,7 +40,8 @@ export class TestFormComponent implements OnInit {
 
         this.formList = [
             { code: '', description: 'Please Select' },
-            { code: 'T1', description: 'Readonly form with values' }
+            { code: 'T1', description: 'Read-Only form with values' },
+            { code: 'T2', description: 'Read/Write form with values' }
         ];
     }
 
@@ -55,6 +56,9 @@ export class TestFormComponent implements OnInit {
         switch (code) {
             case 'T1':
                 this.loadT1();
+                break;
+            case 'T2':
+                this.loadT1(false);
                 break;
         }
 
@@ -102,7 +106,7 @@ export class TestFormComponent implements OnInit {
         }
     }
 
-    loadT1() {
+    loadT1(readonly: boolean = true) {
         this.form = this.mfService.createForm('test-1', 'First Test', MetaFormDrawType.EntireForm);
         this.form.addSection('Default');
 
@@ -121,9 +125,9 @@ export class TestFormComponent implements OnInit {
             .addTextControl('multiText', MetaFormTextType.MultiLine)
             .addValidator(MFValidator.Required('Please enter some text'));
 
-        this.form.setValue('multiText', `This is a multi-line answer, which contains sufficient text to test out
-        the line break functionality in the display component. This should be absolutely trivial to display and
-        uses the same functionalilty as the single-line readonly display.`);
+        this.form.setValue('multiText', `This is a multi-line answer, which contains sufficient text to test out`
+            + `the line break functionality in the display component. This should be absolutely trivial to display and `
+            + `uses the same functionalilty as the single-line readonly display.`);
 
         this.form.addQuestion('pwdTest', 'A Pasword Text Field', 'The password should obviously not be displayed above!')
             .addTextControl('pwdText', MetaFormTextType.Password)
@@ -219,7 +223,7 @@ export class TestFormComponent implements OnInit {
 
         this.form.setValue('language2', 'fr');
 
-        this.form.setReadOnly();
+        this.form.setReadOnly(readonly);
     }
 
     loadFluentForm() {

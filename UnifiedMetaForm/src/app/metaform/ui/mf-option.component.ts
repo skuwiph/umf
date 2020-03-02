@@ -25,6 +25,7 @@ import { MetaFormOptionControlBase } from './mf-option-control-base';
                     <select class="mfc mf-option-select" [ngClass]="{'error': inError }" (change)="onChange($event.target.value)"
                     (blur)="onFocusLost()">
                         <option *ngFor="let o of options" class="mf-option-select-item"
+                        [selected]="isSelected(o.code)"
                         [ngClass]="{'opt-selected': isSelected(o.code)}">{{o.description}}</option>
                     </select>
                 </ng-template>

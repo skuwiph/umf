@@ -114,10 +114,14 @@ export class MetaFormOptionMultiComponent extends MetaFormOptionControlBase impl
 
         // This will be a comma-separated list
         const currentlySelected = this.form.getValue(this.control.name);
-        if (currentlySelected && currentlySelected.indexOf(',') > -1) {
-            const split = currentlySelected.split(',');
-            for (const sel of split) {
-                this.selectedItems.set(sel, true);
+        if (currentlySelected) {
+            if (currentlySelected.indexOf(',') > -1) {
+                const split = currentlySelected.split(',');
+                for (const sel of split) {
+                    this.selectedItems.set(sel, true);
+                }
+            } else {
+                this.selectedItems.set(currentlySelected, true);
             }
         }
     }

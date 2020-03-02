@@ -775,7 +775,7 @@ export class MFTimeControl extends MFControl {
         const value = form.getValue(this.name);
         if (value && value.length > 3) {
             const semiIdx = value.indexOf(':');
-            return value.substr(0, semiIdx);
+            return `00${value.substr(0, semiIdx)}`.slice(-2);
         }
     }
 
@@ -783,7 +783,7 @@ export class MFTimeControl extends MFControl {
         const value = form.getValue(this.name);
         if (value && value.length > 3) {
             const semiIdx = value.indexOf(':');
-            return value.substr(semiIdx);
+            return `00${value.substr(semiIdx)}`.slice(-2);
         }
     }
 
