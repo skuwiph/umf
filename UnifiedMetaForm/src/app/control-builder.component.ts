@@ -127,7 +127,14 @@ export class ControlBuilderComponent implements OnInit, OnChanges {
                 this.question.addTextControl(`text${ql}`, MetaFormTextType.SingleLine, 0, 'Placeholder');
                 break;
             case '3':
-                this.question.addOptionControl(`option${ql}`, MetaFormOptionType.SingleSelect, MFOptions.OptionFromList([], 'none selected', true));
+                this.question.addOptionControl(`option${ql}`,
+                    MetaFormOptionType.SingleSelect,
+                    MFOptions.OptionFromList([
+                        { code: '1', description: 'Dummy Option' },
+                        { code: '2', description: 'Dummy Option' }
+                    ],
+                        'none selected',
+                        true));
                 break;
         }
     }

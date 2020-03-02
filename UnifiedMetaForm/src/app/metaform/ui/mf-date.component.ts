@@ -9,25 +9,31 @@ import { MFDateControl } from '../meta-form';
 @Component({
     selector: 'app-mf-date',
     template: `
-<form [ngClass]="{ 'error': inError }" [formGroup]="formGroup">
-<ng-container [ngSwitch]="dateType">
-    <div class="date" *ngSwitchCase="'full'">
-        <input class="mfc dd" [ngClass]="{ 'error': inError }" formControlName="dd" size="2"
-         type="number" name="{{name}}_dd"  placeholder="DD" maxLength="2" (blur)="onFocusLost()">
-        <input class="mm" [ngClass]="{ 'error': inError }" formControlName="mm" size="2"
-         type="number" name="{{name}}_mm"  placeholder="MM" maxLength="2" (blur)="onFocusLost()">
-        <input class="yy" [ngClass]="{ 'error': inError }" formControlName="yyyy" size="4"
-         type="number" name="{{name}}_yyyy"  placeholder="YYYY" maxLength="4" (blur)="onFocusLost()">
-    </div>
-    <div class="shortdate" *ngSwitchCase="'short'">
-        <select class="mfc month" [ngClass]="{ 'error': inError }" formControlName="month" (blur)="onFocusLost()">
-            <option *ngFor="let m of monthList; let i=index" value="{{i}}">{{m}}</option>
-        </select>
-        <input class="yy" [ngClass]="{ 'error': inError }" formControlName="yyyy" size="4"
-        type="number" name="{{name}}_yyyy" placeholder="YYYY" maxLength="4" (blur)="onFocusLost()">
-    </div>
-</ng-container>
-</form>`,
+<div *ngIf="readonly; else edit" class="mf-readonly">
+    {{readonlyValue}}
+</div>
+<ng-template #edit>
+    <form [ngClass]="{ 'error': inError }" [formGroup]="formGroup">
+        <ng-container [ngSwitch]="dateType">
+            <div class="date" *ngSwitchCase="'full'">
+                <input class="mfc dd" [ngClass]="{ 'error': inError }" formControlName="dd" size="2"
+                type="number" name="{{name}}_dd"  placeholder="DD" maxLength="2" (blur)="onFocusLost()">
+                <input class="mm" [ngClass]="{ 'error': inError }" formControlName="mm" size="2"
+                type="number" name="{{name}}_mm"  placeholder="MM" maxLength="2" (blur)="onFocusLost()">
+                <input class="yy" [ngClass]="{ 'error': inError }" formControlName="yyyy" size="4"
+                type="number" name="{{name}}_yyyy"  placeholder="YYYY" maxLength="4" (blur)="onFocusLost()">
+            </div>
+            <div class="shortdate" *ngSwitchCase="'short'">
+                <select class="mfc month" [ngClass]="{ 'error': inError }" formControlName="month" (blur)="onFocusLost()">
+                    <option *ngFor="let m of monthList; let i=index" value="{{i}}">{{m}}</option>
+                </select>
+                <input class="yy" [ngClass]="{ 'error': inError }" formControlName="yyyy" size="4"
+                type="number" name="{{name}}_yyyy" placeholder="YYYY" maxLength="4" (blur)="onFocusLost()">
+            </div>
+        </ng-container>
+    </form>
+</ng-template>
+`,
     styleUrls: ['./mf.components.css']
 })
 export class MetaFormDateComponent extends MetaFormControlBase implements OnInit {
@@ -43,6 +49,9 @@ export class MetaFormDateComponent extends MetaFormControlBase implements OnInit
         if (this.control) {
             const dateControl = this.control as MFDateControl;
             this.name = this.control.name;
+            this.monthList = dateControl.getMonthNames();
+
+            this.setReadonlyValue();
 
             switch (dateControl.dateType) {
                 case MetaFormDateType.Full:
@@ -64,7 +73,6 @@ export class MetaFormDateComponent extends MetaFormControlBase implements OnInit
                     break;
                 case MetaFormDateType.MonthYear:
                     this.dateType = 'short';
-                    this.monthList = dateControl.getMonthNames();
 
                     let month = dateControl.getMonth(this.form);
                     if (!month || month.length === 0) {
@@ -91,6 +99,31 @@ export class MetaFormDateComponent extends MetaFormControlBase implements OnInit
                     break;
             }
 
+        }
+    }
+
+    protected setReadonlyValue(): void {
+        if (this.readonly) {
+            if (this.control.hasValue(this.form)) {
+
+                const dateControl = this.control as MFDateControl;
+                const m = parseInt(dateControl.getMonth(this.form), 10);
+                const y = dateControl.getYear(this.form);
+
+                const monthName = this.monthList[m];
+
+                switch (dateControl.dateType) {
+                    case MetaFormDateType.Full:
+                        const d = parseInt(dateControl.getDay(this.form), 10);
+                        this.readonlyValue = `${d} ${monthName} ${y}`;
+                        break;
+                    case MetaFormDateType.MonthYear:
+                        this.readonlyValue = `${monthName} ${y}`;
+                        break;
+                }
+            } else {
+                this.readonlyValue = 'N/A';
+            }
         }
     }
 

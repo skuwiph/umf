@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MetaFormService } from './metaform/meta-form.service';
 import { MetaForm, MFValidator, MFOptionValue, MFOptions, MFValidatorAsync } from './metaform/meta-form';
 import { MetaFormTextType, MetaFormDateType, MetaFormOptionType, MetaFormDrawType } from './metaform/meta-form-enums';
 import { HttpClient } from '@angular/common/http';
 import { BusinessRuleService } from './metaform/business-rule.service';
-import { MetaFormUserEvent, MetaFormUserEventType } from './metaform/ui/metaform-display.component';
+import { MetaFormUserEvent, MetaFormUserEventType, MetaFormDisplayComponent } from './metaform/ui/metaform-display.component';
 
 @Component({
     selector: 'app-test-form',
@@ -12,10 +12,14 @@ import { MetaFormUserEvent, MetaFormUserEventType } from './metaform/ui/metaform
     styleUrls: ['./test-form.component.css']
 })
 export class TestFormComponent implements OnInit {
+
+    @ViewChild('formDisplay')
+    private formDisplay: MetaFormDisplayComponent;
+
     title = 'UnifiedMetaForm';
     form: MetaForm;
-    displayType = 0;
     loading = true;
+    formList: MFOptionValue[] = [];
 
     constructor(
         private http: HttpClient,
@@ -33,46 +37,89 @@ export class TestFormComponent implements OnInit {
                     this.loadFluentForm();
                     this.loading = false;
                 });
+
+        this.formList = [
+            { code: '', description: 'Please Select' },
+            { code: 'T1', description: 'Readonly form with values' }
+        ];
     }
 
-    changeType(type: number): void {
-        this.displayType = type;
-        this.loading = true;
-
-        if (this.displayType === 2) {
+    formControlChange(code: string) {
+        console.log(`Form selected? ${code}`);
+        if (code === '') {
             this.form = null;
-            this.mfService
-                .loadFormWithName('http://localhost:3000/form', 'test-form')
-                .subscribe(
-                    (f: MetaForm) => {
-                        console.log(`Got form`);
-                        this.form = f;
-                        this.loading = false;
-                    }
-                );
-        } else if (this.displayType === 1) {
-            this.form = null;
-            this.mfService
-                .loadFormWithName('http://localhost:3000/form', 'create-application')
-                .subscribe(
-                    (f: MetaForm) => {
-                        console.log(`Got form`);
-                        this.form = f;
-                        this.loading = false;
-                    }
-                );
-        } else {
-            this.form = null;
-            this.loadFluentForm();
-            this.loading = false;
+            return;
         }
+        this.loading = true;
+        this.form = null;
+        switch (code) {
+            case 'T1':
+                this.loadT1();
+                break;
+        }
+
+        this.formDisplay.refreshCurrentDisplay();
+        this.loading = false;
     }
+
+    // changeType(type: number): void {
+    //     this.displayType = type;
+    //     this.loading = true;
+
+    //     if (this.displayType === 2) {
+    //         this.form = null;
+    //         this.mfService
+    //             .loadFormWithName('http://localhost:3000/form', 'test-form')
+    //             .subscribe(
+    //                 (f: MetaForm) => {
+    //                     console.log(`Got form`);
+    //                     this.form = f;
+    //                     this.loading = false;
+    //                 }
+    //             );
+    //     } else if (this.displayType === 1) {
+    //         this.form = null;
+    //         this.mfService
+    //             .loadFormWithName('http://localhost:3000/form', 'create-application')
+    //             .subscribe(
+    //                 (f: MetaForm) => {
+    //                     console.log(`Got form`);
+    //                     this.form = f;
+    //                     this.loading = false;
+    //                 }
+    //             );
+    //     } else {
+    //         this.form = null;
+    //         this.loadFluentForm();
+    //         this.loading = false;
+    //     }
+    // }
 
     formChange(event: MetaFormUserEvent): void {
         // console.log(`Got event ${event.event}`, event.form);
         if (event.event === MetaFormUserEventType.FormSubmit) {
             console.log(`Form submit process: ${JSON.stringify(event.form.answers, null, 2)}`);
         }
+    }
+
+    loadT1() {
+        this.form = this.mfService.createForm('test-1', 'First Test', MetaFormDrawType.EntireForm);
+        this.form.addSection('Default');
+
+        this.form
+            .addQuestion('dateTest', 'Some Readonly Dates', 'Includes a full date and a month/year date')
+            .addDateControl('full', MetaFormDateType.Full)
+            .addValidator(MFValidator.Required('Please enter a date'));
+
+        this.form
+            .getQuestion('dateTest')
+            .addDateControl('short', MetaFormDateType.MonthYear)
+            .addValidator(MFValidator.Required('Please enter a date'));
+
+        this.form.setValue('full', '2019-09-01');
+        this.form.setValue('short', '2020-6');
+
+        this.form.setReadOnly();
     }
 
     loadFluentForm() {

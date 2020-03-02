@@ -33,6 +33,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.Date">
                                 <app-mf-date [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
                                     (changeValidity)="onControlValidityChange($event)"></app-mf-date>
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.Time">

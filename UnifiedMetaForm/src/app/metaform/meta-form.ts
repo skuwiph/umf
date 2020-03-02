@@ -253,7 +253,7 @@ export class MetaForm {
 
     setReadOnly(readonly: boolean = true): void {
         // Set all questions readonly
-        for(const q of this.questions) {
+        for (const q of this.questions) {
             q.readonly = readonly;
         }
     }
@@ -315,7 +315,7 @@ export class MFQuestion {
     animation?: MFAnimation[];
     controls: MFControl[] = [];
     controlLayout: ControlLayoutStyle = ControlLayoutStyle.Horizontal;
-    
+
     readonly = false;
 
     available = true;
@@ -589,6 +589,10 @@ export class MFControl {
         }
 
         return subject;
+    }
+
+    hasValue(form: MetaForm): boolean {
+        return form.getValue(this.name) !== undefined;
     }
 
     refresh(): void {

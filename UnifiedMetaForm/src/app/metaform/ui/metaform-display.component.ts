@@ -69,7 +69,6 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     }
 
     displayIf(q: MFQuestion): boolean {
-        // console.log(`q.canBeDisplayed() ${q.canBeDisplayed()} && this.ruleMatches(q) ${this.ruleMatches(q)} && q.available ${q.available}`);
         return q.canBeDisplayed() && this.ruleMatches(q) && q.available;
     }
 
