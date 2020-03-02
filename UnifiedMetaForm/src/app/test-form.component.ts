@@ -162,15 +162,23 @@ export class TestFormComponent implements OnInit {
         this.form
             .addQuestion('timeTest', 'Time Fields', 'Example of various times')
             .addTimeControl('time')
+            .addLabel('Start time')
             .addValidator(MFValidator.Required('Please enter a time'));
 
         this.form
             .getQuestion('timeTest')
             .addTimeControl('time2')
+            .addLabel('End time')
+            .addValidator(MFValidator.Required('Please enter a time'));
+
+        this.form
+            .getQuestion('timeTest')
+            .addTimeControl('time3')
             .addValidator(MFValidator.Required('Please enter a time'));
 
         this.form.setValue('time', '18:45');
         this.form.setValue('time2', '9:00');
+        this.form.setValue('time3', '12:00');
 
         this.form
             .addQuestion('teltest', 'A readonly telephone number')

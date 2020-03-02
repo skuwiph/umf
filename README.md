@@ -11,10 +11,6 @@ The following is an incomplete list of changes which need to be made:
 * Versioning between JSON versions and saved data
 
   * Require form-version to be added to the answer data?
-
-* Read-only options
-
-  Need display on controls
   
 * Optional help text
 

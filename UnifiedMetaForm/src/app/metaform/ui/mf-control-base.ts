@@ -9,6 +9,8 @@ export abstract class MetaFormControlBase {
     @Output() changeValidity: EventEmitter<MFControlValidityChange> = new EventEmitter<MFControlValidityChange>();
 
     name: string;
+    labelText: string;
+
     inError = false;
 
     ro = false;

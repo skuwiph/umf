@@ -10,11 +10,14 @@ import { MFTimeControl } from '../meta-form';
     selector: 'app-mf-time',
     template: `
 <div *ngIf="ro; else edit" class="mf-readonly">
-    {{readonlyValue}}
+    <label *ngIf="labelText" class="control-prefix">{{labelText}}</label>{{readonlyValue}}
 </div>
 <ng-template #edit>
-    <form [ngClass]="{ 'error': inError }" [formGroup]="formGroup">
-        <div class="time">
+    <form [ngClass]="{ 'error': inError }" [formGroup]="formGroup" class="control-time">
+    <div class="row-prefix" *ngIf="labelText">
+        <label class="control-prefix">{{labelText}}</label>
+    </div>
+    <div class="time">
             <select class="mfc hh" [ngClass]="{ 'error': inError }" formControlName="hh" (blur)="onFocusLost()">
                 <option *ngFor="let h of hourList; let i=index" value="{{h}}">{{h}}</option>
             </select>
@@ -39,6 +42,7 @@ export class MetaFormTimeComponent extends MetaFormControlBase implements OnInit
         if (this.control) {
             const timeControl = this.control as MFTimeControl;
             this.name = this.control.name;
+            this.labelText = this.control.label;
 
             this.hourList = timeControl.getHourList();
             this.minuteList = timeControl.getMinuteList();

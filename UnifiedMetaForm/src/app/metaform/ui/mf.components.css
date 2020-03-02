@@ -27,6 +27,12 @@ input, select, option, textarea, .mf-option-item {
     border-color: #bbbbbb;
 }
 
+.control-prefix {
+    max-width: 20rem;
+    margin-right: 1rem;
+    text-align:right
+}
+
 /* Standard */
 .mf-readonly {
     margin: 0 0.25rem 0.25rem 0.25rem;
@@ -99,22 +105,29 @@ ul.nobullet {
      padding: 0.5rem 0.25rem;
  }
 
-
 /* Time Component */
+.control-time {
+    display: grid;
+    column-gap: 0rem;
+    grid-template-columns: auto 70%;
+    align-items: center;
+}
 
 .time {
     display: grid;
     column-gap: 0rem;
     grid-template-columns: 3.5rem 0.5rem 3.5rem;
+    align-items: center;
 }
 
 .hh, .mm {
-     max-width: 3.5em;
-     margin: 0;
-     padding: 0.5rem 0.25rem;
+    max-width: 3.5em;
+    margin: 0;
+    padding: 0.5rem 0.2rem;
  }
 
 .separator {
+    max-width: 0.5rem;
     padding: 0.5rem 0.25rem 0 0;
     font-weight: 600;
 }

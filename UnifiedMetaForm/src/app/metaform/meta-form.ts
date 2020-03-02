@@ -503,6 +503,10 @@ export class MFControl {
     // NOTE(Ian): Not sure if necessary or wanted
     autocomplete?: string;
 
+    // NOTE(Ian): Optional prefix label for certain
+    // controls without decent placeholders
+    label?: string;
+
     inError = false;
     errorMessage?: string;
 
@@ -511,6 +515,11 @@ export class MFControl {
     dependencies: string[];
 
     readonly = false;
+
+    addLabel(label: string): MFControl {
+        this.label = label;
+        return this;
+    }
 
     addValidator(validator: MFValidator): MFControl {
         if (!this.validators) {
