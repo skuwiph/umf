@@ -111,6 +111,26 @@ export class TestFormComponent implements OnInit {
             would mirror real-world use (e.g. the controls have been set up as though it were a real fluent form
             and the form itself is set to readonly after data has been added).`)
 
+        this.form.addQuestion('textTest', 'A Single-Line Text Field')
+            .addTextControl('basicText', MetaFormTextType.SingleLine)
+            .addValidator(MFValidator.Required('Please enter some text'));
+
+        this.form.setValue('basicText', `This is a single-line answer`);
+
+        this.form.addQuestion('textTest2', 'A Multi-Line Text Field')
+            .addTextControl('multiText', MetaFormTextType.MultiLine)
+            .addValidator(MFValidator.Required('Please enter some text'));
+
+        this.form.setValue('multiText', `This is a multi-line answer, which contains sufficient text to test out
+        the line break functionality in the display component. This should be absolutely trivial to display and
+        uses the same functionalilty as the single-line readonly display.`);
+
+        this.form.addQuestion('pwdTest', 'A Pasword Text Field', 'The password should obviously not be displayed above!')
+            .addTextControl('pwdText', MetaFormTextType.Password)
+            .addValidator(MFValidator.Required('Please enter a password'));
+
+        this.form.setValue('pwdText', `MyPassword$$$$$1`);
+
         this.form
             .addQuestion('dateTest', 'Some Readonly Dates', 'Includes a full date and a month/year date')
             .addDateControl('full', MetaFormDateType.Full)

@@ -17,6 +17,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.Text">
                                 <app-mf-text [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
                                     (changeValidity)="onControlValidityChange($event)"></app-mf-text>
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.Option">

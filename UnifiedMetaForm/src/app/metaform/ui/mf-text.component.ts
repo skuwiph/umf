@@ -1,16 +1,19 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
-import { MFControl, MFTextControl, MetaForm, MFControlValidityChange } from '../meta-form';
+import { Component, OnInit } from '@angular/core';
+import { MFTextControl } from '../meta-form';
 import { MetaFormService } from '../meta-form.service';
 import { MetaFormTextType } from '../meta-form-enums';
 
 import { FormControl } from '@angular/forms';
-import { EventEmitter } from '@angular/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MetaFormControlBase } from './mf-control-base';
 
 @Component({
     selector: 'app-mf-text',
     template: `
+<div *ngIf="readonly; else edit" class="mf-readonly">
+    {{readonlyValue}}
+</div>
+<ng-template #edit>
     <ng-container *ngIf="textType == 'multi'; else single">
         <textarea [ngClass]="{ 'error': inError }" [formControl]="formControl" class="mfc mf-control-item-multi"
         name="{{name}}" placeholder="{{placeholder}}"
@@ -20,7 +23,8 @@ import { MetaFormControlBase } from './mf-control-base';
         <input [ngClass]="{ 'error': inError }" [formControl]="formControl" class="mfc mf-control-item"
         type="{{textType}}" name="{{name}}" autocomplete="{{autocomplete}}" placeholder="{{placeholder}}"
         maxLength="{{maxLength}}" (blur)="onFocusLost()">
-    </ng-template>`,
+    </ng-template>
+</ng-template>`,
     styleUrls: ['./mf.components.css']
 })
 export class MetaFormTextComponent extends MetaFormControlBase implements OnInit {
@@ -43,6 +47,8 @@ export class MetaFormTextComponent extends MetaFormControlBase implements OnInit
 
             this.placeholder = textControl.placeholder;
             this.maxLength = textControl.maxLength ?? 0;
+
+            this.setReadonlyValue();
 
             switch (textControl.textType) {
                 case MetaFormTextType.SingleLine:
@@ -78,6 +84,30 @@ export class MetaFormTextComponent extends MetaFormControlBase implements OnInit
                     this.checkControlStatus();
                 }
             });
+        }
+    }
+
+    protected setReadonlyValue(): void {
+        if (this.readonly) {
+            if (this.control.hasValue(this.form)) {
+                const textControl = this.control as MFTextControl;
+                switch (textControl.textType) {
+                    case MetaFormTextType.SingleLine:
+                    case MetaFormTextType.Email:
+                    case MetaFormTextType.MultiLine:
+                        this.readonlyValue = this.form.getValue(this.control.name);
+                        break;
+                    case MetaFormTextType.Password:
+                        let lenChar = this.form.getValue(this.control.name).length;
+                        if (lenChar < 1 || lenChar > 8) {
+                            lenChar = 8;
+                        }
+                        this.readonlyValue = ''.padStart(lenChar, `★`);
+                        break;
+                }
+            } else {
+                this.readonlyValue = 'N/A';
+            }
         }
     }
 }
