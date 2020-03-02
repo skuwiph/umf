@@ -8,7 +8,7 @@ import { MetaFormControlBase } from './mf-control-base';
 @Component({
     selector: 'app-mf-toggle',
     template: `
-<div *ngIf="readonly; else edit" class="mf-readonly">
+<div *ngIf="ro; else edit" class="mf-readonly">
     {{readonlyValue}}
 </div>
 <ng-template #edit>
@@ -50,7 +50,8 @@ export class MetaFormToggleComponent extends MetaFormControlBase implements OnIn
     }
 
     protected setReadonlyValue(): void {
-        if (this.readonly) {
+        if (this.readonly || this.control.readonly) {
+            this.ro = true;
             const c = this.control as MFToggleControl;
             if (this.control.hasValue(this.form)) {
                 const value = this.form.getValue(this.name);

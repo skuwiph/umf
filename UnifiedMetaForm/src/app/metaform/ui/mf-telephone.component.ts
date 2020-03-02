@@ -8,7 +8,7 @@ import { MetaFormControlBase } from './mf-control-base';
 @Component({
     selector: 'app-mf-telephone',
     template: `
-<div *ngIf="readonly; else edit" class="mf-readonly">
+<div *ngIf="ro; else edit" class="mf-readonly">
     {{readonlyValue}}
 </div>
 <ng-template #edit>
@@ -65,7 +65,8 @@ export class MetaFormTelephoneAndIddComponent extends MetaFormControlBase implem
     }
 
     protected setReadonlyValue(): void {
-        if (this.readonly) {
+        if (this.readonly || this.control.readonly) {
+            this.ro = true;
             if (this.control.hasValue(this.form)) {
                 const c = this.control as MFTelephoneAndIddControl;
                 const idd = c.getIdd(this.form);

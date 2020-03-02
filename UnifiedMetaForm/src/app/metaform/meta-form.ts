@@ -258,6 +258,23 @@ export class MetaForm {
         }
     }
 
+    setReadOnlyControl(control: string, readonly: boolean = true): void {
+        let found = false;
+
+        for (const q of this.questions) {
+            const c = q.controls.find(ctr => ctr.name === control);
+            if (c) {
+                found = true;
+                c.readonly = readonly;
+                console.log(`Found ${c.name}, readonly = ${c.readonly}`);
+            }
+        }
+
+        if (!found) {
+            console.warn(`The control ${control} was not found!`);
+        }
+    }
+
     toJson(): string {
         return JSON.stringify(this, metaFormJsonReplacer, 2);
     }
@@ -492,6 +509,8 @@ export class MFControl {
     isReferencedBy: string[];
     references: string[];
     dependencies: string[];
+
+    readonly = false;
 
     addValidator(validator: MFValidator): MFControl {
         if (!this.validators) {
@@ -1573,6 +1592,7 @@ function metaFormJsonReplacer(key: string, value: any) {
         case 'isReferencedBy':
         case 'references':
         case 'referencesField':
+        case 'readonly':
             return undefined;
         default:
             return value;

@@ -41,7 +41,9 @@ export class TestFormComponent implements OnInit {
         this.formList = [
             { code: '', description: 'Please Select' },
             { code: 'T1', description: 'Read-Only form with values' },
-            { code: 'T2', description: 'Read/Write form with values' }
+            { code: 'T2', description: 'Read/Write form with values' },
+            { code: 'T3', description: 'Read/Write form with a couple of RO questions' },
+            { code: 'T4', description: 'Read/Write form with a RO control' }
         ];
     }
 
@@ -59,6 +61,15 @@ export class TestFormComponent implements OnInit {
                 break;
             case 'T2':
                 this.loadT1(false);
+                break;
+            case 'T3':
+                this.loadT1(false);
+                this.form.getQuestion('timeTest').readonly = true;
+                this.form.getQuestion('option2').readonly = true;
+                break;
+            case 'T4':
+                this.loadT1(false);
+                this.form.setReadOnlyControl('toggleOff', true);
                 break;
         }
 
@@ -111,9 +122,9 @@ export class TestFormComponent implements OnInit {
         this.form.addSection('Default');
 
         this.form.addQuestion('info')
-            .addHtml(`<b>Note</b>:All controls have a required validator, so will be set up in such a fashion that
-            would mirror real-world use (e.g. the controls have been set up as though it were a real fluent form
-            and the form itself is set to readonly after data has been added).`)
+            .addHtml(`<b>Note</b>:All controls have a required validator, so will be set up in such a fashion that `
+                + `would mirror real-world use (e.g. the controls have been set up as though it were a real fluent form `
+                + `and the form itself is set to readonly after data has been added).`)
 
         this.form.addQuestion('textTest', 'A Single-Line Text Field')
             .addTextControl('basicText', MetaFormTextType.SingleLine)
@@ -125,7 +136,7 @@ export class TestFormComponent implements OnInit {
             .addTextControl('multiText', MetaFormTextType.MultiLine)
             .addValidator(MFValidator.Required('Please enter some text'));
 
-        this.form.setValue('multiText', `This is a multi-line answer, which contains sufficient text to test out`
+        this.form.setValue('multiText', `This is a multi-line answer, which contains sufficient text to test out `
             + `the line break functionality in the display component. This should be absolutely trivial to display and `
             + `uses the same functionalilty as the single-line readonly display.`);
 
@@ -227,7 +238,7 @@ export class TestFormComponent implements OnInit {
     }
 
     loadFluentForm() {
-        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.EntireForm);
+        this.form = this.mfService.createForm('test-form', 'A Test Form', MetaFormDrawType.SingleQuestion);
         this.form
             .addSection('First')
             .addSection('Second')

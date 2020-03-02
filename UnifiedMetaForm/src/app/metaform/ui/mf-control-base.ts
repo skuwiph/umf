@@ -11,6 +11,7 @@ export abstract class MetaFormControlBase {
     name: string;
     inError = false;
 
+    ro = false;
     readonlyValue: string;
 
     constructor() { }

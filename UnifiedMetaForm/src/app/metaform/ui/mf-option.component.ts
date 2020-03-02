@@ -8,7 +8,7 @@ import { MetaFormOptionControlBase } from './mf-option-control-base';
 @Component({
     selector: 'app-mf-option',
     template: `
-<div *ngIf="readonly; else edit" class="mf-readonly">
+<div *ngIf="ro; else edit" class="mf-readonly">
     {{readonlyValue}}
 </div>
 <ng-template #edit>
@@ -77,7 +77,8 @@ export class MetaFormOptionComponent extends MetaFormOptionControlBase implement
     }
 
     protected setReadonlyValue(): void {
-        if (this.readonly) {
+        if (this.readonly || this.control.readonly) {
+            this.ro = true;
             if (this.control.hasValue(this.form)) {
                 const c = this.control as MFOptionControl;
                 const opts = c.options.list;

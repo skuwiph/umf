@@ -29,7 +29,8 @@ input, select, option, textarea, .mf-option-item {
 
 /* Standard */
 .mf-readonly {
-    margin: 0 1.5rem 0.25rem 1.5rem;
+    margin: 0 0.25rem 0.25rem 0.25rem;
+    font-weight: 500;
 }
 
 /* Html */

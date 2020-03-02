@@ -9,7 +9,7 @@ import { MFDateControl } from '../meta-form';
 @Component({
     selector: 'app-mf-date',
     template: `
-<div *ngIf="readonly; else edit" class="mf-readonly">
+<div *ngIf="ro; else edit" class="mf-readonly">
     {{readonlyValue}}
 </div>
 <ng-template #edit>
@@ -103,7 +103,8 @@ export class MetaFormDateComponent extends MetaFormControlBase implements OnInit
     }
 
     protected setReadonlyValue(): void {
-        if (this.readonly) {
+        if (this.readonly || this.control.readonly) {
+            this.ro = true;
             if (this.control.hasValue(this.form)) {
 
                 const dateControl = this.control as MFDateControl;

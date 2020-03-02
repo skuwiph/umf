@@ -10,7 +10,7 @@ import { MetaFormControlBase } from './mf-control-base';
 @Component({
     selector: 'app-mf-text',
     template: `
-<div *ngIf="readonly; else edit" class="mf-readonly">
+<div *ngIf="ro; else edit" class="mf-readonly">
     {{readonlyValue}}
 </div>
 <ng-template #edit>
@@ -88,7 +88,8 @@ export class MetaFormTextComponent extends MetaFormControlBase implements OnInit
     }
 
     protected setReadonlyValue(): void {
-        if (this.readonly) {
+        if (this.readonly || this.control.readonly) {
+            this.ro = true;
             if (this.control.hasValue(this.form)) {
                 const textControl = this.control as MFTextControl;
                 switch (textControl.textType) {

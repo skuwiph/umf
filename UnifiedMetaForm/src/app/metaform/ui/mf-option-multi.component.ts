@@ -7,7 +7,7 @@ import { MFOptionMultiControl } from '../meta-form';
 @Component({
     selector: 'app-mf-option-multi',
     template: `
-<div *ngIf="readonly; else edit" class="mf-readonly">
+<div *ngIf="ro; else edit" class="mf-readonly">
     <ul class="nobullet"><li *ngFor="let selected of readonlyItems">{{selected}}</li></ul>
 </div>
 <ng-template #edit>
@@ -40,7 +40,8 @@ export class MetaFormOptionMultiComponent extends MetaFormOptionControlBase impl
     }
 
     protected setReadonlyValue(): void {
-        if (this.readonly) {
+        if (this.readonly || this.control.readonly) {
+            this.ro = true;
             if (this.control.hasValue(this.form)) {
                 const c = this.control as MFOptionMultiControl;
                 const opts = c.options.list;

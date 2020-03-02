@@ -9,7 +9,7 @@ import { MFTimeControl } from '../meta-form';
 @Component({
     selector: 'app-mf-time',
     template: `
-<div *ngIf="readonly; else edit" class="mf-readonly">
+<div *ngIf="ro; else edit" class="mf-readonly">
     {{readonlyValue}}
 </div>
 <ng-template #edit>
@@ -64,7 +64,8 @@ export class MetaFormTimeComponent extends MetaFormControlBase implements OnInit
     }
 
     protected setReadonlyValue(): void {
-        if (this.readonly) {
+        if (this.readonly || this.control.readonly) {
+            this.ro = true;
             if (this.control.hasValue(this.form)) {
                 const c = this.control as MFTimeControl;
                 const h = c.getHours(this.form);
