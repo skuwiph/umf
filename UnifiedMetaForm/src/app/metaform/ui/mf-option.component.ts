@@ -8,25 +8,30 @@ import { MetaFormOptionControlBase } from './mf-option-control-base';
 @Component({
     selector: 'app-mf-option',
     template: `
-<div *ngIf="loaded && hasOptions">
-    <ng-container [ngSwitch]="optionType">
-        <ng-container *ngSwitchCase="'single'">
-            <ng-container *ngIf="expandOptions; else dropdown">
-                <div class="mf-options" [ngClass]="{'opt-horiz': isHorizontal, 'opt-vert': isVertical, 'error': inError }">
-                    <button type="button" *ngFor="let o of options" class="mfc mf-option-item"
-                     [ngClass]="{'opt-selected': isSelected(o.code)}" (click)="selectItem(o.code)">{{o.description}}</button>
-                </div>
+<div *ngIf="readonly; else edit" class="mf-readonly">
+    {{readonlyValue}}
+</div>
+<ng-template #edit>
+    <div *ngIf="loaded && hasOptions">
+        <ng-container [ngSwitch]="optionType">
+            <ng-container *ngSwitchCase="'single'">
+                <ng-container *ngIf="expandOptions; else dropdown">
+                    <div class="mf-options" [ngClass]="{'opt-horiz': isHorizontal, 'opt-vert': isVertical, 'error': inError }">
+                        <button type="button" *ngFor="let o of options" class="mfc mf-option-item"
+                        [ngClass]="{'opt-selected': isSelected(o.code)}" (click)="selectItem(o.code)">{{o.description}}</button>
+                    </div>
+                </ng-container>
+                <ng-template #dropdown>
+                    <select class="mfc mf-option-select" [ngClass]="{'error': inError }" (change)="onChange($event.target.value)"
+                    (blur)="onFocusLost()">
+                        <option *ngFor="let o of options" class="mf-option-select-item"
+                        [ngClass]="{'opt-selected': isSelected(o.code)}">{{o.description}}</option>
+                    </select>
+                </ng-template>
             </ng-container>
-            <ng-template #dropdown>
-                <select class="mfc mf-option-select" [ngClass]="{'error': inError }" (change)="onChange($event.target.value)"
-                 (blur)="onFocusLost()">
-                    <option *ngFor="let o of options" class="mf-option-select-item"
-                    [ngClass]="{'opt-selected': isSelected(o.code)}">{{o.description}}</option>
-                </select>
-            </ng-template>
         </ng-container>
-    </ng-container>
-</div>`,
+    </div>
+</ng-template>`,
     styleUrls: ['./mf.components.css']
 })
 export class MetaFormOptionComponent extends MetaFormOptionControlBase implements OnInit {
@@ -41,6 +46,7 @@ export class MetaFormOptionComponent extends MetaFormOptionControlBase implement
 
         if (this.control) {
             const optionControl = this.control as MFOptionControl;
+
             switch (optionControl.optionType) {
                 case MetaFormOptionType.SingleSelect:
                     this.optionType = 'single';
@@ -64,6 +70,22 @@ export class MetaFormOptionComponent extends MetaFormOptionControlBase implement
         } else {
             // If there are no options, clear this data item
             this.selectItem('', false);
+        }
+
+        this.setReadonlyValue();
+    }
+
+    protected setReadonlyValue(): void {
+        if (this.readonly) {
+            if (this.control.hasValue(this.form)) {
+                const c = this.control as MFOptionControl;
+                const opts = c.options.list;
+                const value = this.form.getValue(this.name);
+                const selected = opts.find(o => o.code === value);
+                this.readonlyValue = selected.description;
+            } else {
+                this.readonlyValue = 'N/A';
+            }
         }
     }
 

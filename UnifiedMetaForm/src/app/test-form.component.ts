@@ -174,6 +174,50 @@ export class TestFormComponent implements OnInit {
 
         this.form.setValue('toggleOn', 'true');
 
+        const options2: MFOptionValue[] = [];
+        options2.push(new MFOptionValue('en', 'English'));
+        options2.push(new MFOptionValue('fr', 'French'));
+        options2.push(new MFOptionValue('de', 'German'));
+        options2.push(new MFOptionValue('es', 'Spanish'));
+
+        const o2 = MFOptions.OptionFromList(options2);
+
+        this.form
+            .addQuestion('option2', 'Single select option from list')
+            .addOptionControl('option2', MetaFormOptionType.SingleSelect, o2)
+            .addValidator(MFValidator.Required('Please select an option'));
+
+        const o3 = MFOptions.OptionFromUrl('http://localhost:3000/country', 'Please Select', false);
+
+        this.form
+            .addQuestion('country', 'Single select option from URL')
+            .setSection(9)
+            .addOptionControl('countryCode', MetaFormOptionType.SingleSelect, o3)
+            .addValidator(MFValidator.Required('Please select an option'));
+
+        this.form.setValue('option2', 'fr');
+        this.form.setValue('countryCode', 'DE');
+
+        this.form
+            .addQuestion('multiOptTest', 'Multi select option from list')
+            .addOptionMultiControl('language', o2)
+            .addValidator(MFValidator.Required('Please select an option'));
+
+        this.form.setValue('language', 'en,de,es');
+
+        this.form
+            .addQuestion('multiOptTest2', 'Multi select option from URL')
+            .addOptionMultiControl('countryCode2', o3)
+            .addValidator(MFValidator.Required('Please select an option'));
+
+        this.form.setValue('countryCode2', 'FR,ES');
+
+        this.form
+            .addQuestion('multiOptTest3', 'Multi select option from list with one selection')
+            .addOptionMultiControl('language2', o2)
+            .addValidator(MFValidator.Required('Please select an option'));
+
+        this.form.setValue('language2', 'fr');
 
         this.form.setReadOnly();
     }
