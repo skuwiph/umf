@@ -8,13 +8,18 @@ import { MetaFormControlBase } from './mf-control-base';
 @Component({
     selector: 'app-mf-toggle',
     template: `
+<div *ngIf="readonly; else edit" class="mf-readonly">
+    {{readonlyValue}}
+</div>
+<ng-template #edit>
     <div class="toggle mf-control-item" [ngClass]="{'error': inError}" >
         <label class="textlabel">{{textLabel}}</label>
         <label class="switch">
             <input type="checkbox" name="{{name}}" [formControl]="formControl">
             <span class="slider round"></span>
         </label>
-    </div>`,
+    </div>
+</ng-template>`,
     styleUrls: ['./mf.components.css']
 })
 export class MetaFormToggleComponent extends MetaFormControlBase implements OnInit {
@@ -32,6 +37,8 @@ export class MetaFormToggleComponent extends MetaFormControlBase implements OnIn
             this.name = this.control.name;
             this.textLabel = toggle.text;
 
+            this.setReadonlyValue();
+
             this.formControl.setValue(this.form.getValue(this.name));
 
             this.formControl.valueChanges
@@ -39,6 +46,27 @@ export class MetaFormToggleComponent extends MetaFormControlBase implements OnIn
                     this.form.setValue(this.control.name, obs);
                     this.checkControlStatus();
                 });
+        }
+    }
+
+    protected setReadonlyValue(): void {
+        if (this.readonly) {
+            if (this.control.hasValue(this.form)) {
+                const c = this.control as MFToggleControl;
+                const value = this.form.getValue(this.name);
+                let displayValue = value;
+
+                if (value.toLowerCase() === 'true' || value.toLowerCase() === 'y'
+                    || value.toLowerCase() === 'yes' || value.toLowerCase() === 'on') {
+                    displayValue = 'Yes';
+                } else {
+                    displayValue = 'No';
+                }
+
+                this.readonlyValue = displayValue;
+            } else {
+                this.readonlyValue = 'No';
+            }
         }
     }
 }

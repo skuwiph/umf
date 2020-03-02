@@ -49,6 +49,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.Toggle">
                                 <app-mf-toggle [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
                                     (changeValidity)="onControlValidityChange($event)"></app-mf-toggle>
                             </ng-container>
                             <ng-container *ngSwitchDefault><b>No control implementation:</b> <pre>{{c | json}}</pre></ng-container>

@@ -148,6 +148,7 @@ export class TestFormComponent implements OnInit {
             .addQuestion('timeTest', 'Time Fields', 'Example of various times')
             .addTimeControl('time')
             .addValidator(MFValidator.Required('Please enter a time'));
+
         this.form
             .getQuestion('timeTest')
             .addTimeControl('time2')
@@ -162,6 +163,17 @@ export class TestFormComponent implements OnInit {
             .addValidator(MFValidator.Required('Please enter your telephone number'));
 
         this.form.setValue('telnum', '+44:7714276588');
+
+        this.form
+            .addQuestion('toggleTest', 'Toggle Fields', 'Example of On and Off toggles')
+            .addToggleControl('toggleOn', 'This toggle should be on');
+
+        this.form
+            .getQuestion('toggleTest')
+            .addToggleControl('toggleOff', 'This toggle should be off');
+
+        this.form.setValue('toggleOn', 'true');
+
 
         this.form.setReadOnly();
     }
