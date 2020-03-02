@@ -8,6 +8,10 @@ import { MetaFormControlBase } from './mf-control-base';
 @Component({
     selector: 'app-mf-telephone',
     template: `
+<div *ngIf="readonly; else edit" class="mf-readonly">
+    {{readonlyValue}}
+</div>
+<ng-template #edit>
     <form [ngClass]="{ 'error': inError }" [formGroup]="formGroup">
         <div class="telephone">
             <select [ngClass]="{ 'error': inError }" formControlName="idd" class="mfc idd mf-control-item" (blur)="onFocusLost()">
@@ -16,7 +20,8 @@ import { MetaFormControlBase } from './mf-control-base';
             <input [ngClass]="{ 'error': inError }" formControlName="number" class="mfc telnum mf-control-item"
             type="number" placeholder="{{placeholder}}" maxLength="{{maxLength}}" (blur)="onFocusLost()">
         </div>
-    </form>`,
+    </form>
+</ng-template>`,
     styleUrls: ['./mf.components.css']
 })
 export class MetaFormTelephoneAndIddComponent extends MetaFormControlBase implements OnInit {
@@ -30,6 +35,7 @@ export class MetaFormTelephoneAndIddComponent extends MetaFormControlBase implem
 
     ngOnInit(): void {
         if (this.control) {
+
             const telControl = this.control as MFTelephoneAndIddControl;
 
             this.formGroup = new FormGroup({
@@ -44,6 +50,8 @@ export class MetaFormTelephoneAndIddComponent extends MetaFormControlBase implem
 
             this.iddCodes = IddCode.getIddList();
 
+            this.setReadonlyValue();
+
             this.formGroup.valueChanges.subscribe(obs => {
                 if (obs.idd && obs.number) {
                     const telephoneWithIdd = `${obs.idd}:${obs.number}`;
@@ -55,4 +63,20 @@ export class MetaFormTelephoneAndIddComponent extends MetaFormControlBase implem
             });
         }
     }
+
+    protected setReadonlyValue(): void {
+        if (this.readonly) {
+            console.log(`Telephone is readonly`);
+            if (this.control.hasValue(this.form)) {
+                const c = this.control as MFTelephoneAndIddControl;
+                const idd = c.getIdd(this.form);
+                const num = c.getNumber(this.form);
+
+                this.readonlyValue = `${idd} ${num}`;
+            } else {
+                this.readonlyValue = 'N/A';
+            }
+        }
+    }
+
 }

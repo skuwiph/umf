@@ -122,7 +122,7 @@ export class MetaForm {
         return this;
     }
 
-    addQuestion(name: string, caption: string, footnote?: string, layout?: ControlLayoutStyle): MFQuestion {
+    addQuestion(name: string, caption?: string, footnote?: string, layout?: ControlLayoutStyle): MFQuestion {
         const q = new MFQuestion();
         q.controls = [];
         q.controlLayout = layout ?? ControlLayoutStyle.Vertical;
@@ -262,7 +262,7 @@ export class MetaForm {
         return JSON.stringify(this, metaFormJsonReplacer, 2);
     }
 
-    private pushQuestion(q: MFQuestion, name: string, caption: string) {
+    private pushQuestion(q: MFQuestion, name: string, caption?: string) {
         if (!this.questions) {
             this.questions = [];
         }
@@ -308,7 +308,7 @@ export class MetaForm {
 
 export class MFQuestion {
     sectionId: number;
-    caption: string;
+    caption?: string;
     captionFootnote?: string;
     name: string;
     ruleToMatch?: string;

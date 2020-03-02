@@ -27,6 +27,12 @@ input, select, option, textarea, .mf-option-item {
     border-color: #bbbbbb;
 }
 
+/* Standard */
+.mf-readonly {
+    margin-left: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
 /* Html */
 .mf-html-content {
     line-height: 1.5rem;

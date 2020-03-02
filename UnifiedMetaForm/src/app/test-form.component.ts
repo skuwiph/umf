@@ -106,6 +106,11 @@ export class TestFormComponent implements OnInit {
         this.form = this.mfService.createForm('test-1', 'First Test', MetaFormDrawType.EntireForm);
         this.form.addSection('Default');
 
+        this.form.addQuestion('info')
+            .addHtml(`<b>Note</b>:All controls have a required validator, so will be set up in such a fashion that
+            would mirror real-world use (e.g. the controls have been set up as though it were a real fluent form
+            and the form itself is set to readonly after data has been added).`)
+
         this.form
             .addQuestion('dateTest', 'Some Readonly Dates', 'Includes a full date and a month/year date')
             .addDateControl('full', MetaFormDateType.Full)
@@ -118,6 +123,13 @@ export class TestFormComponent implements OnInit {
 
         this.form.setValue('full', '2019-09-01');
         this.form.setValue('short', '2020-6');
+
+        this.form
+            .addQuestion('teltest', 'A readonly telephone number')
+            .addTelephoneAndIddControl('telnum', 10, 'Number')
+            .addValidator(MFValidator.Required('Please enter your telephone number'));
+
+        this.form.setValue('telnum', '+44:7714276588');
 
         this.form.setReadOnly();
     }

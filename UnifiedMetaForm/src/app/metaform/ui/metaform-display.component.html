@@ -4,7 +4,7 @@
     <ng-container *ngIf="display?.questions">
         <ng-container *ngFor="let q of display.questions">
             <div class="mf-question" [hidden]="!displayIf(q)" (click)="questionClicked($event, q)">
-                <div class="mf-caption"><label class="caption">{{q.caption}}</label></div>
+                <div class="mf-caption" *ngIf="q.caption"><label class="caption">{{q.caption}}</label></div>
                 <div class="mf-controls"
                     [ngClass]="{'layout-horiz': q.controlLayout === 0, 'layout-vert': q.controlLayout === 1}">
                     <div class="mf-control" *ngFor="let c of q.controls" (click)="controlClicked($event, q, c)">
@@ -42,6 +42,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.TelephoneAndIddCode">
                                 <app-mf-telephone [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
                                     (changeValidity)="onControlValidityChange($event)"></app-mf-telephone>
                             </ng-container>
                             <ng-container *ngSwitchCase="controlType.Toggle">
