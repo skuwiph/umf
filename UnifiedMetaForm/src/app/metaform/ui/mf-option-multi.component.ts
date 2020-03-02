@@ -1,9 +1,8 @@
-import { Component, OnInit, SecurityContext } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { MetaFormService } from '../meta-form.service';
 import { MetaFormOptionControlBase } from './mf-option-control-base';
 import { MFOptionMultiControl } from '../meta-form';
-import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-mf-option-multi',
@@ -28,7 +27,7 @@ export class MetaFormOptionMultiComponent extends MetaFormOptionControlBase impl
 
     selectedItems: Map<string, boolean> = new Map<string, boolean>();
     readonlyItems: string[] = [];
-    constructor(formService: MetaFormService, private sanitiser: DomSanitizer) { super(formService); }
+    constructor(formService: MetaFormService) { super(formService); }
 
     ngOnInit(): void {
         super.ngOnInit();
