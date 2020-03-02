@@ -160,6 +160,10 @@ export class MetaForm {
         return this.answers.getValue(name);
     }
 
+    getValueTime(name: string): MFTimeValue {
+        return MFTimeControl.getTimeFrom(this.getValue(name));
+    }
+
     getValueAsDate(name: string): Date {
         const dateValue = this.answers.getValue(name);
         if (!dateValue || dateValue.length === 0) {
@@ -799,20 +803,44 @@ export class MFTimeControl extends MFControl {
     hourEnd: number;
     minuteStep: number;
 
-    getHours(form: MetaForm): string {
-        const value = form.getValue(this.name);
+    static getTimeFrom(value: string): MFTimeValue {
+        const hours = MFTimeControl.getHourPart(value);
+        const minutes = MFTimeControl.getMinutePart(value);
+
+        if (hours && minutes) {
+            const t: MFTimeValue = {
+                hh: parseInt(hours, 10),
+                mm: parseInt(minutes, 10)
+            };
+
+            return t;
+        } else {
+            return null;
+        }
+    }
+
+    static getHourPart(value: string): string {
         if (value && value.length > 3) {
             const semiIdx = value.indexOf(':');
             return `00${value.substr(0, semiIdx)}`.slice(-2);
         }
+        return null;
     }
 
-    getMinutes(form: MetaForm): string {
-        const value = form.getValue(this.name);
+    static getMinutePart(value: string): string {
         if (value && value.length > 3) {
             const semiIdx = value.indexOf(':');
             return `00${value.substr(semiIdx)}`.slice(-2);
         }
+        return null;
+    }
+
+    getHours(form: MetaForm): string {
+        return MFTimeControl.getHourPart(form.getValue(this.name));
+    }
+
+    getMinutes(form: MetaForm): string {
+        return MFTimeControl.getMinutePart(form.getValue(this.name));
     }
 
     getHourList(): string[] {
@@ -1606,4 +1634,20 @@ function metaFormJsonReplacer(key: string, value: any) {
         default:
             return value;
     }
+}
+
+export interface MFTimeValue {
+    hh: number;
+    mm: number;
+}
+
+export interface MFDateValue {
+    date: number;
+    month: number;
+    year: number;
+}
+
+export interface MFTelephoneValue {
+    idd: string;
+    number: string;
 }
