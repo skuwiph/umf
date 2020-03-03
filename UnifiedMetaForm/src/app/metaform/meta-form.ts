@@ -381,11 +381,13 @@ export class MFQuestion {
         return this;
     }
 
-    addOptionControl(name: string, optionType: MetaFormOptionType, options?: MFOptions): MFOptionControl {
+    // tslint:disable-next-line: max-line-length
+    addOptionControl(name: string, optionType: MetaFormOptionType, options?: MFOptions, optionLayout?: ControlLayoutStyle): MFOptionControl {
         const c = new MFOptionControl();
 
         c.controlType = MetaFormControlType.Option;
         c.optionType = optionType;
+        c.optionLayout = optionLayout ?? ControlLayoutStyle.Vertical;
         c.options = options;
         c.name = name;
         c.validators = [];
@@ -396,10 +398,11 @@ export class MFQuestion {
         return c;
     }
 
-    addOptionMultiControl(name: string, options?: MFOptions): MFOptionMultiControl {
+    addOptionMultiControl(name: string, options?: MFOptions, optionLayout?: ControlLayoutStyle): MFOptionMultiControl {
         const c = new MFOptionMultiControl();
 
         c.controlType = MetaFormControlType.OptionMulti;
+        c.optionLayout = optionLayout ?? ControlLayoutStyle.Vertical;
         c.options = options;
         c.name = name;
         c.validators = [];

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MetaFormService } from './metaform/meta-form.service';
 import { MetaForm, MFValidator, MFOptionValue, MFOptions, MFValidatorAsync } from './metaform/meta-form';
-import { MetaFormTextType, MetaFormDateType, MetaFormOptionType, MetaFormDrawType } from './metaform/meta-form-enums';
+import { MetaFormTextType, MetaFormDateType, MetaFormOptionType, MetaFormDrawType, ControlLayoutStyle } from './metaform/meta-form-enums';
 import { HttpClient } from '@angular/common/http';
 import { BusinessRuleService } from './metaform/business-rule.service';
 import { MetaFormUserEvent, MetaFormUserEventType, MetaFormDisplayComponent } from './metaform/ui/metaform-display.component';
@@ -47,7 +47,7 @@ export class TestFormComponent implements OnInit {
             { code: 'T4', description: 'Read/Write form with a RO control' },
 
             { code: 'AP1', description: 'Au Pair - About You' },
-
+            { code: 'AP2', description: 'Au Pair - Medical and Health' },
         ];
     }
 
@@ -77,6 +77,9 @@ export class TestFormComponent implements OnInit {
                 break;
             case 'AP1':
                 this.loadAPAboutYou();
+                break;
+            case 'AP2':
+                this.loadAPMedicalAndHealth();
                 break;
         }
 
@@ -287,13 +290,14 @@ export class TestFormComponent implements OnInit {
             .addValidator(MFValidator.Required('Please select an answer'));
 
         const yesno: MFOptionValue[] = [
-            { code: 'Y', description: 'Yes - I haved lived away from home for more than two months' },
-            { code: 'N', description: 'No - I have not lived away from home for more than two months' }
+            { code: 'Y', description: 'Yes' },
+            { code: 'N', description: 'No' }
         ];
 
         this.form
             .addQuestion('livedAway', `Have you lived away from home for two months or more?`)
-            .addOptionControl('livedAway', MetaFormOptionType.SingleSelect, MFOptions.OptionFromList(yesno, null, true))
+            .addOptionControl('livedAway',
+                MetaFormOptionType.SingleSelect, MFOptions.OptionFromList(yesno, null, true), ControlLayoutStyle.Horizontal)
             .addValidator(MFValidator.Required('Please select an answer'));
 
         this.ruleService
@@ -459,6 +463,33 @@ export class TestFormComponent implements OnInit {
             .addQuestion('religionDetails',
                 'Please enter any additional information regarding your religion that you would like host families to know')
             .addTextControl('religionDetails', MetaFormTextType.MultiLine, 1000);
+
+    }
+
+    loadAPMedicalAndHealth() {
+        this.form = this.mfService.createForm('medical-and-health', 'Medical and Health', MetaFormDrawType.EntireForm);
+        this.form.addSection('Default');
+
+        this.form
+            .addQuestion('gdpr', 'Note')
+            .addHtml(`As part of your application to the Program, we need to collect, use, store and share certain information
+             about your health (including information contained in the medical report we ask you to provide).
+              We do so to enable us to assess your fitness to take part in the Program (including allergies, etc.),
+               and so that we or your host family can provide assistance if a medical emergency arises whilst you are
+                taking part in the Program. Please read AIFS's <a href="https://www.aupairinamerica.co.uk/privacy-policy/index.asp"
+                 target="_blank"> Privacy Policy</a> carefully for full details on how we process your health information,
+                  the grounds we rely on to process that information and how long we retain it.`);
+
+        this.form
+            .addQuestion('medicalCondition',
+                'Select the appropriate option(s) if you presently suffer or have ever had/experienced',
+                null, ControlLayoutStyle.Horizontal)
+            .addOptionMultiControl('medicalCondition',
+                MFOptions.OptionFromList(
+                    this.getMedicalConditions(),
+                    null,
+                    true),
+                ControlLayoutStyle.Horizontal);
 
     }
 
@@ -717,4 +748,69 @@ export class TestFormComponent implements OnInit {
 
     // }
 
+    private getMedicalConditions(): MFOptionValue[] {
+        return [
+            { code: 'ACN', description: 'Acne / Skin problems' },
+            { code: 'AAB', description: 'Alcohol / Drug / Substance abuse' },
+            { code: 'ANA', description: 'Anaemia' },
+            { code: 'ANX', description: 'Anxiety / Nervous condition' },
+            { code: 'ART', description: 'Arthritis' },
+            { code: 'AST', description: 'Asthma / Respiratory' },
+            { code: 'BLD', description: 'Blood disorders' },
+            { code: 'CAN', description: 'Cancer' },
+            { code: 'CHP', description: 'Chickenpox' },
+            { code: 'COS', description: 'Surgery(Major / Cosmetic)' },
+            { code: 'COU', description: 'Counselling / Psychotherapy' },
+            { code: 'CRF', description: 'Chronic fatigue' },
+            { code: 'DEP', description: 'Depression' },
+            { code: 'DIA', description: 'Diabetes' },
+            { code: 'DIZ', description: 'Dizziness / Fainting' },
+            { code: 'EAR', description: 'Ear Infection' },
+            { code: 'EAT', description: 'Eating disorder(Anorexia / Bulimia)' },
+            { code: 'EMO', description: 'Emotional abuse' },
+            { code: 'EPI', description: 'Epilepsy / Convulsions' },
+            { code: 'EBL', description: 'Existing back, leg, shoulder or ankle injuries' },
+            { code: 'EYE', description: 'Eye problems' },
+            { code: 'GAB', description: 'Gall bladder problems' },
+            { code: 'GAS', description: 'Gastritis' },
+            { code: 'GEN', description: 'Genitourinary problems' },
+            { code: 'GLA', description: 'Glandular Fever' },
+            { code: 'HPR', description: 'Hearing problems' },
+            { code: 'HEA', description: 'Heart disease' },
+            { code: 'HPA', description: 'Hepatitis A' },
+            { code: 'HPB', description: 'Hepatitis B' },
+            { code: 'HPC', description: 'Hepatitis C' },
+            { code: 'HER', description: 'Hernia' },
+            { code: 'HP1', description: 'Cold sores(Herpes 1)' },
+            { code: 'BLP', description: 'High / Low Blood Pressure' },
+            { code: 'HIV', description: 'HIV' },
+            { code: 'KID', description: 'Kidney disease' },
+            { code: 'LEA', description: 'Disabilities(Learning / Physical)' },
+            { code: 'MAL', description: 'Malaria' },
+            { code: 'MEA', description: 'Measles' },
+            { code: 'MEN', description: 'Menstrual problems' },
+            { code: 'MHI', description: 'Mental health issues' },
+            { code: 'MNG', description: 'Meningitis' },
+            { code: 'MIG', description: 'Migraines / Headaches' },
+            { code: 'MUM', description: 'Mumps' },
+            { code: 'ORT', description: 'Orthopaedic problems' },
+            { code: 'PHY', description: 'Physical abuse' },
+            { code: 'POL', description: 'Polio' },
+            { code: 'RHF', description: 'Rheumatic fever' },
+            { code: 'RUB', description: 'Rubella(German measles)' },
+            { code: 'SCA', description: 'Scarlet fever' },
+            { code: 'SHA', description: 'Self harming' },
+            { code: 'SAB', description: 'Sexual abuse' },
+            { code: 'SLW', description: 'Sleep walking' },
+            { code: 'SUI', description: 'Suicide attempt' },
+            { code: 'THY', description: 'Thyroid condition' },
+            { code: 'TON', description: 'Tonsillitis' },
+            { code: 'TUB', description: 'Tuberculosis' },
+            { code: 'ULC', description: 'Stomach ulcers' },
+            { code: 'VAR', description: 'Varicose veins' },
+            { code: 'WHC', description: 'Whooping cough' },
+            { code: 'OTH', description: 'Other' }
+        ];
+    }
 }
+
