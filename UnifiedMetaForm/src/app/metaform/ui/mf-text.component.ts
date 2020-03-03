@@ -21,7 +21,8 @@ import { MetaFormControlBase } from './mf-control-base';
     </ng-container>
     <ng-template #single>
         <input [ngClass]="{ 'error': inError }" [formControl]="formControl" class="mfc mf-control-item"
-        type="{{textType}}" name="{{name}}" autocomplete="{{autocomplete}}" placeholder="{{placeholder}}"
+        type="{{textType}}" [attr.inputmode]="inputMode" pattern="{{pattern}}" name="{{name}}" autocomplete="{{autocomplete}}"
+        placeholder="{{placeholder}}"
         maxLength="{{maxLength}}" (blur)="onFocusLost()">
     </ng-template>
 </ng-template>`,
@@ -35,6 +36,10 @@ export class MetaFormTextComponent extends MetaFormControlBase implements OnInit
     maxLength: number;
     textType: string;
 
+    // For mobile device keyboards
+    inputMode: string;
+    pattern: string;
+
     constructor(private formService: MetaFormService) { super(); }
 
     ngOnInit(): void {
@@ -47,25 +52,33 @@ export class MetaFormTextComponent extends MetaFormControlBase implements OnInit
 
             this.placeholder = textControl.placeholder;
             this.maxLength = textControl.maxLength ?? 0;
+            this.pattern = '.'; // Match any character
 
             this.setReadonlyValue();
+            this.textType = 'text';
+            this.inputMode = 'text';
 
             switch (textControl.textType) {
                 case MetaFormTextType.SingleLine:
-                    this.textType = 'text';
                     break;
                 case MetaFormTextType.Password:
                     this.textType = 'password';
                     break;
                 case MetaFormTextType.Email:
-                    this.textType = 'email';
+                    this.inputMode = 'email';
                     break;
                 case MetaFormTextType.MultiLine:
                     this.textType = 'multi';
                     break;
                 case MetaFormTextType.TelephoneNumber:
+                    this.inputMode = 'tel';
+                    break;
                 case MetaFormTextType.Numeric:
-                    this.textType = 'number';
+                    this.inputMode = 'number';
+                    this.pattern = '/d';
+                    break;
+                case MetaFormTextType.URI:
+                    this.inputMode = 'url';
                     break;
                 default:
                     this.textType = 'text';

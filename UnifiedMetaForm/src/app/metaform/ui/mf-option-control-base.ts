@@ -69,12 +69,8 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
         if (url) {
             this.formService.loadOptionsFromUrl(this.form, url)
                 .subscribe((data: MFOptionValue[]) => {
-                    const nv: MFOptionValue[] = [];
                     if (data.length > 0) {
-                        if (optionControl.options.nullItem) {
-                            nv.push(new MFOptionValue('', optionControl.options.nullItem));
-                        }
-                        optionControl.options.list = nv.concat(data);
+                        optionControl.options.list = data.slice();
                     } else {
                         optionControl.options.list = [];
                     }
@@ -92,11 +88,8 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
             nv.push(new MFOptionValue('', optionControl.options.nullItem));
         }
 
-        this.options = nv.concat(optionControl.optionList); // optionControl.optionList;
-
+        this.options = nv.concat(optionControl.optionList);
         this.hasOptions = this.options.length > 0 || this.displayIfEmpty;
-
-        // console.log(`Has options? ${this.hasOptions} displayIfEmpty: ${this.displayIfEmpty}`);
 
         this.postOptionLoadProcessing();
 
@@ -110,5 +103,4 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
     onControlValidityChange(event: MFControlValidityChange): void {
         this.checkControlStatus();
     }
-
 }

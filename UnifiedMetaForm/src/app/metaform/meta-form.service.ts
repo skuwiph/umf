@@ -13,6 +13,7 @@ export class MetaFormService {
 
     constructor(private http: HttpClient) { }
 
+    // Create a blank form
     createForm(name: string, title: string, drawType?: MetaFormDrawType): MetaForm {
         const form = MetaForm.create(name, drawType ?? MetaFormDrawType.EntireForm);
 
@@ -21,6 +22,7 @@ export class MetaFormService {
         return form;
     }
 
+    // Load a JSON form structure from the passed URL
     loadFormWithName(formUrl: string, name: string): Observable<MetaForm> {
         const subject = new Subject<MetaForm>();
 
@@ -37,12 +39,43 @@ export class MetaFormService {
         return subject;
     }
 
+    // Heading forward through the questions starting with lastItem (or -1) in the passed form,
+    // find all that match the requirements
     getNextQuestionToDisplay(form: MetaForm, ruleService: BusinessRuleService, lastItem: number): DisplayQuestion {
         return this.getDisplayQuestions(form, ruleService, lastItem, 1);
     }
 
+    // Heading backwards through the questions starting with lastItem in the passed form,
+    // find all that match the requirements
     getPreviousQuestionToDisplay(form: MetaForm, ruleService: BusinessRuleService, lastItem: number): DisplayQuestion {
         return this.getDisplayQuestions(form, ruleService, lastItem, -1);
+    }
+
+    // Get a specific question from the passed form
+    getSpecificQuestionToDisplay(form: MetaForm, questionName: string): DisplayQuestion {
+        const dq = new DisplayQuestion();
+        const question = form.getQuestion(questionName);
+
+        if (question) {
+            dq.questions.push(question);
+
+            dq.atStart = true;
+            dq.atEnd = true;
+            dq.numberOfControls = question.controls.length;
+            dq.lastItem = -1;
+        }
+
+        return dq;
+    }
+
+    // Load option values from a passed URL
+    // This must be complete. If you need authentication or
+    // other headers added, ensure that your HttpInterceptor
+    // is adding those by default.
+    //
+    // https://example.com/path/to/resource[fieldName1]?param=[fieldName2]
+    loadOptionsFromUrl(form: MetaForm, url: string) {
+        return this.http.get(url);
     }
 
     private getSingleQuestion(form: MetaForm, ruleService: BusinessRuleService, lastQuestion: number, direction = 1): DisplayQuestion {
@@ -210,16 +243,6 @@ export class MetaFormService {
         return dq;
     }
 
-    // Load option values from a passed URL
-    // This must be complete. If you need authentication or
-    // other headers added, ensure that your HttpInterceptor
-    // is adding those by default.
-    //
-    // https://example.com/path/to/resource[fieldName1]?param=[fieldName2]
-    loadOptionsFromUrl(form: MetaForm, url: string) {
-        return this.http.get(url);
-    }
-
     private getDisplayQuestions(form: MetaForm, ruleService: BusinessRuleService, lastItem: number, direction: number): DisplayQuestion {
         let dq: DisplayQuestion;
 
@@ -323,8 +346,11 @@ export class MetaFormService {
                         case 'AnswerBeforeTime':
                             fc.addValidator(MFValidator.AnswerBeforeTime(v.value, v.message));
                             break;
+                        case 'ExceedWordCount':
+                            fc.addValidator(MFValidator.AnswerMustExceedWordCount(parseInt(v.value, 10), v.message));
+                            break;
                         default:
-                            console.warn(`Got validator of type: ${v.type}`);
+                            console.warn(`Got validator of type: ${v.type} and NO implementation`);
                     }
                 }
                 if (c.validatorsAsync) {
