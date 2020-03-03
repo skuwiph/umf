@@ -241,12 +241,14 @@ export class TestFormComponent implements OnInit {
 
         this.form.setValue('language', 'en,de,es');
 
+        const o4 = MFOptions.OptionFromUrl('http://localhost:3000/leads/source');
+
         this.form
             .addQuestion('multiOptTest2', 'Multi select option from URL')
-            .addOptionMultiControl('countryCode2', o3)
+            .addOptionMultiControl('countryCode2', o4, ControlLayoutStyle.Horizontal)
             .addValidator(MFValidator.Required('Please select an option'));
 
-        this.form.setValue('countryCode2', 'FR,ES');
+        this.form.setValue('countryCode2', 'MAG001,SOC001');
 
         this.form
             .addQuestion('multiOptTest3', 'Multi select option from list with one selection')
