@@ -1375,6 +1375,7 @@ export class IddCode {
 
     static getIddList(): IddCode[] {
         return [
+            { name: '', code: ''},
             { name: 'Afghanistan', code: '+93' },
             { name: 'Åland Islands', code: '+358 18' },
             { name: 'Albania', code: '+355' },

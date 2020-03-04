@@ -1,10 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css?family=PT+Sans+Narrow&display=swap');
+// @import url('https://fonts.googleapis.com/css?family=PT+Sans+Narrow&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Karla&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap');
 
 *, input, select, option, optgroup {
-    font-family: 'PT Sans Narrow', 'Sans-Serif' ;   
+    font-family: 'Raleway', 'Sans-Serif' ;  
+    font-size: 12pt; 
 }
+
 label.caption,
 .mf-option-item {
     font-family: 'Karla';

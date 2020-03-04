@@ -15,7 +15,9 @@ import { MetaFormControlBase } from './mf-control-base';
     <form [ngClass]="{ 'error': inError }" [formGroup]="formGroup">
         <div class="telephone">
             <select [ngClass]="{ 'error': inError }" formControlName="idd" class="mfc idd mf-control-item" (blur)="onFocusLost()">
-                <option *ngFor="let tn of iddCodes" value="{{tn.code}}">{{tn.name}} ({{tn.code}})</option>
+                <option *ngFor="let tn of iddCodes" value="{{tn.code}}">
+                <ng-container *ngIf="tn.code.length > 0">{{tn.name}} ({{tn.code}})</ng-container>
+                </option>
             </select>
             <input [ngClass]="{ 'error': inError }" formControlName="number" class="mfc telnum mf-control-item"
             type="number" placeholder="{{placeholder}}" maxLength="{{maxLength}}" (blur)="onFocusLost()">
