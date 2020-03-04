@@ -41,6 +41,7 @@ export class TestFormComponent implements OnInit {
 
         this.formList = [
             { code: '', description: 'Please Select' },
+            { code: 'S1', description: 'Really simple form' },
             { code: 'T1', description: 'Read-Only form with values' },
             { code: 'T2', description: 'Read/Write form with values' },
             { code: 'T3', description: 'Read/Write form with a couple of RO questions' },
@@ -60,6 +61,9 @@ export class TestFormComponent implements OnInit {
         this.loading = true;
         this.form = null;
         switch (code) {
+            case 'S1':
+                this.simplerTestForm();
+                break;
             case 'T1':
                 this.loadT1();
                 break;
@@ -682,6 +686,56 @@ export class TestFormComponent implements OnInit {
             .setSection(9)
             .addOptionControl('region', MetaFormOptionType.SingleSelect, o4)
             .addValidator(MFValidator.Required('Please select a region'));
+    }
+
+    simplerTestForm() {
+        this.form = this.mfService.createForm('sample', 'Sample Form', MetaFormDrawType.EntireForm);
+
+        this.form
+            .addQuestion('q1', 'Please enter your name')
+            .addTextControl('firstName', MetaFormTextType.SingleLine, 50, 'First name')
+            .addValidator(MFValidator.Required('Please enter a value'));
+        this.form
+            .getQuestion('q1')
+            .addTextControl('lastName', MetaFormTextType.SingleLine, 50, 'Last name')
+            .addValidator(MFValidator.Required('Please enter a value'));
+
+        this.form
+            .addQuestion('q2', 'Please enter your email address')
+            .addTextControl('email', MetaFormTextType.SingleLine, 255, 'Email')
+            .addValidator(MFValidator.Required('Please enter a value'))
+            .addValidator(MFValidator.Email('Please enter a valid email address'));
+        this.form
+            .getQuestion('q2')
+            .addTextControl('password', MetaFormTextType.Password, 255, 'Password')
+            .addValidator(MFValidator.Required('Please enter your password'));
+        this.form
+            .getQuestion('q2')
+            .addTextControl('confirmPassword', MetaFormTextType.Password, 255, 'Confirm password')
+            .addValidator(MFValidator.AnswerMustMatch('[password]', 'Passwords must match'));
+
+        const yesno: MFOptionValue[] = [];
+        yesno.push(new MFOptionValue('Y', 'Yes'));
+        yesno.push(new MFOptionValue('N', 'No'));
+
+        const mop: MFOptionValue[] = [];
+        mop.push(new MFOptionValue('1', 'First'));
+        mop.push(new MFOptionValue('2', 'Second'));
+        mop.push(new MFOptionValue('3', 'Third'));
+        mop.push(new MFOptionValue('4', 'Fourth'));
+
+        this.form
+            .addQuestion('q3', 'Can you answer yes or no?', null)
+            .addOptionControl('yesOrNo', MetaFormOptionType.SingleSelect,
+                MFOptions.OptionFromList(yesno, null, true),
+                ControlLayoutStyle.Horizontal);
+
+
+        this.form
+            .addQuestion('q4', 'Please select all applicable answers?', null)
+            .addOptionMultiControl('mops',
+                MFOptions.OptionFromList(mop, null, true),
+                ControlLayoutStyle.Horizontal);
     }
 
     // loadCreateApplicationForm() {

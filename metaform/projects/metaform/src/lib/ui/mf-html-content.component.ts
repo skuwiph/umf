@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, SecurityContext } from '@angular/core';
-import { MFControl, MetaForm, MFHtmlTextControl } from '../meta-form';
-import { MetaFormService } from '../meta-form.service';
+import { MFControl, MetaForm, MFLabelControl, MFHtmlTextControl } from '../metaform';
+import { MetaFormService } from '../metaform.service';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-    selector: 'app-mf-html',
+    selector: 'lib-mf-html',
     template: `<div class="mf-html-content"><div [innerHtml]="html"></div></div>`,
     styleUrls: ['./mf.components.css']
 })

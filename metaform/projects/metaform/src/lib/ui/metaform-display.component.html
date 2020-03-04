@@ -1,0 +1,74 @@
+<ng-container *ngIf="form">
+<h2 *ngIf="form?.title">{{form.title}}</h2>
+<form class="mf-form" [ngClass]="{'mf-single-question': form.drawType === 0}">
+    <ng-container *ngIf="display?.questions">
+        <ng-container *ngFor="let q of display.questions">
+            <div class="mf-question" [hidden]="!displayIf(q)">
+                <div class="mf-caption" *ngIf="q.caption"><label class="caption">{{q.caption}}</label></div>
+                <div class="mf-controls"
+                    [ngClass]="{'layout-horiz': q.controlLayout === 0, 'layout-vert': q.controlLayout === 1}">
+                    <div class="mf-control" *ngFor="let c of q.controls">
+                        <ng-container [ngSwitch]="c.controlType">
+                            <ng-container *ngSwitchCase="controlType.Label">
+                                <lib-mf-label [form]="form" [control]="c"></lib-mf-label>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="controlType.Html">
+                                <lib-mf-html [form]="form" [control]="c"></lib-mf-html>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="controlType.Text">
+                                <lib-mf-text [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
+                                    (changeValidity)="onControlValidityChange($event)"></lib-mf-text>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="controlType.Option">
+                                <lib-mf-option [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
+                                    [displayIfEmpty]="alwaysShowOptions"
+                                    (changeValidity)="onControlValidityChange($event)"
+                                    (optionLoadComplete)="optionLoadComplete(q, c, $event)"></lib-mf-option>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="controlType.OptionMulti">
+                            <lib-mf-option-multi [form]="form" [control]="c"
+                                    [displayIfEmpty]="alwaysShowOptions"
+                                    [readonly]="q.readonly"
+                                    (changeValidity)="onControlValidityChange($event)"
+                                    (optionLoadComplete)="optionLoadComplete(q, c, $event)"></lib-mf-option-multi>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="controlType.Date">
+                                <lib-mf-date [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
+                                    (changeValidity)="onControlValidityChange($event)"></lib-mf-date>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="controlType.Time">
+                                <lib-mf-time [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
+                                    (changeValidity)="onControlValidityChange($event)"></lib-mf-time>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="controlType.TelephoneAndIddCode">
+                                <lib-mf-telephone [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
+                                    (changeValidity)="onControlValidityChange($event)"></lib-mf-telephone>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="controlType.Toggle">
+                                <lib-mf-toggle [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
+                                    (changeValidity)="onControlValidityChange($event)"></lib-mf-toggle>
+                            </ng-container>
+                            <ng-container *ngSwitchDefault><b>No control implementation:</b> <pre>{{c | json}}</pre></ng-container>
+                        </ng-container>
+                        <div *ngIf="c.inError" class="errorMessage">{{c.errorMessage}}</div>
+                    </div>
+                </div>
+                <div class="footnote" *ngIf="q.captionFootnote">{{q.captionFootnote}}</div>
+            </div>
+        </ng-container>
+    </ng-container>
+</form>
+<div class="buttons" *ngIf="showButtons">
+    <button class="btn btn-next" [ngClass]="{'btn-error': !pageIsValid}" [disabled]="!pageIsValid" (click)="nextPage()">
+        <ng-container *ngIf="pageIsValid">{{nextButtonText}}</ng-container>
+        <ng-container *ngIf="!pageIsValid">Please correct errors</ng-container>
+    </button>
+    <button *ngIf="!atStartOfForm" class="btn btn-prev" (click)="previousPage()">ᐊ</button>
+</div>
+</ng-container>

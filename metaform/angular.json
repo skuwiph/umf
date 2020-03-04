@@ -1,0 +1,168 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1, 
+  "newProjectRoot": "projects",
+  "projects": {
+    "metaform": {
+      "projectType": "library",
+      "root": "projects/metaform",
+      "sourceRoot": "projects/metaform/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/metaform/tsconfig.lib.json",
+            "project": "projects/metaform/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/metaform/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/metaform/src/test.ts",
+            "tsConfig": "projects/metaform/tsconfig.spec.json",
+            "karmaConfig": "projects/metaform/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/metaform/tsconfig.lib.json",
+              "projects/metaform/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "metaform-showcase": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/metaform-showcase",
+      "sourceRoot": "projects/metaform-showcase/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/metaform-showcase",
+            "index": "projects/metaform-showcase/src/index.html",
+            "main": "projects/metaform-showcase/src/main.ts",
+            "polyfills": "projects/metaform-showcase/src/polyfills.ts",
+            "tsConfig": "projects/metaform-showcase/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/metaform-showcase/src/favicon.ico",
+              "projects/metaform-showcase/src/assets"
+            ],
+            "styles": [
+              "projects/metaform-showcase/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/metaform-showcase/src/environments/environment.ts",
+                  "with": "projects/metaform-showcase/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "metaform-showcase:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "metaform-showcase:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "metaform-showcase:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/metaform-showcase/src/test.ts",
+            "polyfills": "projects/metaform-showcase/src/polyfills.ts",
+            "tsConfig": "projects/metaform-showcase/tsconfig.spec.json",
+            "karmaConfig": "projects/metaform-showcase/karma.conf.js",
+            "assets": [
+              "projects/metaform-showcase/src/favicon.ico",
+              "projects/metaform-showcase/src/assets"
+            ],
+            "styles": [
+              "projects/metaform-showcase/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/metaform-showcase/tsconfig.app.json",
+              "projects/metaform-showcase/tsconfig.spec.json",
+              "projects/metaform-showcase/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/metaform-showcase/e2e/protractor.conf.js",
+            "devServerTarget": "metaform-showcase:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "metaform-showcase:serve:production"
+            }
+          }
+        }
+      }
+    }},
+  "defaultProject": "metaform"
+}

@@ -1,5 +1,5 @@
-import { MetaForm, MFValidator, MFOptionValue, MFOptions } from './meta-form';
-import { MetaFormDrawType, MetaFormTextType, MetaFormOptionType, MetaFormDateType } from './meta-form-enums';
+import { MetaForm, MFValidator, MFOptionValue, MFOptions } from './metaform';
+import { MetaFormDrawType, MetaFormTextType, MetaFormOptionType, MetaFormDateType } from './metaform-enums';
 
 describe('MetaForm', () => {
     it('should create an instance', () => {
@@ -303,6 +303,43 @@ describe('MetaForm', () => {
 
         f.setValue('date', '2019-10-01');
         expect(f.isValid()).toEqual(false, `${f.getValue('date')} should not be valid`);
+    });
+
+    it('AnswerAfter validator should evaluate false: 2020-01-01 is not after %TODAY', () => {
+        const f = MetaForm.create('test-form', MetaFormDrawType.EntireForm);
+        f
+            .addQuestion('date', 'Please enter a date')
+            .addDateControl('date', MetaFormDateType.Full)
+            .addValidator(MFValidator.Date('Please enter a valid date'))
+            .addValidator(MFValidator.AnswerAfterDate('%TODAY', 'Date should be after TODAY'));
+
+        f.setValue('date', '2020-1-1');
+        expect(f.isValid()).toEqual(false, `${f.getValue('date')} should not be valid`);
+    });
+
+    it('AnswerAfter validator should evaluate false: 2021-01-01 is not after %TODAY+1Y', () => {
+        const f = MetaForm.create('test-form', MetaFormDrawType.EntireForm);
+        f
+            .addQuestion('date', 'Please enter a date')
+            .addDateControl('date', MetaFormDateType.Full)
+            .addValidator(MFValidator.Date('Please enter a valid date'))
+            .addValidator(MFValidator.AnswerAfterDate('%TODAY+1Y', 'Date should be after TODAY plus one year'));
+
+        f.setValue('date', '2021-1-1');
+        expect(f.isValid()).toEqual(false, `${f.getValue('date')} is not after %TODAY+1Y`);
+    });
+
+    it('AnswerAfter validator should evaluate false: 2020-01-01 is not after %TODAY+7D', () => {
+        // console.log(`The value we seek TODAY+7D = ${MFValidator.ResolveVariable('TODAY+7D')}`);
+        const f = MetaForm.create('test-form', MetaFormDrawType.EntireForm);
+        f
+            .addQuestion('date', 'Please enter a date')
+            .addDateControl('date', MetaFormDateType.Full)
+            .addValidator(MFValidator.Date('Please enter a valid date'))
+            .addValidator(MFValidator.AnswerAfterDate('%TODAY+7D', `Date should be after ${MFValidator.ResolveVariable('TODAY+7D')}`));
+
+        f.setValue('date', '2020-1-1');
+        expect(f.isValid()).toEqual(false, `${f.getValue('date')} is not after %TODAY+1Y`);
     });
 
     it('AnswerBefore validator should evaluate true: 2019-10-01 before 2020-10-02', () => {

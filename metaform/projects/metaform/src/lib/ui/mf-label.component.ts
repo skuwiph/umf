@@ -1,9 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MFControl, MetaForm, MFLabelControl } from '../meta-form';
-import { MetaFormService } from '../meta-form.service';
+import { MFControl, MetaForm, MFLabelControl } from '../metaform';
+import { MetaFormService } from '../metaform.service';
 
 @Component({
-    selector: 'app-mf-label',
+    selector: 'lib-mf-label',
     template: `<div class="mf-label"><label>{{text}}</label></div>`,
     styleUrls: ['./mf.components.css']
 })

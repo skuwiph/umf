@@ -1,0 +1,241 @@
+.mf-control-item {
+    width: calc(100% - 1rem);   
+}
+
+input.error, input.error, select.error {
+    border-color:  red;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
+}
+
+input, select, option, textarea, .mf-option-item { 
+    width: calc(100% - 0.25rem);    
+    padding: 0.25rem;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    min-height: 1.25rem;
+    padding: 0.5rem 0.25rem;
+    border-color: #bbbbbb;
+}
+
+.control-prefix {
+    max-width: 20rem;
+    margin-right: 1rem;
+    text-align:right
+}
+
+/* Standard */
+.mf-readonly {
+    margin: 0 0.25rem 0.25rem 0.25rem;
+    font-weight: 500;
+}
+
+/* Html */
+.mf-html-content {
+    line-height: 1.5rem;
+    margin: 0 0.5rem 0.5rem 0.25rem;
+    font-weight: 400;
+}
+
+/* Option Components */
+
+.opt-horiz {
+    display: flex;
+    flex-flow: row wrap;
+    margin: -5px 0px -5px -5px;
+}
+
+.opt-horiz>* {
+    flex: 1 1 160px;
+    min-height: 3rem;
+    margin: 5px;
+}
+
+.mf-option-item {
+    background-color: white;
+    color: black;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.mf-control-item-multi {
+    width: calc(100% - 1rem);
+    height: 7rem;
+}
+
+.opt-selected {
+    background-color: rgb(42, 42, 116);
+    border-color:  rgb(42, 42, 116);
+    color: white;   
+}
+
+ul.nobullet {
+    list-style-type: none;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 0;    
+}
+
+/* Date Component */
+
+.date {
+    display: grid;
+    grid-template-columns: 3rem 3rem 5rem;
+    column-gap: 0.5rem;
+}
+
+.shortdate {
+    display: grid;
+    column-gap: 0.25rem;
+    grid-template-columns: 12rem 5rem;
+}
+
+.dd, .mm {
+     width: 3em;
+     padding: 0.5rem 0.25rem;
+ }
+
+.month {
+     width: 100%;
+     padding: 0.5rem 0;
+ }
+
+.yy {
+     max-width: 4rem;
+     padding: 0.5rem 0.25rem;
+ }
+
+/* Time Component */
+.control-time, .control-date {
+    display: grid;
+    column-gap: 0rem;
+    grid-template-columns: auto 70%;
+    align-items: center;
+}
+
+.time {
+    display: grid;
+    column-gap: 0rem;
+    grid-template-columns: 3.5rem 0.5rem 3.5rem;
+    align-items: center;
+}
+
+.hh, .mm {
+    max-width: 3.5em;
+    margin: 0;
+    padding: 0.5rem 0.2rem;
+ }
+
+.separator {
+    max-width: 0.5rem;
+    padding: 0.5rem 0.25rem 0 0;
+    font-weight: 600;
+}
+
+/* Telephone Component */
+
+.telephone {
+    display: flex;
+    flex-direction: row wrap;
+    flex-shrink: 1;
+}
+
+select.idd {
+    max-width: calc(100% - 25% - 1.25rem);
+    border-radius: 5px;
+    margin-right: 0.25rem;
+}
+
+input.telnum {
+    max-width: 25%;
+    height: 1.25rem;
+    padding: 0.5rem 0.25rem;
+}
+
+/* Toggle */
+.toggle {
+    display: flex;
+    flex-direction: row wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% - 0.75rem);
+    margin: 0 0.25rem;
+}
+
+.toggle .textlabel {
+    margin: 0;
+}
+
+ /* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 3rem;
+  height: 1.5rem;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1rem;
+  width: 1rem;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(1.5rem);
+  -ms-transform: translateX(1.5rem);
+  transform: translateX(1.5rem);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+} 
