@@ -1,13 +1,13 @@
 import { OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { MFControlValidityChange, MFOptionValue, MFValueChange, MFOptionsChanged, MFOptionControlBase } from '../metaform';
+import { MFControlValidityChange, MFOptionValue, MFOptionControlBase } from '../metaform';
 import { MetaFormControlBase } from './mf-control-base';
 import { FormControl } from '@angular/forms';
 import { ControlLayoutStyle } from '../metaform-enums';
 import { filter } from 'rxjs/operators';
 import { MetaFormService } from '../metaform.service';
+import { MFOptionsChanged, MFValueChange } from '../metaform-data';
 
 export abstract class MetaFormOptionControlBase extends MetaFormControlBase implements OnInit {
-
     @Input() displayIfEmpty = false;
     @Output() optionLoadComplete: EventEmitter<MFOptionsChanged> = new EventEmitter<MFOptionsChanged>();
 
@@ -20,7 +20,9 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
     options: MFOptionValue[];
     selectedItem: string;
 
-    constructor(private formService: MetaFormService) { super(); }
+    constructor(private formService: MetaFormService) {
+        super();
+    }
 
     ngOnInit(): void {
         this.formControl = new FormControl('');
@@ -50,14 +52,10 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
         if (this.control.dependencies) {
             for (const dep of this.control.dependencies) {
                 // console.log(`${this.control.name} Checking for changes on ${dep}`);
-                this.form.change$
-                    .pipe(
-                        filter((c: MFValueChange) => c.name === dep)
-                    )
-                    .subscribe((chg: MFValueChange) => {
-                        // console.log(`Value change on ${chg.name} to ${chg.value}`);
-                        this.loadOptions(this.control as MFOptionControlBase);
-                    });
+                this.form.change$.pipe(filter((c: MFValueChange) => c.name === dep)).subscribe((chg: MFValueChange) => {
+                    // console.log(`Value change on ${chg.name} to ${chg.value}`);
+                    this.loadOptions(this.control as MFOptionControlBase);
+                });
             }
         }
     }
@@ -65,18 +63,16 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
     loadOptions(optionControl: MFOptionControlBase): void {
         const url = optionControl.urlForService(this.form, this.control);
         if (url) {
-            this.formService.loadOptionsFromUrl(this.form, url)
-                .subscribe((data: MFOptionValue[]) => {
-                    if (data.length > 0) {
-                        optionControl.options.list = data.slice();
-                    } else {
-                        optionControl.options.list = [];
-                    }
+            this.formService.loadOptionsFromUrl(this.form, url).subscribe((data: MFOptionValue[]) => {
+                if (data.length > 0) {
+                    optionControl.options.list = data.slice();
+                } else {
+                    optionControl.options.list = [];
+                }
 
-                    this.populateOptions(optionControl);
-                });
+                this.populateOptions(optionControl);
+            });
         } else {
-
         }
     }
 
@@ -96,7 +92,7 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
         this.loaded = true;
     }
 
-    postOptionLoadProcessing(): void { }
+    postOptionLoadProcessing(): void {}
 
     onControlValidityChange(event: MFControlValidityChange): void {
         this.checkControlStatus();

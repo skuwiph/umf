@@ -4,7 +4,8 @@ import { EventEmitter } from '@angular/core';
 import { BusinessRuleService } from '../business-rule.service';
 import { MetaFormService, DisplayQuestion } from '../metaform.service';
 import { MetaFormControlType } from '../metaform-enums';
-import { MetaForm, MFQuestion, MFControlValidityChange, MFControl, MFOptionsChanged } from '../metaform';
+import { MetaForm, MFQuestion, MFControlValidityChange, MFControl } from '../metaform';
+import { MFOptionsChanged } from '../metaform-data';
 
 @Component({
     selector: 'lib-metaform-display',
