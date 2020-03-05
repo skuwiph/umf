@@ -54,6 +54,10 @@
                                     [readonly]="q.readonly"
                                     (changeValidity)="onControlValidityChange($event)"></lib-mf-toggle>
                             </ng-container>
+                            <ng-container *ngSwitchCase="controlType.Slider">
+                            <lib-mf-slider [form]="form" [control]="c" [readonly]="q.readonly"
+                                    (changeValidity)="onControlValidityChange($event)"></lib-mf-slider>
+                            </ng-container>
                             <ng-container *ngSwitchDefault><b>No control implementation:</b> <pre>{{c | json}}</pre></ng-container>
                         </ng-container>
                         <div *ngIf="c.inError" class="errorMessage">{{c.errorMessage}}</div>

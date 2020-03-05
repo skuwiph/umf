@@ -11,7 +11,7 @@ import { MetaFormData } from './metaform-data';
     providedIn: 'root'
 })
 export class MetaFormService {
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     // Create a blank form
     createForm(name: string, title: string, drawType?: MetaFormDrawType): MetaForm {
@@ -350,6 +350,15 @@ export class MetaFormService {
                         break;
                     case MetaFormControlType.Option:
                         fc = fq.addOptionControl(c.name, c.options);
+                        break;
+                    case MetaFormControlType.OptionMulti:
+                        fc = fq.addOptionMultiControl(c.name, c.options);
+                        break;
+                    case MetaFormControlType.Toggle:
+                        fc = fq.addToggleControl(c.name, c.text);
+                        break;
+                    case MetaFormControlType.Slider:
+                        fc = fq.addSliderControl(c.name, c.text, c.min, c.max, c.step);
                         break;
                     default:
                         console.warn(`Missing type: ${c.controlType}, name: ${c.name}`);

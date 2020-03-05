@@ -490,6 +490,22 @@ export class MFQuestion {
         c.name = name;
         c.text = text;
         c.validators = [];
+
+        this.pushControl(c);
+
+        return c;
+    }
+
+    addSliderControl(name: string, text: string, min: number, max: number, step?: number): MFSliderControl {
+        const c = new MFSliderControl();
+        c.controlType = MetaFormControlType.Slider;
+        c.name = name;
+        c.text = text;
+        c.min = min;
+        c.max = max;
+        c.step = step ?? 1;
+        c.validators = [];
+
         this.pushControl(c);
 
         return c;
@@ -656,7 +672,7 @@ export class MFControl {
         return form.getValue(this.name) !== undefined;
     }
 
-    refresh(): void {}
+    refresh(): void { }
 }
 
 export class MFLabel extends MFControl {
@@ -783,9 +799,9 @@ export class MFOptionControlBase extends MFControl {
     }
 }
 
-export class MFOptionControl extends MFOptionControlBase {}
+export class MFOptionControl extends MFOptionControlBase { }
 
-export class MFOptionMultiControl extends MFOptionControlBase {}
+export class MFOptionMultiControl extends MFOptionControlBase { }
 
 export class MFDateControl extends MFControl {
     dateType: MetaFormDateType;
@@ -929,6 +945,13 @@ export class MFToggleControl extends MFControl {
 
 export class MFLabelControl extends MFControl {
     text: string;
+}
+
+export class MFSliderControl extends MFControl {
+    text: string;
+    min: number;
+    max: number;
+    step: number;
 }
 
 export class MFValidator {

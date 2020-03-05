@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
 
     private lastUserEvent: UserEventType;
 
-    constructor(private formService: MetaFormService, private rules: BusinessRuleService) {}
+    constructor(private formService: MetaFormService, private rules: BusinessRuleService) { }
 
     ngOnInit(): void {
         // Add some default rules
@@ -85,8 +85,8 @@ export class AppComponent implements OnInit {
             .addQuestion('q3a', 'Enter a future date', null)
             .addHtml(
                 `Since you answered <b>Yes</b> to the previous question, you should probably enter a date. ` +
-                    `<i>Please note:</i> in order to illustrate the <b>AnswerAfterDate</b> validator, you should enter ` +
-                    `a date in the future.`
+                `<i>Please note:</i> in order to illustrate the <b>AnswerAfterDate</b> validator, you should enter ` +
+                `a date in the future.`
             );
 
         this.form
@@ -100,6 +100,10 @@ export class AppComponent implements OnInit {
         this.form
             .addQuestion('q4', 'Please select all applicable answers?', null)
             .addOptionMultiControl('mops', MFOptions.OptionFromList(mop, null, true), ControlLayoutStyle.Horizontal);
+
+        this.form
+            .addQuestion('q5', 'How loud should we play?')
+            .addSliderControl('volume', 'Volume', 0, 11);
     }
 
     onFormEvent(event: MetaFormUserEvent): void {

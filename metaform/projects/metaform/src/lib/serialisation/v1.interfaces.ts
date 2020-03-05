@@ -49,6 +49,9 @@ export interface Control {
     optionType?: number;
     options?: Options;
     text?: string;
+    min?: number;
+    max?: number;
+    step?: number;
 }
 
 export interface Question {

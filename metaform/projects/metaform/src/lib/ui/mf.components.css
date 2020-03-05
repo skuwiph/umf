@@ -240,3 +240,22 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 } 
+
+/* Slider */
+
+.mf-slider {
+    display: flex;
+    flex-direction: row wrap;
+    flex-shrink: 1;
+    align-items: center;;
+}
+
+.mf-slider-label {
+    margin-right: 1rem;
+}
+
+.mf-slider-value {
+    width: 3rem;
+    min-width: 3rem;
+    text-align: center;
+}
