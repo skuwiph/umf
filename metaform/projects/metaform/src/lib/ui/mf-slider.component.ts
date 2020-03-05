@@ -13,7 +13,7 @@ import { MetaFormControlBase } from './mf-control-base';
 </div>
 <ng-template #edit>
     <div class="mf-slider mf-control-item" [ngClass]="{'error': inError}">
-        <label class="mf-slider-label">{{label}}</label>
+        <label *ngIf="label" class="mf-slider-label">{{label}}</label>
         <input class="mf-slider-control" type="range" name="{{name}}" 
         [formControl]="formControl" min="{{min}}" max="{{max}}" step="{{step}}">
         <label class="mf-slider-value">{{value}}</label>

@@ -10,6 +10,8 @@ import {
 import { MetaFormUserEvent, UserEventType } from 'projects/metaform/src/lib/ui/metaform-display.component';
 import { BusinessRuleService } from 'projects/metaform/src/lib/business-rule.service';
 import { RuleMatchType, RuleComparison } from 'projects/metaform/src/lib/business-rule';
+import { filter } from 'rxjs/operators';
+import { MFValueChange } from 'projects/metaform/src/lib/metaform-data';
 
 @Component({
     selector: 'app-root',
@@ -104,6 +106,15 @@ export class AppComponent implements OnInit {
         this.form
             .addQuestion('q5', 'How loud should we play?')
             .addSliderControl('volume', 'Volume', 0, 11);
+
+        // this.form.change$
+        //     .pipe(
+        //         filter(
+        //             (c: MFValueChange) => c.name === 'volume')
+        //     )
+        //     .subscribe((chg: MFValueChange) => {
+        //         console.log(`Value change on ${chg.name} to ${chg.value}`);
+        //     });
     }
 
     onFormEvent(event: MetaFormUserEvent): void {
