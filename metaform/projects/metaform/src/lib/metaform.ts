@@ -8,6 +8,7 @@ import {
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { BusinessRule } from './business-rule';
+import { MetaFormData, MFValueChange } from './metaform-data';
 
 export class MetaForm {
     name: string;
@@ -20,7 +21,7 @@ export class MetaForm {
     sections?: MFSection[];
     questions?: MFQuestion[];
 
-    answers: MetaFormAnswers = new MetaFormAnswers();
+    answers: MetaFormData = new MetaFormData();
     rules: Map<string, BusinessRule>;
     public change$ = new Subject<MFValueChange>();
 
@@ -346,7 +347,7 @@ export class MetaForm {
         return null;
     }
 
-    private evaluateRule(rules: Map<string, BusinessRule>, name: string, data: MetaFormAnswers): boolean {
+    private evaluateRule(rules: Map<string, BusinessRule>, name: string, data: MetaFormData): boolean {
         if (rules.has(name)) {
             // console.log(`Got rule: ${name}`);
             const rule = rules.get(name);
@@ -1077,7 +1078,7 @@ export class MFValidator {
         }
     }
 
-    getAnswerForControl(answers: MetaFormAnswers, valueToCheck: string): string {
+    getAnswerForControl(answers: MetaFormData, valueToCheck: string): string {
         // If the passed 'valueToCheck' starts with a [ or % it is a special value
         const f = MetaForm.isFieldReference(valueToCheck);
         const c = MetaForm.isVariable(valueToCheck);
@@ -1354,38 +1355,6 @@ export class MFOptionValue {
     constructor(code: string, description: string) {
         this.code = code;
         this.description = description;
-    }
-}
-
-export class MetaFormAnswers {
-    private data: Map<string, any> = new Map<string, any>();
-
-    getValue(name: string): any {
-        if (this.data[name.toLowerCase()]) {
-            return this.data[name.toLowerCase()];
-        }
-    }
-
-    setValue(name: string, value: any) {
-        this.data[name.toLowerCase()] = value;
-    }
-}
-
-export class MFValueChange {
-    name: string;
-    value: string;
-    constructor(name: string, value: string) {
-        this.name = name;
-        this.value = value;
-    }
-}
-
-export class MFOptionsChanged {
-    name: string;
-    countOfOptions: number;
-    constructor(name: string, count: number) {
-        this.name = name;
-        this.countOfOptions = count;
     }
 }
 

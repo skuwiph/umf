@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { BusinessRuleService } from './business-rule.service';
 import { RuleMatchType, RuleComparison, IRulePart } from './business-rule';
-import { MetaFormAnswers } from './metaform';
+import { MetaFormData } from './metaform-data';
 
 describe('BusinessRuleService', () => {
     let service: BusinessRuleService;
@@ -27,7 +27,6 @@ describe('BusinessRuleService', () => {
         expect(service.rules.size === 1).toEqual(true, 'Rule was not created');
     });
 
-
     it('should not allow creation of a duplicate rules', () => {
         service
             .addRule('IsInUnitedKingdom', RuleMatchType.MatchAll)
@@ -47,7 +46,7 @@ describe('BusinessRuleService', () => {
             .addRule('IsInUnitedKingdom', RuleMatchType.MatchAll)
             .addPart('countryCode', RuleComparison.Equals, 'UK');
 
-        const data = new MetaFormAnswers();
+        const data = new MetaFormData();
         data.setValue('countryCode', 'UK');
 
         expect(service.evaluateRule('IsInUnitedKingdom', data)).toEqual(true, 'Rule did not evaluate correctly');
@@ -58,7 +57,7 @@ describe('BusinessRuleService', () => {
             .addRule('IsInUnitedKingdom', RuleMatchType.MatchAll)
             .addPart('countryCode', RuleComparison.Equals, 'UK');
 
-        const data = new MetaFormAnswers();
+        const data = new MetaFormData();
         data.setValue('countryCode', 'DE');
 
         expect(service.evaluateRule('IsInUnitedKingdom', data)).toEqual(false, 'Rule did not evaluate correctly');
@@ -69,7 +68,7 @@ describe('BusinessRuleService', () => {
             .addRule('IsNotInUnitedKingdom', RuleMatchType.MatchAll)
             .addPart('countryCode', RuleComparison.NotEquals, 'UK');
 
-        const data = new MetaFormAnswers();
+        const data = new MetaFormData();
         data.setValue('countryCode', 'DE');
 
         expect(service.evaluateRule('IsNotInUnitedKingdom', data)).toEqual(true, 'Rule did not evaluate correctly');
@@ -80,12 +79,11 @@ describe('BusinessRuleService', () => {
             .addRule('IsNotInUnitedKingdom', RuleMatchType.MatchAll)
             .addPart('countryCode', RuleComparison.NotEquals, 'UK');
 
-        const data = new MetaFormAnswers();
+        const data = new MetaFormData();
         data.setValue('countryCode', 'UK');
 
         expect(service.evaluateRule('IsNotInUnitedKingdom', data)).toEqual(false, 'Rule did not evaluate correctly');
     });
-
 
     it('should evaluate a match any comparison as true', () => {
         service
@@ -93,10 +91,13 @@ describe('BusinessRuleService', () => {
             .addPart('countryCode', RuleComparison.Equals, 'UK')
             .addPart('countryCode', RuleComparison.Equals, 'PL');
 
-        const data = new MetaFormAnswers();
+        const data = new MetaFormData();
         data.setValue('countryCode', 'PL');
 
-        expect(service.evaluateRule('IsInUnitedKingdomOrPoland', data)).toEqual(true, 'Rule did not evaluate correctly');
+        expect(service.evaluateRule('IsInUnitedKingdomOrPoland', data)).toEqual(
+            true,
+            'Rule did not evaluate correctly'
+        );
     });
 
     it('should evaluate a match all as true', () => {
@@ -105,7 +106,7 @@ describe('BusinessRuleService', () => {
             .addPart('countryCode', RuleComparison.Equals, 'UK')
             .addPart('isReturner', RuleComparison.Equals, 'true');
 
-        const data = new MetaFormAnswers();
+        const data = new MetaFormData();
         data.setValue('countryCode', 'UK');
         data.setValue('isReturner', 'true');
 
@@ -113,10 +114,12 @@ describe('BusinessRuleService', () => {
     });
 
     class TestRulePart implements IRulePart {
-        evaluate(data: MetaFormAnswers): boolean {
-            return (data.getValue('countryCode') === 'FR'
-                || data.getValue('countryCode') === 'BE'
-                || data.getValue('countryCode') === 'CH');
+        evaluate(data: MetaFormData): boolean {
+            return (
+                data.getValue('countryCode') === 'FR' ||
+                data.getValue('countryCode') === 'BE' ||
+                data.getValue('countryCode') === 'CH'
+            );
         }
     }
 
@@ -126,11 +129,10 @@ describe('BusinessRuleService', () => {
             .addPartFrom(new TestRulePart())
             .addPart('isReturner', RuleComparison.Equals, 'true');
 
-        const data = new MetaFormAnswers();
+        const data = new MetaFormData();
         data.setValue('countryCode', 'CH');
         data.setValue('isReturner', 'true');
 
         expect(service.evaluateRule('ComplexCheck', data)).toEqual(true, 'Rule did not evaluate correctly');
     });
-
 });

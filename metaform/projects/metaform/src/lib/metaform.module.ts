@@ -14,6 +14,7 @@ import { MetaFormOptionComponent } from './ui/mf-option.component';
 import { MetaFormOptionMultiComponent } from './ui/mf-option-multi.component';
 import { MetaFormTelephoneAndIddComponent } from './ui/mf-telephone.component';
 import { MetaFormToggleComponent } from './ui/mf-toggle.component';
+import { RuleEvaluatorComponent } from './ui/rule-evaluator.component';
 
 @NgModule({
     declarations: [
@@ -26,16 +27,10 @@ import { MetaFormToggleComponent } from './ui/mf-toggle.component';
         MetaFormDateComponent,
         MetaFormTimeComponent,
         MetaFormTelephoneAndIddComponent,
-        MetaFormToggleComponent
+        MetaFormToggleComponent,
+        RuleEvaluatorComponent
     ],
-    imports: [
-        CommonModule,
-        HttpClientModule,
-        FormsModule,
-        ReactiveFormsModule
-    ],
-    exports: [
-        MetaFormDisplayComponent
-    ]
+    imports: [CommonModule, HttpClientModule, FormsModule, ReactiveFormsModule],
+    exports: [MetaFormDisplayComponent, RuleEvaluatorComponent]
 })
-export class MetaFormModule { }
+export class MetaFormModule {}

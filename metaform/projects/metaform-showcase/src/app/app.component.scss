@@ -1,0 +1,15 @@
+.rule-evaluated {
+    border:1px solid rgb(99, 130, 189);
+    background-color: rgb(162, 193, 250);
+    border-radius: 5px;
+    margin: 1.5rem 2rem;
+    padding: 0.25rem 0.5rem;
+
+    h3 {
+        font-size: 10pt;
+    }
+
+    p, a, b, code {
+        font-size: 8pt;
+    }
+}

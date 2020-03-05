@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { throwError, Observable, Subject } from 'rxjs';
 import { BusinessRuleService } from './business-rule.service';
-import { MetaForm, MFQuestion, MFControl, MFValidator, MFValidatorAsync, MetaFormAnswers, MFSection } from './metaform';
+import { MetaForm, MFQuestion, MFControl, MFValidator, MFValidatorAsync, MFSection } from './metaform';
 import { MetaFormDrawType, MetaFormControlType } from './metaform-enums';
 import { IMetaFormV1 } from './serialisation/v1.interfaces';
+import { MetaFormData } from './metaform-data';
 
 @Injectable({
     providedIn: 'root'
@@ -224,7 +225,7 @@ export class MetaFormService {
     }
 
     private isQuestionValidForDisplay(
-        answers: MetaFormAnswers,
+        answers: MetaFormData,
         question: MFQuestion,
         ruleService: BusinessRuleService
     ): boolean {
@@ -232,7 +233,7 @@ export class MetaFormService {
     }
 
     private isSectionValidForDisplay(
-        answers: MetaFormAnswers,
+        answers: MetaFormData,
         section: MFSection,
         ruleService: BusinessRuleService
     ): boolean {

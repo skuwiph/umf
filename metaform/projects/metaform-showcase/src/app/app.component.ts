@@ -25,10 +25,18 @@ export class AppComponent implements OnInit {
     constructor(private formService: MetaFormService, private rules: BusinessRuleService) {}
 
     ngOnInit(): void {
+        // Add some default rules
         this.rules.addRule('YesNoIsYes', RuleMatchType.MatchAny).addPart('yesOrNo', RuleComparison.Equals, 'Y');
 
+        this.rules
+            .addRule('HasSelectedFourthOption', RuleMatchType.MatchAll)
+            .addPart('mops', RuleComparison.Contains, '4');
+
+        // Generate the form and link to the created rules
         this.form = this.formService.createForm('sample', 'Sample Form', MetaFormDrawType.EntireForm);
         this.form.rules = this.rules.rules;
+
+        // Create the questions and controls for the form
         this.form
             .addQuestion('q1', 'Please enter your name')
             .addTextControl('firstName', MetaFormTextType.SingleLine, 50, 'First name')

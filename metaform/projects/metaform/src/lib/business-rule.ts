@@ -1,4 +1,4 @@
-import { MetaFormAnswers } from './metaform';
+import { MetaFormData } from './metaform-data';
 
 export class BusinessRule {
     name: string;
@@ -30,7 +30,7 @@ export class BusinessRule {
         return this;
     }
 
-    evaluate(data: MetaFormAnswers): boolean {
+    evaluate(data: MetaFormData): boolean {
         let success = false;
         for (const rp of this.parts) {
             success = rp.evaluate(data);
@@ -52,7 +52,7 @@ export class BusinessRule {
 }
 
 export interface IRulePart {
-    evaluate(data: MetaFormAnswers): boolean;
+    evaluate(data: MetaFormData): boolean;
 }
 
 export class RulePart implements IRulePart {
@@ -71,7 +71,7 @@ export class RulePart implements IRulePart {
         this.max = max;
     }
 
-    evaluate(data: MetaFormAnswers): boolean {
+    evaluate(data: MetaFormData): boolean {
         const comparedValue = data.getValue(this.fieldName);
 
         // console.log(`Got ${comparedValue}, looking for ${this.comparison} with value of ${this.value}`);
@@ -128,7 +128,6 @@ export class RulePart implements IRulePart {
         return false;
     }
 
-
     private evaluateEquality(value: any, comparedValue: any): boolean {
         return value === comparedValue;
     }
@@ -152,8 +151,7 @@ export class RulePart implements IRulePart {
         // if( upper.getTime() >= comparedValue.getTime())
         //     // console.debug("Date is smaller than upper bound");
 
-        return lower.getTime() <= comparedValue.getTime()
-            && upper.getTime() >= comparedValue.getTime();
+        return lower.getTime() <= comparedValue.getTime() && upper.getTime() >= comparedValue.getTime();
     }
 
     /**
@@ -166,8 +164,17 @@ export class RulePart implements IRulePart {
             const arr = comparedValue || [];
             const item = arr.find(v => v === value);
 
-            return (item);
+            return item;
         } else {
+            if (typeof comparedValue === 'string') {
+                const vs = comparedValue as string;
+                if (vs.indexOf(',') > -1) {
+                    const split = vs.split(',');
+                    if (split.find(s => s === value)) {
+                        return true;
+                    }
+                }
+            }
             // Bit weird, but if it's not an array, it should be a straight equality check
             return this.evaluateEquality(value, comparedValue);
         }
@@ -188,4 +195,3 @@ export enum RuleComparison {
     Contains = 5,
     Between
 }
-
