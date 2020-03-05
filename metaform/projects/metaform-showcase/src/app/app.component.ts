@@ -7,7 +7,7 @@ import {
     ControlLayoutStyle,
     MetaFormDateType
 } from 'projects/metaform/src/lib/metaform-enums';
-import { MetaFormUserEvent } from 'projects/metaform/src/lib/ui/metaform-display.component';
+import { MetaFormUserEvent, UserEventType } from 'projects/metaform/src/lib/ui/metaform-display.component';
 import { BusinessRuleService } from 'projects/metaform/src/lib/business-rule.service';
 import { RuleMatchType, RuleComparison } from 'projects/metaform/src/lib/business-rule';
 
@@ -18,7 +18,9 @@ import { RuleMatchType, RuleComparison } from 'projects/metaform/src/lib/busines
 })
 export class AppComponent implements OnInit {
     title = 'metaform-showcase';
-    form: MetaForm;
+
+    private form: MetaForm;
+    private lastUserEvent: UserEventType;
 
     constructor(private formService: MetaFormService, private rules: BusinessRuleService) {}
 
@@ -92,6 +94,24 @@ export class AppComponent implements OnInit {
     }
 
     onFormEvent(event: MetaFormUserEvent): void {
-        // console.log(`Event: ${event.type}`);
+        if (!this.lastUserEvent || !(this.lastUserEvent === event.type)) {
+            switch (event.type) {
+                case UserEventType.FormInitialised:
+                    console.log(`The form has been initialised`);
+                    break;
+                case UserEventType.FormInvalid:
+                    console.log(`The form is currently invalid`);
+                    break;
+                case UserEventType.FormValid:
+                    console.log(`The form is now valid`);
+                    break;
+                case UserEventType.FormSubmit:
+                    console.log(`The 'Submit' button on the display component has been clicked`);
+                    break;
+            }
+
+            // Just to prevent multiple messages spamming the console.
+            this.lastUserEvent = event.type;
+        }
     }
 }
