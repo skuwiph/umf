@@ -1,7 +1,23 @@
+import { TestBed } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http';
+
 import { MetaForm, MFValidator, MFOptionValue, MFOptions } from './metaform';
-import { MetaFormDrawType, MetaFormTextType, MetaFormDateType } from './metaform-enums';
+import { MetaFormDrawType, MetaFormTextType, MetaFormDateType, ControlLayoutStyle } from './metaform-enums';
+
+import { BusinessRuleService } from './business-rule.service';
+import { RuleMatchType, RuleComparison } from './business-rule';
 
 describe('MetaForm', () => {
+    let rules: BusinessRuleService;
+
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientModule],
+            providers: [BusinessRuleService]
+        });
+        rules = TestBed.inject(BusinessRuleService);
+    });
+
     it('should create an instance', () => {
         expect(new MetaForm()).toBeTruthy();
     });
@@ -375,5 +391,59 @@ describe('MetaForm', () => {
 
         f.setValue('answer', '41');
         expect(f.isValid()).toEqual(true, `${f.getValue('answer')} should be valid`);
+    });
+
+    it('A control hidden by a display rule should not cause validation errors', () => {
+        rules.addRule('YesNoIsYes', RuleMatchType.MatchAny).addPart('yesOrNo', RuleComparison.Equals, 'Y');
+
+        const form = MetaForm.create('sample', MetaFormDrawType.EntireForm);
+        form.rules = rules.rules;
+
+        const yesno: MFOptionValue[] = [];
+        yesno.push(new MFOptionValue('Y', 'Yes'));
+        yesno.push(new MFOptionValue('N', 'No'));
+
+        form.addQuestion('q3', 'Can you answer yes or no?', null).addOptionControl(
+            'yesOrNo',
+            MFOptions.OptionFromList(yesno, null, true),
+            ControlLayoutStyle.Horizontal
+        );
+
+        form.addQuestion('q3a', 'Enter a future date', null)
+            .setDisplayRule('YesNoIsYes')
+            .addDateControl('dateInTheFuture', MetaFormDateType.Full)
+            .addLabel('Future Date  ')
+            .addValidator(MFValidator.Date('Please enter a date'))
+            .addValidator(MFValidator.AnswerAfterDate('%TODAY', 'Date must be later than today!'));
+
+        form.setValue('yesOrNo', 'N');
+        expect(form.isValid()).toEqual(true, `The rule has not been triggered, so the form should be valid`);
+    });
+
+    it('A control shown by a display rule should cause validation errors', () => {
+        rules.addRule('YesNoIsYes', RuleMatchType.MatchAny).addPart('yesOrNo', RuleComparison.Equals, 'Y');
+
+        const form = MetaForm.create('sample', MetaFormDrawType.EntireForm);
+        form.rules = rules.rules;
+
+        const yesno: MFOptionValue[] = [];
+        yesno.push(new MFOptionValue('Y', 'Yes'));
+        yesno.push(new MFOptionValue('N', 'No'));
+
+        form.addQuestion('q3', 'Can you answer yes or no?', null).addOptionControl(
+            'yesOrNo',
+            MFOptions.OptionFromList(yesno, null, true),
+            ControlLayoutStyle.Horizontal
+        );
+
+        form.addQuestion('q3a', 'Enter a future date', null)
+            .setDisplayRule('YesNoIsYes')
+            .addDateControl('dateInTheFuture', MetaFormDateType.Full)
+            .addLabel('Future Date  ')
+            .addValidator(MFValidator.Date('Please enter a date'))
+            .addValidator(MFValidator.AnswerAfterDate('%TODAY', 'Date must be later than today!'));
+
+        form.setValue('yesOrNo', 'Y');
+        expect(form.isValid()).toEqual(false, `The rule has been triggered, so the form should be invalid`);
     });
 });

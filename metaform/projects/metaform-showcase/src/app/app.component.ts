@@ -18,8 +18,8 @@ import { RuleMatchType, RuleComparison } from 'projects/metaform/src/lib/busines
 })
 export class AppComponent implements OnInit {
     title = 'metaform-showcase';
+    form: MetaForm;
 
-    private form: MetaForm;
     private lastUserEvent: UserEventType;
 
     constructor(private formService: MetaFormService, private rules: BusinessRuleService) {}
@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
         this.rules.addRule('YesNoIsYes', RuleMatchType.MatchAny).addPart('yesOrNo', RuleComparison.Equals, 'Y');
 
         this.form = this.formService.createForm('sample', 'Sample Form', MetaFormDrawType.EntireForm);
-
+        this.form.rules = this.rules.rules;
         this.form
             .addQuestion('q1', 'Please enter your name')
             .addTextControl('firstName', MetaFormTextType.SingleLine, 50, 'First name')
@@ -70,7 +70,8 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('q3', 'Can you answer yes or no?', null)
-            .addOptionControl('yesOrNo', MFOptions.OptionFromList(yesno, null, true), ControlLayoutStyle.Horizontal);
+            .addOptionControl('yesOrNo', MFOptions.OptionFromList(yesno, null, true), ControlLayoutStyle.Horizontal)
+            .addValidator(MFValidator.Required('Please select an answer'));
 
         this.form
             .addQuestion('q3a', 'Enter a future date', null)
@@ -106,7 +107,13 @@ export class AppComponent implements OnInit {
                     console.log(`The form is now valid`);
                     break;
                 case UserEventType.FormSubmit:
-                    console.log(`The 'Submit' button on the display component has been clicked`);
+                    console.log(
+                        `The 'Submit' button on the display component has been clicked. Data is: ${JSON.stringify(
+                            this.form.answers,
+                            null,
+                            2
+                        )}`
+                    );
                     break;
             }
 

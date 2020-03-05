@@ -10,8 +10,7 @@ import { IMetaFormV1 } from './serialisation/v1.interfaces';
     providedIn: 'root'
 })
 export class MetaFormService {
-
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
     // Create a blank form
     createForm(name: string, title: string, drawType?: MetaFormDrawType): MetaForm {
@@ -26,15 +25,15 @@ export class MetaFormService {
     loadFormWithName(formUrl: string, name: string): Observable<MetaForm> {
         const subject = new Subject<MetaForm>();
 
-        this.http.get(`${formUrl}/${name}`)
-            .subscribe(
-                // TODO: provide a partial implementation
-                // with just version number, or some other
-                // identifier, then cast to the proper version
-                (data: IMetaFormV1) => {
-                    const form = this.loadMetaForm(data);
-                    subject.next(form);
-                });
+        this.http.get(`${formUrl}/${name}`).subscribe(
+            // TODO: provide a partial implementation
+            // with just version number, or some other
+            // identifier, then cast to the proper version
+            (data: IMetaFormV1) => {
+                const form = this.loadMetaForm(data);
+                subject.next(form);
+            }
+        );
 
         return subject;
     }
@@ -78,7 +77,12 @@ export class MetaFormService {
         return this.http.get(url);
     }
 
-    private getSingleQuestion(form: MetaForm, ruleService: BusinessRuleService, lastQuestion: number, direction = 1): DisplayQuestion {
+    private getSingleQuestion(
+        form: MetaForm,
+        ruleService: BusinessRuleService,
+        lastQuestion: number,
+        direction = 1
+    ): DisplayQuestion {
         const dq = new DisplayQuestion();
 
         let found = false;
@@ -86,7 +90,10 @@ export class MetaFormService {
         let question: MFQuestion;
         let controlCount = 0;
 
-        while (!found && (direction > 0 && currentQuestion < form.questions.length || direction < 0 && currentQuestion > -1)) {
+        while (
+            !found &&
+            ((direction > 0 && currentQuestion < form.questions.length) || (direction < 0 && currentQuestion > -1))
+        ) {
             question = form.questions[currentQuestion];
             if (this.isQuestionValidForDisplay(form.answers, question, ruleService)) {
                 dq.questions.push(question);
@@ -99,8 +106,8 @@ export class MetaFormService {
 
         // We have to continue in the same direction in case the question
         // we found was the last (or first) available
-        const atStart = (this.findQuestionBoundary(form, ruleService, currentQuestion, -1) < 0);
-        const atEnd = (this.findQuestionBoundary(form, ruleService, currentQuestion, +1) >= form.questions.length);
+        const atStart = this.findQuestionBoundary(form, ruleService, currentQuestion, -1) < 0;
+        const atEnd = this.findQuestionBoundary(form, ruleService, currentQuestion, +1) >= form.questions.length;
 
         dq.atEnd = atEnd;
         dq.atStart = atStart;
@@ -111,7 +118,12 @@ export class MetaFormService {
         return dq;
     }
 
-    private getQuestionsInSection(form: MetaForm, ruleService: BusinessRuleService, lastSection: number, direction = 1): DisplayQuestion {
+    private getQuestionsInSection(
+        form: MetaForm,
+        ruleService: BusinessRuleService,
+        lastSection: number,
+        direction = 1
+    ): DisplayQuestion {
         let activeSection: MFSection;
         let checkSection = 0;
         let found = false;
@@ -119,7 +131,10 @@ export class MetaFormService {
         console.log(`lastSection: ${lastSection}, checking ${lastSection + direction}`);
 
         checkSection = lastSection + direction;
-        while (!found && (direction > 0 && checkSection < form.sections.length || direction < 0 && checkSection > -1)) {
+        while (
+            !found &&
+            ((direction > 0 && checkSection < form.sections.length) || (direction < 0 && checkSection > -1))
+        ) {
             const currentSection = form.sections[checkSection];
             console.log(`Check ${currentSection.title}`);
             if (this.isSectionValidForDisplay(form.answers, currentSection, ruleService)) {
@@ -131,8 +146,8 @@ export class MetaFormService {
             }
         }
 
-        const atStart = (this.findSectionBoundary(form, ruleService, checkSection, -1) < 0);
-        const atEnd = (this.findSectionBoundary(form, ruleService, checkSection, 1) >= form.sections.length);
+        const atStart = this.findSectionBoundary(form, ruleService, checkSection, -1) < 0;
+        const atEnd = this.findSectionBoundary(form, ruleService, checkSection, 1) >= form.sections.length;
 
         const dq = this.getQuestionsForSection(form, activeSection);
 
@@ -142,7 +157,12 @@ export class MetaFormService {
         return dq;
     }
 
-    private findQuestionBoundary(form: MetaForm, ruleService: BusinessRuleService, startQuestion: number, direction: number): number {
+    private findQuestionBoundary(
+        form: MetaForm,
+        ruleService: BusinessRuleService,
+        startQuestion: number,
+        direction: number
+    ): number {
         let boundary = direction < 0 ? -1 : form.questions.length;
         let found = false;
         let outOfBounds = false;
@@ -161,7 +181,7 @@ export class MetaFormService {
                 break;
             } else {
                 current += direction;
-                outOfBounds = (current < 0);
+                outOfBounds = current < 0;
             }
         } while (!found && !outOfBounds);
 
@@ -170,7 +190,12 @@ export class MetaFormService {
         return boundary;
     }
 
-    private findSectionBoundary(form: MetaForm, ruleService: BusinessRuleService, startSection: number, direction: number): number {
+    private findSectionBoundary(
+        form: MetaForm,
+        ruleService: BusinessRuleService,
+        startSection: number,
+        direction: number
+    ): number {
         let boundary = direction < 0 ? -1 : form.sections.length;
         let found = false;
         let outOfBounds = false;
@@ -189,7 +214,7 @@ export class MetaFormService {
                 break;
             } else {
                 current += direction;
-                outOfBounds = (current < 0);
+                outOfBounds = current < 0;
             }
         } while (!found && !outOfBounds);
 
@@ -198,12 +223,20 @@ export class MetaFormService {
         return boundary;
     }
 
-    private isQuestionValidForDisplay(answers: MetaFormAnswers, question: MFQuestion, ruleService: BusinessRuleService): boolean {
-        return (!question.ruleToMatch || ruleService.evaluateRule(question.ruleToMatch, answers));
+    private isQuestionValidForDisplay(
+        answers: MetaFormAnswers,
+        question: MFQuestion,
+        ruleService: BusinessRuleService
+    ): boolean {
+        return !question.ruleToMatch || ruleService.evaluateRule(question.ruleToMatch, answers);
     }
 
-    private isSectionValidForDisplay(answers: MetaFormAnswers, section: MFSection, ruleService: BusinessRuleService): boolean {
-        return (!section.ruleToMatch || ruleService.evaluateRule(section.ruleToMatch, answers));
+    private isSectionValidForDisplay(
+        answers: MetaFormAnswers,
+        section: MFSection,
+        ruleService: BusinessRuleService
+    ): boolean {
+        return !section.ruleToMatch || ruleService.evaluateRule(section.ruleToMatch, answers);
     }
 
     private getQuestionsForSection(form: MetaForm, section: MFSection): DisplayQuestion {
@@ -243,7 +276,12 @@ export class MetaFormService {
         return dq;
     }
 
-    private getDisplayQuestions(form: MetaForm, ruleService: BusinessRuleService, lastItem: number, direction: number): DisplayQuestion {
+    private getDisplayQuestions(
+        form: MetaForm,
+        ruleService: BusinessRuleService,
+        lastItem: number,
+        direction: number
+    ): DisplayQuestion {
         let dq: DisplayQuestion;
 
         if (!form.questions || form.questions.length === 0) {
@@ -310,7 +348,7 @@ export class MetaFormService {
                         fc = fq.addTimeControl(c.name, c.minuteStep, c.hourStart, c.hourEnd);
                         break;
                     case MetaFormControlType.Option:
-                        fc = fq.addOptionControl(c.name, c.optionType, c.options);
+                        fc = fq.addOptionControl(c.name, c.options);
                         break;
                     default:
                         console.warn(`Missing type: ${c.controlType}, name: ${c.name}`);
@@ -354,7 +392,6 @@ export class MetaFormService {
                     }
                 }
                 if (c.validatorsAsync) {
-
                     for (const va of c.validatorsAsync) {
                         switch (va.type) {
                             case 'Async':
@@ -363,7 +400,6 @@ export class MetaFormService {
                             default:
                                 console.warn(`Got async validator of type: ${va.type}`);
                         }
-
                     }
                 }
             }

@@ -3,7 +3,7 @@ import { EventEmitter } from '@angular/core';
 
 import { BusinessRuleService } from '../business-rule.service';
 import { MetaFormService, DisplayQuestion } from '../metaform.service';
-import { MetaFormDrawType, MetaFormControlType } from '../metaform-enums';
+import { MetaFormControlType } from '../metaform-enums';
 import { MetaForm, MFQuestion, MFControlValidityChange, MFControl, MFOptionsChanged } from '../metaform';
 
 @Component({
@@ -12,11 +12,11 @@ import { MetaForm, MFQuestion, MFControlValidityChange, MFControl, MFOptionsChan
     styleUrls: ['./metaform-display.component.css']
 })
 export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
-
     constructor(
         private el: ElementRef,
         private formService: MetaFormService,
-        private ruleService: BusinessRuleService) { }
+        private ruleService: BusinessRuleService
+    ) {}
 
     @Input() form: MetaForm;
     @Input() showButtons = false;
@@ -34,8 +34,6 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     atStartOfForm = false;
 
     nextButtonText = 'Next';
-
-    questionAvailable: Map<string, boolean> = new Map<string, boolean>();
 
     ngOnInit(): void {
         if (!this.form) {
@@ -71,19 +69,7 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     }
 
     ruleMatches(question: MFQuestion): boolean {
-        // Don't bother asking for a single-question form
-        if (this.form.drawType === MetaFormDrawType.SingleQuestion || !question.ruleToMatch) {
-            return true;
-        }
-
-        if (this.ruleService) {
-            const rule = this.ruleService.getRule(question.ruleToMatch);
-            if (rule) {
-                return rule.evaluate(this.form.answers);
-            }
-        }
-
-        return false;
+        return this.form.ruleMatches(question, this.ruleService.rules);
     }
 
     onControlValidityChange(event: MFControlValidityChange): void {
@@ -107,7 +93,11 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
         this.display = null;
 
         setTimeout(() => {
-            const result = this.formService.getNextQuestionToDisplay(this.form, this.ruleService, this.currentFormItem - 1);
+            const result = this.formService.getNextQuestionToDisplay(
+                this.form,
+                this.ruleService,
+                this.currentFormItem - 1
+            );
             this.display = result;
 
             this.checkDisplayQuestions();
@@ -149,32 +139,16 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
             this.nextButtonText = 'Next ᐅ';
         }
 
-        this.questionAvailable.clear();
-        for (const q of this.display.questions) {
-            this.questionAvailable.set(q.name, true);
-        }
-
         this.checkPageStatus();
-
         this.setFocusOnFirstControl();
     }
 
     private checkPageStatus() {
-        let numberOfPasses = 0;
-
-        // Check page validity
-        for (const [key, value] of this.display.controlStatus) {
-            if (this.display.controlStatus.get(key)) {
-                numberOfPasses++;
-            }
-        }
-
-        this.pageIsValid = (numberOfPasses === this.display.numberOfControls);
+        this.pageIsValid = this.form.areQuestionsValid(this.display.questions, false);
 
         this.formEvent.emit(
-            new MetaFormUserEvent(
-                this.pageIsValid ? UserEventType.FormValid : UserEventType.FormInvalid,
-                this.form));
+            new MetaFormUserEvent(this.pageIsValid ? UserEventType.FormValid : UserEventType.FormInvalid, this.form)
+        );
     }
 
     private setFocusOnFirstControl(): void {

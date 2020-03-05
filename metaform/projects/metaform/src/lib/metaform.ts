@@ -7,6 +7,7 @@ import {
 } from './metaform-enums';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { BusinessRule } from './business-rule';
 
 export class MetaForm {
     name: string;
@@ -20,7 +21,7 @@ export class MetaForm {
     questions?: MFQuestion[];
 
     answers: MetaFormAnswers = new MetaFormAnswers();
-
+    rules: Map<string, BusinessRule>;
     public change$ = new Subject<MFValueChange>();
 
     static create(name: string, drawType?: MetaFormDrawType): MetaForm {
@@ -142,13 +143,21 @@ export class MetaForm {
         return null;
     }
 
+    // Is this entire form valid
     isValid(updateStatus = true): boolean {
+        return this.areQuestionsValid(this.questions, updateStatus);
+    }
+
+    // are the passed subset of questions for this form valid?
+    areQuestionsValid(questions: MFQuestion[], updateStatus = true): boolean {
         let valid = true;
 
-        for (const q of this.questions) {
-            if (!q.isValid(this, updateStatus)) {
-                valid = false;
-                break;
+        for (const q of questions) {
+            if (this.ruleMatches(q, this.rules)) {
+                if (!q.isValid(this, updateStatus)) {
+                    valid = false;
+                    break;
+                }
             }
         }
         return valid;
@@ -276,6 +285,20 @@ export class MetaForm {
         }
     }
 
+    ruleMatches(question: MFQuestion, rules: Map<string, BusinessRule>): boolean {
+        // Don't bother asking for a single-question form
+        if (this.drawType === MetaFormDrawType.SingleQuestion || !question.ruleToMatch) {
+            return true;
+        }
+
+        if (rules) {
+            // console.log(`I have rules and need to evaluate ${question.ruleToMatch} against ${JSON.stringify(this.answers)}`);
+            return this.evaluateRule(rules, question.ruleToMatch, this.answers);
+        }
+
+        return false;
+    }
+
     toJson(): string {
         return JSON.stringify(this, metaFormJsonReplacer, 2);
     }
@@ -321,6 +344,16 @@ export class MetaForm {
             }
         }
         return null;
+    }
+
+    private evaluateRule(rules: Map<string, BusinessRule>, name: string, data: MetaFormAnswers): boolean {
+        if (rules.has(name)) {
+            // console.log(`Got rule: ${name}`);
+            const rule = rules.get(name);
+            return rule.evaluate(data);
+        }
+
+        return false;
     }
 }
 
