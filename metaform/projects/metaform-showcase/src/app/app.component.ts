@@ -4,7 +4,6 @@ import { MetaForm, MFValidator, MFOptionValue, MFOptions } from 'projects/metafo
 import {
     MetaFormDrawType,
     MetaFormTextType,
-    MetaFormOptionType,
     ControlLayoutStyle,
     MetaFormDateType
 } from 'projects/metaform/src/lib/metaform-enums';
@@ -21,12 +20,10 @@ export class AppComponent implements OnInit {
     title = 'metaform-showcase';
     form: MetaForm;
 
-    constructor(private formService: MetaFormService, private rules: BusinessRuleService) { }
+    constructor(private formService: MetaFormService, private rules: BusinessRuleService) {}
 
     ngOnInit(): void {
-        this.rules
-            .addRule('YesNoIsYes', RuleMatchType.MatchAny)
-            .addPart('yesOrNo', RuleComparison.Equals, 'Y');
+        this.rules.addRule('YesNoIsYes', RuleMatchType.MatchAny).addPart('yesOrNo', RuleComparison.Equals, 'Y');
 
         this.form = this.formService.createForm('sample', 'Sample Form', MetaFormDrawType.EntireForm);
 
@@ -49,9 +46,7 @@ export class AppComponent implements OnInit {
             .addTextControl('email', MetaFormTextType.SingleLine, 255, 'Email')
             .addValidator(MFValidator.Required('Please enter a value'))
             .addValidator(MFValidator.Email('Please enter a valid email address'));
-        this.form
-            .getQuestion('q2')
-            .addToggleControl('marketing', 'Please send me marketing emails');
+        this.form.getQuestion('q2').addToggleControl('marketing', 'Please send me marketing emails');
         this.form
             .getQuestion('q2')
             .addTextControl('password', MetaFormTextType.Password, 255, 'Password')
@@ -73,15 +68,15 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('q3', 'Can you answer yes or no?', null)
-            .addOptionControl('yesOrNo', MetaFormOptionType.SingleSelect,
-                MFOptions.OptionFromList(yesno, null, true),
-                ControlLayoutStyle.Horizontal);
+            .addOptionControl('yesOrNo', MFOptions.OptionFromList(yesno, null, true), ControlLayoutStyle.Horizontal);
 
         this.form
             .addQuestion('q3a', 'Enter a future date', null)
-            .addHtml(`Since you answered <b>Yes</b> to the previous question, you should probably enter a date. `
-                + `<i>Please note:</i> in order to illustrate the <b>AnswerAfterDate</b> validator, you should enter `
-                + `a date in the future.`);
+            .addHtml(
+                `Since you answered <b>Yes</b> to the previous question, you should probably enter a date. ` +
+                    `<i>Please note:</i> in order to illustrate the <b>AnswerAfterDate</b> validator, you should enter ` +
+                    `a date in the future.`
+            );
 
         this.form
             .getQuestion('q3a')
@@ -93,9 +88,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('q4', 'Please select all applicable answers?', null)
-            .addOptionMultiControl('mops',
-                MFOptions.OptionFromList(mop, null, true),
-                ControlLayoutStyle.Horizontal);
+            .addOptionMultiControl('mops', MFOptions.OptionFromList(mop, null, true), ControlLayoutStyle.Horizontal);
     }
 
     onFormEvent(event: MetaFormUserEvent): void {

@@ -3,8 +3,7 @@ import {
     MetaFormTextType,
     MetaFormControlType,
     ControlLayoutStyle,
-    MetaFormDateType,
-    MetaFormOptionType
+    MetaFormDateType
 } from './metaform-enums';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -37,7 +36,7 @@ export class MetaForm {
         return f;
     }
 
-    static isFieldReference(value: string): { isField: boolean, fieldName: string } {
+    static isFieldReference(value: string): { isField: boolean; fieldName: string } {
         if (value.startsWith('[')) {
             return { isField: true, fieldName: value.substr(1, value.length - 2) };
         } else {
@@ -45,7 +44,7 @@ export class MetaForm {
         }
     }
 
-    static isVariable(valueToCheck: string): { isVariable: boolean, value: string } {
+    static isVariable(valueToCheck: string): { isVariable: boolean; value: string } {
         if (valueToCheck.startsWith('%')) {
             // Extract the variable name
             return { isVariable: true, value: valueToCheck.substr(1).toUpperCase() };
@@ -210,7 +209,7 @@ export class MetaForm {
                 }
 
                 // Basic leap year checking
-                const isLeap = (year % 400 === 0) || ((year % 4 === 0) && (year % 100 !== 0));
+                const isLeap = year % 400 === 0 || (year % 4 === 0 && year % 100 !== 0);
 
                 // Check february
                 if (!isLeap && month === 1 && day > 28) {
@@ -380,11 +379,10 @@ export class MFQuestion {
     }
 
     // tslint:disable-next-line: max-line-length
-    addOptionControl(name: string, optionType: MetaFormOptionType, options?: MFOptions, optionLayout?: ControlLayoutStyle): MFOptionControl {
+    addOptionControl(name: string, options?: MFOptions, optionLayout?: ControlLayoutStyle): MFOptionControl {
         const c = new MFOptionControl();
 
         c.controlType = MetaFormControlType.Option;
-        c.optionType = optionType;
         c.optionLayout = optionLayout ?? ControlLayoutStyle.Vertical;
         c.options = options;
         c.name = name;
@@ -596,25 +594,23 @@ export class MFControl {
                 // console.log(`I have async validators`);
                 for (const v of this.validatorsAsync) {
                     // console.log(`Checking ${v.type} with url ${v.url}`);
-                    v.isValid(form, this).subscribe(
-                        r => {
-                            // console.log(`${v.url} returned ${JSON.stringify(r)}`);
+                    v.isValid(form, this).subscribe(r => {
+                        // console.log(`${v.url} returned ${JSON.stringify(r)}`);
 
-                            valid = r;
-                            if (!valid) {
-                                controlName = this.name;
-                                this.errorMessage = v.message;
-                            }
-
-                            if (valid) {
-                                this.errorMessage = undefined;
-                            }
-
-                            // console.log(`Setting valid=${valid} on control ${this.name} currently in error: ${this.inError}`);
-                            this.inError = !valid;
-                            subject.next(r);
+                        valid = r;
+                        if (!valid) {
+                            controlName = this.name;
+                            this.errorMessage = v.message;
                         }
-                    );
+
+                        if (valid) {
+                            this.errorMessage = undefined;
+                        }
+
+                        // console.log(`Setting valid=${valid} on control ${this.name} currently in error: ${this.inError}`);
+                        this.inError = !valid;
+                        subject.next(r);
+                    });
                 }
             }
         }
@@ -626,8 +622,7 @@ export class MFControl {
         return form.getValue(this.name) !== undefined;
     }
 
-    refresh(): void {
-    }
+    refresh(): void {}
 }
 
 export class MFLabel extends MFControl {
@@ -660,7 +655,7 @@ export class MFOptionControlBase extends MFControl {
     }
 
     get hasAvailableOptions(): boolean {
-        return (this.options?.list && this.options.list.length > 0);
+        return this.options?.list && this.options.list.length > 0;
     }
 
     get hasUrl(): boolean {
@@ -754,13 +749,9 @@ export class MFOptionControlBase extends MFControl {
     }
 }
 
-export class MFOptionControl extends MFOptionControlBase {
-    optionType: MetaFormOptionType;
-}
+export class MFOptionControl extends MFOptionControlBase {}
 
-export class MFOptionMultiControl extends MFOptionControlBase {
-}
-
+export class MFOptionMultiControl extends MFOptionControlBase {}
 
 export class MFDateControl extends MFControl {
     dateType: MetaFormDateType;
@@ -790,8 +781,21 @@ export class MFDateControl extends MFControl {
     }
 
     getMonthNames(): string[] {
-        return ['Month', 'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'];
+        return [
+            'Month',
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+        ];
     }
 }
 
@@ -894,7 +898,6 @@ export class MFLabelControl extends MFControl {
 }
 
 export class MFValidator {
-
     constructor(type: string, message: string) {
         this.type = type;
         this.message = message;
@@ -1010,7 +1013,7 @@ export class MFValidator {
                 }
 
                 const temp = new Date(year, month, day);
-                resultDate = new Date(temp.getTime() + (duration * signValue));
+                resultDate = new Date(temp.getTime() + duration * signValue);
 
                 year = resultDate.getUTCFullYear();
                 month = resultDate.getUTCMonth();
@@ -1062,7 +1065,6 @@ export class MFValidator {
         console.error(`SHOULDN'T BE HERE`);
         return false;
     }
-
 }
 
 export class MFValidatorAsync {
@@ -1088,7 +1090,6 @@ export class MFValidatorAsync {
         console.error(`SHOULDN'T BE HERE`);
         return null;
     }
-
 }
 
 export class MFValueRequired extends MFValidator {
@@ -1217,8 +1218,7 @@ export class MFMustBeBetweenValidator extends MFValidator {
         const minCheck = this.getAnswerForControl(form.answers, this.min);
         const maxCheck = this.getAnswerForControl(form.answers, this.max);
 
-        if (control.controlType === MetaFormControlType.Date
-            || control.controlType === MetaFormControlType.Time) {
+        if (control.controlType === MetaFormControlType.Date || control.controlType === MetaFormControlType.Time) {
             valid = this.dateInRange(form, answerToCheck, minCheck, maxCheck);
         } else {
             valid = +answerToCheck > +minCheck && +answerToCheck < +maxCheck;
@@ -1247,7 +1247,10 @@ export class MFMustExceedWordCountValidator extends MFValidator {
 
         const answerToCheck = form.getValue(control.name);
         if (answerToCheck) {
-            const wordCount = answerToCheck.replace(/\./g, ': ').replace(/\S+/g, 'a').replace(/\s+/g, '').length;
+            const wordCount = answerToCheck
+                .replace(/\./g, ': ')
+                .replace(/\S+/g, 'a')
+                .replace(/\s+/g, '').length;
 
             valid = wordCount >= this.targetWordCount;
         }
@@ -1262,13 +1265,11 @@ export class MFAsyncValidator extends MFValidatorAsync {
     isValid(form: MetaForm, control: MFControl): Observable<boolean> {
         const s = new Subject<boolean>();
 
-        this.http
-            .post(this.url, { check: form.getValue(control.name) })
-            .subscribe((d: MFAsyncValidationResponse) => {
-                // console.log(`Data: ${JSON.stringify(d)}`);
-                s.next(d.valid);
-                s.complete();
-            });
+        this.http.post(this.url, { check: form.getValue(control.name) }).subscribe((d: MFAsyncValidationResponse) => {
+            // console.log(`Data: ${JSON.stringify(d)}`);
+            s.next(d.valid);
+            s.complete();
+        });
 
         return s;
     }
@@ -1335,7 +1336,6 @@ export class MetaFormAnswers {
     setValue(name: string, value: any) {
         this.data[name.toLowerCase()] = value;
     }
-
 }
 
 export class MFValueChange {
@@ -1375,7 +1375,7 @@ export class IddCode {
 
     static getIddList(): IddCode[] {
         return [
-            { name: '', code: ''},
+            { name: '', code: '' },
             { name: 'Afghanistan', code: '+93' },
             { name: 'Åland Islands', code: '+358 18' },
             { name: 'Albania', code: '+355' },

@@ -2,64 +2,68 @@ import { Component, OnInit, Output } from '@angular/core';
 
 import { MetaFormService } from '../metaform.service';
 import { MFOptionControl } from '../metaform';
-import { MetaFormOptionType } from '../metaform-enums';
 import { MetaFormOptionControlBase } from './mf-option-control-base';
 
 @Component({
     selector: 'lib-mf-option',
     template: `
-<div *ngIf="ro; else edit" class="mf-readonly">
-    {{readonlyValue}}
-</div>
-<ng-template #edit>
-    <div *ngIf="loaded && hasOptions">
-        <ng-container [ngSwitch]="optionType">
-            <ng-container *ngSwitchCase="'single'">
+        <div *ngIf="ro; else edit" class="mf-readonly">
+            {{ readonlyValue }}
+        </div>
+        <ng-template #edit>
+            <div *ngIf="loaded && hasOptions">
                 <ng-container *ngIf="expandOptions; else dropdown">
-                    <div class="mf-options" [ngClass]="{'opt-horiz': isHorizontal, 'opt-vert': isVertical, 'error': inError }">
-                        <button type="button" *ngFor="let o of options" class="mfc mf-option-item"
-                        [ngClass]="{'opt-selected': isSelected(o.code)}" (click)="selectItem(o.code)">{{o.description}}</button>
+                    <div
+                        class="mf-options"
+                        [ngClass]="{ 'opt-horiz': isHorizontal, 'opt-vert': isVertical, error: inError }"
+                    >
+                        <button
+                            type="button"
+                            *ngFor="let o of options"
+                            class="mfc mf-option-item"
+                            [ngClass]="{ 'opt-selected': isSelected(o.code) }"
+                            (click)="selectItem(o.code)"
+                        >
+                            {{ o.description }}
+                        </button>
                     </div>
                 </ng-container>
                 <ng-template #dropdown>
-                    <select class="mfc mf-option-select" [ngClass]="{'error': inError }" (change)="onChange($event.target.value)"
-                    (blur)="onFocusLost()">
-                        <option *ngFor="let o of options" class="mf-option-select-item"
-                        [selected]="isSelected(o.code)"
-                        [ngClass]="{'opt-selected': isSelected(o.code)}">{{o.description}}</option>
+                    <select
+                        class="mfc mf-option-select"
+                        [ngClass]="{ error: inError }"
+                        (change)="onChange($event.target.value)"
+                        (blur)="onFocusLost()"
+                    >
+                        <option
+                            *ngFor="let o of options"
+                            class="mf-option-select-item"
+                            [selected]="isSelected(o.code)"
+                            [ngClass]="{ 'opt-selected': isSelected(o.code) }"
+                            >{{ o.description }}</option
+                        >
                     </select>
                 </ng-template>
-            </ng-container>
-        </ng-container>
-    </div>
-</ng-template>`,
+            </div>
+        </ng-template>
+    `,
     styleUrls: ['./mf.components.css']
 })
 export class MetaFormOptionComponent extends MetaFormOptionControlBase implements OnInit {
-
     optionType: string;
     expandOptions = false;
 
-    constructor(formService: MetaFormService) { super(formService); }
+    constructor(formService: MetaFormService) {
+        super(formService);
+    }
 
     ngOnInit(): void {
         super.ngOnInit();
 
         if (this.control) {
             const optionControl = this.control as MFOptionControl;
-
-            switch (optionControl.optionType) {
-                case MetaFormOptionType.SingleSelect:
-                    this.optionType = 'single';
-                    this.expandOptions = optionControl.options.expandOptions ?? true;
-                    break;
-                case MetaFormOptionType.Typeahead:
-                    this.optionType = 'typeahead';
-                    break;
-                default:
-                    this.optionType = 'single';
-                    break;
-            }
+            this.optionType = 'single';
+            this.expandOptions = optionControl.options.expandOptions ?? true;
         }
     }
 
@@ -134,5 +138,4 @@ export class MetaFormOptionComponent extends MetaFormOptionControlBase implement
 
         this.checkControlStatus(updateStatus);
     }
-
 }

@@ -1,4 +1,3 @@
-
 export enum MetaFormDrawType {
     SingleQuestion,
     SingleSection,
@@ -31,11 +30,6 @@ export enum MetaFormTextType {
 export enum MetaFormDateType {
     Full,
     MonthYear
-}
-
-export enum MetaFormOptionType {
-    SingleSelect,
-    Typeahead
 }
 
 export enum ControlLayoutStyle {
