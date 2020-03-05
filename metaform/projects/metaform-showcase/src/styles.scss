@@ -8,9 +8,17 @@
     font-size: 12pt; 
 }
 
+.mf-question {
+    -webkit-box-shadow: 3px 3px 8px -4px rgba(99, 130, 189, 0.7);
+    -moz-box-shadow: 3px 3px 8px -4px rgba(99, 130, 189, 0.7);
+    box-shadow: 3px 3px 8px -4px rgba(99, 130, 189, 0.7);
+    // border: none !important;
+}
+
 label.caption,
 .mf-option-item {
     font-family: 'Karla';
+    font-size: larger;
 }
 
 .mf-html-content {
