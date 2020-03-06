@@ -1,7 +1,10 @@
 import { Component, OnInit, Input, SecurityContext } from '@angular/core';
-import { MFControl, MetaForm, MFLabelControl, MFHtmlTextControl } from '../metaform';
-import { MetaFormService } from '../metaform.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { filter } from 'rxjs/operators';
+
+import { MFControl, MetaForm, MFHtmlTextControl } from '../metaform';
+import { MetaFormService } from '../metaform.service';
+import { MFValueChange } from '../metaform-data';
 
 @Component({
     selector: 'lib-mf-html',
@@ -22,7 +25,26 @@ export class MetaFormHtmlComponent implements OnInit {
         if (this.control) {
             const htmlControl = this.control as MFHtmlTextControl;
             this.name = this.control.name;
-            this.html = this.sanitiser.sanitize(SecurityContext.HTML, htmlControl.html);
+            const f = MetaForm.isFieldReference(htmlControl.html);
+            if (f.isField) {
+                // Content derived from a field; subscribe for changes
+                this.form.change$.pipe(
+                    filter(
+                        (c: MFValueChange) => c.name === f.fieldName)
+                ).subscribe(
+                    (c: MFValueChange) => {
+                        this.loadContent(c.value);
+                    });
+            } else {
+                // Static content
+                this.loadContent(htmlControl.html);
+            }
         }
+    }
+
+    loadContent(value: string) {
+
+        this.html = this.sanitiser.sanitize(SecurityContext.HTML, value);
+
     }
 }

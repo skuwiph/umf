@@ -12,6 +12,8 @@ import { BusinessRuleService } from 'projects/metaform/src/lib/business-rule.ser
 import { RuleMatchType, RuleComparison } from 'projects/metaform/src/lib/business-rule';
 import { filter } from 'rxjs/operators';
 import { MFValueChange } from 'projects/metaform/src/lib/metaform-data';
+import { computeDecimalDigest } from '@angular/compiler/src/i18n/digest';
+import { deserialize } from 'v8';
 
 @Component({
     selector: 'app-root',
@@ -92,16 +94,23 @@ export class AppComponent implements OnInit {
             .addOptionControl('yesOrNo', MFOptions.OptionFromList(yesno, null, true), ControlLayoutStyle.Horizontal)
             .addValidator(MFValidator.Required('Please select an answer'));
 
-        const otherOptions: MFOptionValue[] = [];
-        otherOptions.push(new MFOptionValue('A', 'Option A'));
-        otherOptions.push(new MFOptionValue('B', 'Option B'));
-        otherOptions.push(new MFOptionValue('C', 'Option C'));
+        const otherOptions: SpecialOption[] = [];
+        otherOptions.push(new SpecialOption('A', 'Option A',
+            `This option's text <b>describes something relevant</b> to the user.`));
+        otherOptions.push(new SpecialOption('B', 'Option B',
+            `This option went to climb a <b>particularly</b> tall mountain.`));
+        otherOptions.push(new SpecialOption('C', 'Option C',
+            `This option <i>didn't want to go outside</i>, but was <u>tempted by the sunshine</u>. `));
 
         this.form
             .addQuestion('q41', 'Select an option?', null)
             .addOptionControl('otherOption', MFOptions.OptionFromList(otherOptions, 'Please Select', false))
             .addValidator(MFValidator.Required('Please select an answer'));
 
+
+        this.form
+            .getQuestion('q41')
+            .addHtml('[specialOptionDescription]');
 
         // this.form
         //     .addQuestion('q3a', 'Enter a future date', null)
@@ -130,11 +139,23 @@ export class AppComponent implements OnInit {
         this.form.change$
             .pipe(
                 filter(
-                    (c: MFValueChange) => c.name === 'interviewDateTime')
+                    (c: MFValueChange) => c.name === 'interviewDateTime'),
             )
             .subscribe((chg: MFValueChange) => {
                 this.dateTime = this.form.getValueAsDateTime(chg.name);
                 console.log(`Value change on ${chg.name} to ${this.dateTime}`);
+            });
+
+        this.form.change$
+            .pipe(
+                filter(
+                    (c: MFValueChange) => c.name === 'otherOption'),
+            )
+            .subscribe((chg: MFValueChange) => {
+                console.log(`Value change on ${chg.name} to ${chg.value}`);
+                const selected = otherOptions.find(o => o.code === chg.value);
+                const text = selected?.fullText ?? null;
+                this.form.setValue('specialOptionDescription', text);
             });
     }
 
@@ -160,5 +181,14 @@ export class AppComponent implements OnInit {
             // Just to prevent multiple messages spamming the console.
             this.lastUserEvent = event.type;
         }
+    }
+}
+
+export class SpecialOption extends MFOptionValue {
+    fullText: string;
+
+    constructor(code: string, description: string, fullText: string) {
+        super(code, description);
+        this.fullText = fullText;
     }
 }

@@ -728,6 +728,7 @@ export class MFLabel extends MFControl {
 
 export class MFHtmlTextControl extends MFControl {
     html: string;
+
     isValid(form: MetaForm, updateStatus = true): boolean {
         return true;
     }
@@ -1385,10 +1386,11 @@ export class MFEmailValidator extends MFValidator {
         // tslint:disable-next-line: max-line-length
         const EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
         const regex = new RegExp(EMAIL_REGEXP);
-        let valid = false;
-
-        valid = regex.test(form.getValue(control.name));
-
+        let valid = true;
+        const value = form.getValue(control.name);
+        if (value) {
+            valid = regex.test(value);
+        }
         return valid;
     }
 }
@@ -1400,12 +1402,14 @@ export class MFEmailValidator extends MFValidator {
 // may cause issues.
 export class MFDateValidator extends MFValidator {
     isValid(form: MetaForm, control: MFControl): boolean {
-        let valid = false;
+        let valid = true;
 
-        const date = form.getValueAsDate(control.name);
+        const value = form.getValue(control.name);
+        if (value) {
+            const date = form.getValueAsDate(control.name);
 
-        valid = date !== null;
-
+            valid = date !== null;
+        }
         return valid;
     }
 }
@@ -1428,18 +1432,19 @@ export class MFDateMustBeAfterValidator extends MFValidator {
     value: string;
 
     isValid(form: MetaForm, control: MFControl): boolean {
-        let valid = false;
+        let valid = true;
 
         const answerToCheck = form.getValue(control.name);
         const matchingValue = this.getAnswerForControl(form.answers, this.value);
 
-        const date = form.getValueAsDate(control.name);
-        const minDate = form.convertValueToDate(matchingValue);
+        if (answerToCheck) {
+            const date = form.getValueAsDate(control.name);
+            const minDate = form.convertValueToDate(matchingValue);
 
-        // console.log(`${matchingValue} is ${date} > ${minDate}?`);
+            // console.log(`${matchingValue} is ${date} > ${minDate}?`);
 
-        valid = date > minDate;
-
+            valid = date > minDate;
+        }
         return valid;
     }
 }
@@ -1448,18 +1453,19 @@ export class MFDateMustBeBeforeValidator extends MFValidator {
     value: string;
 
     isValid(form: MetaForm, control: MFControl): boolean {
-        let valid = false;
+        let valid = true;
 
         const answerToCheck = form.getValue(control.name);
         const matchingValue = this.getAnswerForControl(form.answers, this.value);
 
-        const date = form.getValueAsDate(control.name);
-        const maxDate = form.convertValueToDate(matchingValue);
+        if (answerToCheck) {
+            const date = form.getValueAsDate(control.name);
+            const maxDate = form.convertValueToDate(matchingValue);
 
-        // console.log(`is ${date} < ${maxDate}?`);
+            // console.log(`is ${date} < ${maxDate}?`);
 
-        valid = date < maxDate;
-
+            valid = date < maxDate;
+        }
         return valid;
     }
 }
@@ -1469,23 +1475,25 @@ export class MFMustBeBetweenValidator extends MFValidator {
     max: string;
 
     isValid(form: MetaForm, control: MFControl): boolean {
-        let valid = false;
+        let valid = true;
 
         const answerToCheck = form.getValue(control.name);
-        const minCheck = this.getAnswerForControl(form.answers, this.min);
-        const maxCheck = this.getAnswerForControl(form.answers, this.max);
+        if (answerToCheck) {
 
-        if (control.controlType === MetaFormControlType.Date || control.controlType === MetaFormControlType.Time) {
-            valid = this.dateInRange(form, answerToCheck, minCheck, maxCheck);
-        } else {
-            valid = +answerToCheck > +minCheck && +answerToCheck < +maxCheck;
+            const minCheck = this.getAnswerForControl(form.answers, this.min);
+            const maxCheck = this.getAnswerForControl(form.answers, this.max);
+
+            if (control.controlType === MetaFormControlType.Date || control.controlType === MetaFormControlType.Time) {
+                valid = this.dateInRange(form, answerToCheck, minCheck, maxCheck);
+            } else {
+                valid = +answerToCheck > +minCheck && +answerToCheck < +maxCheck;
+            }
         }
-
         return valid;
     }
 
     private dateInRange(form: MetaForm, check: string, after: string, before: string) {
-        let valid = false;
+        let valid = true;
 
         const checkDate = form.convertValueToDate(check);
         const minDate = form.convertValueToDate(after);
