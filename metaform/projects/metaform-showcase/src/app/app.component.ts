@@ -28,7 +28,9 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         // Add some default rules
-        this.rules.addRule('YesNoIsYes', RuleMatchType.MatchAny).addPart('yesOrNo', RuleComparison.Equals, 'Y');
+        this.rules
+            .addRule('YesNoIsYes', RuleMatchType.MatchAny)
+            .addPart('yesOrNo', RuleComparison.Equals, 'Y');
 
         this.rules
             .addRule('HasSelectedFourthOption', RuleMatchType.MatchAll)
@@ -38,74 +40,85 @@ export class AppComponent implements OnInit {
         this.form = this.formService.createForm('sample', 'Sample Form', MetaFormDrawType.EntireForm);
         this.form.rules = this.rules.rules;
 
-        // Create the questions and controls for the form
         this.form
-            .addQuestion('q1', 'Please enter your name')
-            .addTextControl('firstName', MetaFormTextType.SingleLine, 50, 'First name')
-            .addValidator(MFValidator.Required('Please enter a value'));
+            .addQuestion('q1', 'Enter the interview date and time', '', ControlLayoutStyle.Horizontal)
+            .addDateControl('interviewDate', MetaFormDateType.Full)
+            .addValidator(MFValidator.Date('Please enter a date'));
         this.form
             .getQuestion('q1')
-            .addTextControl('lastName', MetaFormTextType.SingleLine, 50, 'Last name')
-            .addValidator(MFValidator.Required('Please enter a value'));
+            .addTimeControl('interviewTime', 0, 7, 21)
+            .addValidator(MFValidator.Time('Please enter a time'));
 
-        this.form
-            .addQuestion('q1a', 'Please enter your telephone number')
-            .addTelephoneAndIddControl('contactNumber', 10, 'number')
-            .addValidator(MFValidator.Required('Please enter a value'));
 
-        this.form
-            .addQuestion('q2', 'Please enter your email address')
-            .addTextControl('email', MetaFormTextType.SingleLine, 255, 'Email')
-            .addValidator(MFValidator.Required('Please enter a value'))
-            .addValidator(MFValidator.Email('Please enter a valid email address'));
-        this.form.getQuestion('q2').addToggleControl('marketing', 'Please send me marketing emails');
-        this.form
-            .getQuestion('q2')
-            .addTextControl('password', MetaFormTextType.Password, 255, 'Password')
-            .addValidator(MFValidator.Required('Please enter your password'));
-        this.form
-            .getQuestion('q2')
-            .addTextControl('confirmPassword', MetaFormTextType.Password, 255, 'Confirm password')
-            .addValidator(MFValidator.AnswerMustMatch('[password]', 'Passwords must match'));
 
-        const yesno: MFOptionValue[] = [];
-        yesno.push(new MFOptionValue('Y', 'Yes'));
-        yesno.push(new MFOptionValue('N', 'No'));
+        // // Create the questions and controls for the form
+        // this.form
+        //     .addQuestion('q1', 'Please enter your name')
+        //     .addTextControl('firstName', MetaFormTextType.SingleLine, 50, 'First name')
+        //     .addValidator(MFValidator.Required('Please enter a value'));
+        // this.form
+        //     .getQuestion('q1')
+        //     .addTextControl('lastName', MetaFormTextType.SingleLine, 50, 'Last name')
+        //     .addValidator(MFValidator.Required('Please enter a value'));
 
-        const mop: MFOptionValue[] = [];
-        mop.push(new MFOptionValue('1', 'First'));
-        mop.push(new MFOptionValue('2', 'Second'));
-        mop.push(new MFOptionValue('3', 'Third'));
-        mop.push(new MFOptionValue('4', 'Fourth'));
+        // this.form
+        //     .addQuestion('q1a', 'Please enter your telephone number')
+        //     .addTelephoneAndIddControl('contactNumber', 10, 'number')
+        //     .addValidator(MFValidator.Required('Please enter a value'));
 
-        this.form
-            .addQuestion('q3', 'Can you answer yes or no?', null)
-            .addOptionControl('yesOrNo', MFOptions.OptionFromList(yesno, null, true), ControlLayoutStyle.Horizontal)
-            .addValidator(MFValidator.Required('Please select an answer'));
+        // this.form
+        //     .addQuestion('q2', 'Please enter your email address')
+        //     .addTextControl('email', MetaFormTextType.SingleLine, 255, 'Email')
+        //     .addValidator(MFValidator.Required('Please enter a value'))
+        //     .addValidator(MFValidator.Email('Please enter a valid email address'));
+        // this.form.getQuestion('q2').addToggleControl('marketing', 'Please send me marketing emails');
+        // this.form
+        //     .getQuestion('q2')
+        //     .addTextControl('password', MetaFormTextType.Password, 255, 'Password')
+        //     .addValidator(MFValidator.Required('Please enter your password'));
+        // this.form
+        //     .getQuestion('q2')
+        //     .addTextControl('confirmPassword', MetaFormTextType.Password, 255, 'Confirm password')
+        //     .addValidator(MFValidator.AnswerMustMatch('[password]', 'Passwords must match'));
 
-        this.form
-            .addQuestion('q3a', 'Enter a future date', null)
-            .addHtml(
-                `Since you answered <b>Yes</b> to the previous question, you should probably enter a date. ` +
-                `<i>Please note:</i> in order to illustrate the <b>AnswerAfterDate</b> validator, you should enter ` +
-                `a date in the future.`
-            );
+        // const yesno: MFOptionValue[] = [];
+        // yesno.push(new MFOptionValue('Y', 'Yes'));
+        // yesno.push(new MFOptionValue('N', 'No'));
 
-        this.form
-            .getQuestion('q3a')
-            .setDisplayRule('YesNoIsYes')
-            .addDateControl('dateInTheFuture', MetaFormDateType.Full)
-            .addLabel('Future Date  ')
-            .addValidator(MFValidator.Date('Please enter a date'))
-            .addValidator(MFValidator.AnswerAfterDate('%TODAY', 'Date must be later than today!'));
+        // const mop: MFOptionValue[] = [];
+        // mop.push(new MFOptionValue('1', 'First'));
+        // mop.push(new MFOptionValue('2', 'Second'));
+        // mop.push(new MFOptionValue('3', 'Third'));
+        // mop.push(new MFOptionValue('4', 'Fourth'));
 
-        this.form
-            .addQuestion('q4', 'Please select all applicable answers?', null)
-            .addOptionMultiControl('mops', MFOptions.OptionFromList(mop, null, true), ControlLayoutStyle.Horizontal);
+        // this.form
+        //     .addQuestion('q3', 'Can you answer yes or no?', null)
+        //     .addOptionControl('yesOrNo', MFOptions.OptionFromList(yesno, null, true), ControlLayoutStyle.Horizontal)
+        //     .addValidator(MFValidator.Required('Please select an answer'));
 
-        this.form
-            .addQuestion('q5', 'How loud should we play?')
-            .addSliderControl('volume', 'Volume', 0, 11);
+        // this.form
+        //     .addQuestion('q3a', 'Enter a future date', null)
+        //     .addHtml(
+        //         `Since you answered <b>Yes</b> to the previous question, you should probably enter a date. ` +
+        //         `<i>Please note:</i> in order to illustrate the <b>AnswerAfterDate</b> validator, you should enter ` +
+        //         `a date in the future.`
+        //     );
+
+        // this.form
+        //     .getQuestion('q3a')
+        //     .setDisplayRule('YesNoIsYes')
+        //     .addDateControl('dateInTheFuture', MetaFormDateType.Full)
+        //     .addLabel('Future Date  ')
+        //     .addValidator(MFValidator.Date('Please enter a date'))
+        //     .addValidator(MFValidator.AnswerAfterDate('%TODAY', 'Date must be later than today!'));
+
+        // this.form
+        //     .addQuestion('q4', 'Please select all applicable answers?', null)
+        //     .addOptionMultiControl('mops', MFOptions.OptionFromList(mop, null, true), ControlLayoutStyle.Horizontal);
+
+        // this.form
+        //     .addQuestion('q5', 'How loud should we play?')
+        //     .addSliderControl('volume', 'Volume', 0, 11);
 
         // this.form.change$
         //     .pipe(
@@ -131,11 +144,7 @@ export class AppComponent implements OnInit {
                     break;
                 case UserEventType.FormSubmit:
                     console.log(
-                        `The 'Submit' button on the display component has been clicked. Data is: ${JSON.stringify(
-                            this.form.answers,
-                            null,
-                            2
-                        )}`
+                        `The 'Submit' button on the display component has been clicked. Data is: ${this.form.answers.toJson()}`
                     );
                     break;
             }

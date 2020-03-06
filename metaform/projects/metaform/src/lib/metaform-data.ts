@@ -18,6 +18,10 @@ export class MetaFormData {
             this.changes$.next(new MFValueChange(name, value));
         }
     }
+
+    toJson(): string {
+        return JSON.stringify(this, metaFormDataJsonReplacer, 2);
+    }
 }
 
 export class MFValueChange {
@@ -35,5 +39,15 @@ export class MFOptionsChanged {
     constructor(name: string, count: number) {
         this.name = name;
         this.countOfOptions = count;
+    }
+}
+
+function metaFormDataJsonReplacer(key: string, value: any) {
+    console.log(`key: ${key}`);
+    switch (key) {
+        case 'changes$':
+            return undefined;
+        default:
+            return value;
     }
 }

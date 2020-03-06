@@ -466,6 +466,12 @@ export class MFQuestion {
         c.name = name;
         c.validators = [];
 
+        if (c.minuteStep < 1) {
+            c.minuteStep = 1;
+        } else if (c.minuteStep > 59) {
+            c.minuteStep = 15;
+        }
+
         this.pushControl(c);
 
         return c;
@@ -907,8 +913,14 @@ export class MFTimeControl extends MFControl {
     }
 
     getMinuteList(): string[] {
-        const step = this.minuteStep;
+        let step = this.minuteStep ?? 15;
         const minuteList = [];
+
+        if (step < 1 || step > 59) {
+            step = 15;
+        }
+        console.log(`step: ${step}`);
+
         for (let m = 0; m <= 59; m += step) {
             minuteList.push(`00${m}`.slice(-2));
         }
@@ -1680,7 +1692,7 @@ export class IddCode {
 function metaFormJsonReplacer(key: string, value: any) {
     switch (key) {
         case 'answers':
-        case 'change':
+        case 'change$':
         case 'controlId':
         case 'dependencies':
         case 'errorMessage':

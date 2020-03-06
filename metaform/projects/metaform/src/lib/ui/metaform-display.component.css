@@ -47,11 +47,11 @@ label.caption {
 }
 
 .layout-horiz {
-    flex-direction: row;
+    flex-flow: row wrap;
 }
 
 .layout-vert {
-    flex-direction: column;
+    flex-flow: column wrap;
 }
 
 .mf-control {
