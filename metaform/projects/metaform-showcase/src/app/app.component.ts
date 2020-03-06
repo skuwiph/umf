@@ -62,12 +62,12 @@ export class AppComponent implements OnInit {
             .addTelephoneAndIddControl('contactNumber', 10, 'number')
             .addValidator(MFValidator.Required('Please enter a value'));
 
-        this.form
-            .addQuestion('q2', 'Please enter your email address')
-            .addTextControl('email', MetaFormTextType.SingleLine, 255, 'Email')
-            .addValidator(MFValidator.Required('Please enter a value'))
-            .addValidator(MFValidator.Email('Please enter a valid email address'));
-        this.form.getQuestion('q2').addToggleControl('marketing', 'Please send me marketing emails');
+        // this.form
+        //     .addQuestion('q2', 'Please enter your email address')
+        //     .addTextControl('email', MetaFormTextType.SingleLine, 255, 'Email')
+        //     .addValidator(MFValidator.Required('Please enter a value'))
+        //     .addValidator(MFValidator.Email('Please enter a valid email address'));
+        // this.form.getQuestion('q2').addToggleControl('marketing', 'Please send me marketing emails');
         // this.form
         //     .getQuestion('q2')
         //     .addTextControl('password', MetaFormTextType.Password, 255, 'Password')
@@ -99,7 +99,7 @@ export class AppComponent implements OnInit {
 
         this.form
             .addQuestion('q41', 'Select an option?', null)
-            .addOptionControl('otherOption', MFOptions.OptionFromList(otherOptions, null, false))
+            .addOptionControl('otherOption', MFOptions.OptionFromList(otherOptions, 'Please Select', false))
             .addValidator(MFValidator.Required('Please select an answer'));
 
 

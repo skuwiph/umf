@@ -1412,12 +1412,14 @@ export class MFDateValidator extends MFValidator {
 
 export class MFDateTimeValidator extends MFValidator {
     isValid(form: MetaForm, control: MFControl): boolean {
-        let valid = false;
+        let valid = true;
 
-        const date = form.getValueAsDateTime(control.name);
+        const value = form.getValue(control.name);
+        if (value) {
+            const date = form.getValueAsDateTime(control.name);
 
-        valid = date !== null;
-
+            valid = date !== null;
+        }
         return valid;
     }
 }
