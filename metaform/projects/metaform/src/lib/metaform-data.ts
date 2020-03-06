@@ -43,7 +43,6 @@ export class MFOptionsChanged {
 }
 
 function metaFormDataJsonReplacer(key: string, value: any) {
-    console.log(`key: ${key}`);
     switch (key) {
         case 'changes$':
             return undefined;

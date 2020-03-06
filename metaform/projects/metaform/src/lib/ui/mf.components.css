@@ -46,7 +46,6 @@ input, select, option, textarea, .mf-option-item {
 }
 
 /* Option Components */
-
 .opt-horiz {
     display: flex;
     flex-flow: row wrap;
@@ -54,8 +53,8 @@ input, select, option, textarea, .mf-option-item {
 }
 
 .opt-horiz>* {
-    flex: 1 1 160px;
-    min-height: 2.5rem;
+    flex: 1 1 155px;
+    min-height: 3rem;
     margin: 5px;
 }
 
@@ -64,8 +63,6 @@ input, select, option, textarea, .mf-option-item {
     color: black;
     text-align: center;
     margin-bottom: 0.5rem;
-    min-height: 1.25rem;
-    padding: 0.5rem 0.25rem;
 }
 
 .mf-control-item-multi {
@@ -92,8 +89,20 @@ ul.nobullet {
 
 .date {
     display: grid;
-    grid-template-columns: 3.5rem 3.5rem 5rem;
-    column-gap: 0.5rem;
+    grid-template-columns: 3.25rem 3.25rem 4.5rem;
+    column-gap: 0.25rem;
+}
+
+.datetime {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.datetime-sep {
+    padding: 0.5rem 0;
+    margin: 0 0.25rem 0 0;
 }
 
 .shortdate {
@@ -103,25 +112,28 @@ ul.nobullet {
 }
 
 .dd, .mm {
-     width: 3em;
-     padding: 0.5rem 0.25rem;
+    width: 3em;
+    padding: 0.5rem 0;
+    text-align: center;
  }
 
 .month {
-     width: 100%;
-     padding: 0.5rem 0;
+    width: 100%;
+    padding: 0.5rem 0;
+    text-align: center;     
  }
 
 .yy {
      max-width: 4rem;
-     padding: 0.5rem 0.25rem;
+     padding: 0.5rem 0;
+     text-align: center;
  }
 
 /* Time Component */
 .control-time, .control-date {
     display: grid;
     column-gap: 0rem;
-    grid-template-columns: auto 70%;
+    grid-template-columns: auto 80%;
     align-items: center;
 }
 
@@ -135,13 +147,14 @@ ul.nobullet {
 .hh, .min {
     max-width: 3.5em;
     margin: 0;
-    padding: 0.5rem 0.25rem;
+    padding: 0.5rem 0;
+    text-align: center;
  }
 
 .separator {
-    max-width: 0.5rem;
-    padding: 0.5rem 0.25rem 0 0;
+    max-width: 0.25rem;
     font-weight: 600;
+    align-items: center;
 }
 
 /* Telephone Component */

@@ -14,10 +14,10 @@ import { MFTimeControl } from '../metaform';
 </div>
 <ng-template #edit>
     <form [ngClass]="{ 'error': inError }" [formGroup]="formGroup" class="control-time">
-    <div class="row-prefix" *ngIf="labelText">
-        <label class="control-prefix">{{labelText}}</label>
-    </div>
-    <div class="time">
+        <div class="row-prefix" *ngIf="labelText">
+            <label class="control-prefix">{{labelText}}</label>
+        </div>
+        <div class="time">
             <select class="mfc hh" [ngClass]="{ 'error': inError }" formControlName="hh" (blur)="onFocusLost()">
                 <option *ngFor="let h of hourList; let i=index" value="{{h}}">{{h}}</option>
             </select>

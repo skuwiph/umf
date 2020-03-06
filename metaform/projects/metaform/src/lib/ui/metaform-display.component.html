@@ -44,6 +44,11 @@
                                     [readonly]="q.readonly"
                                     (changeValidity)="onControlValidityChange($event)"></lib-mf-time>
                             </ng-container>
+                            <ng-container *ngSwitchCase="controlType.DateTime">
+                                <lib-mf-date-time [form]="form" [control]="c"
+                                    [readonly]="q.readonly"
+                                    (changeValidity)="onControlValidityChange($event)"></lib-mf-date-time>
+                            </ng-container>
                             <ng-container *ngSwitchCase="controlType.TelephoneAndIddCode">
                                 <lib-mf-telephone [form]="form" [control]="c"
                                     [readonly]="q.readonly"

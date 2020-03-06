@@ -1,12 +1,11 @@
 .mf-form {
-    width: calc(100%);
+    width: 100%;
 }
 
 .mf-question {
     border: 1px solid rgb(99, 130, 189);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     border-radius: 5px;
-    /* background-color: rgb(221, 230, 240); */
 }
 
 .footnote {
@@ -26,8 +25,6 @@ label.caption {
     width: calc(100% - 0.25rem);
     padding: 0.5rem 0 0 0.25rem;
     margin: 0;
-    /* background-color: rgb(27, 48, 87); */
-    /* color: rgb(147, 215, 241); */
     color:  rgb(27, 48, 87);
     font-weight: bold;
     margin-bottom: 0.5rem;
@@ -47,15 +44,15 @@ label.caption {
 }
 
 .layout-horiz {
-    flex-flow: row wrap;
+    flex-flow: row;
 }
 
 .layout-vert {
-    flex-flow: column wrap;
+    flex-flow: column;
 }
 
 .mf-control {
-    padding: 0.25rem 0 0.25rem 0.25rem;
+    padding: 0.25rem 0 0.5rem 0.25rem;
 }
 
 .buttons {

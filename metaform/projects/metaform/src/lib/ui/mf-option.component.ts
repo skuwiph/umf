@@ -13,19 +13,9 @@ import { MetaFormOptionControlBase } from './mf-option-control-base';
         <ng-template #edit>
             <div *ngIf="loaded && hasOptions">
                 <ng-container *ngIf="expandOptions; else dropdown">
-                    <div
-                        class="mf-options"
-                        [ngClass]="{ 'opt-horiz': isHorizontal, 'opt-vert': isVertical, error: inError }"
-                    >
-                        <button
-                            type="button"
-                            *ngFor="let o of options"
-                            class="mfc mf-option-item"
-                            [ngClass]="{ 'opt-selected': isSelected(o.code) }"
-                            (click)="selectItem(o.code)"
-                        >
-                            {{ o.description }}
-                        </button>
+                    <div class="mf-options" [ngClass]="{'opt-horiz': isHorizontal, 'opt-vert': isVertical, 'error': inError }">
+                        <button type="button" *ngFor="let o of options" class="mfc mf-option-item"
+                        [ngClass]="{'opt-selected': isSelected(o.code)}" (click)="selectItem(o.code)">{{o.description}}</button>
                     </div>
                 </ng-container>
                 <ng-template #dropdown>

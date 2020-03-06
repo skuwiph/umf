@@ -12,6 +12,7 @@ export enum MetaFormControlType {
     OptionMulti,
     Date,
     Time,
+    DateTime,
     TelephoneAndIddCode,
     Toggle,
     Slider

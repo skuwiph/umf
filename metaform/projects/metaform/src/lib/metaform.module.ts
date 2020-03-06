@@ -16,6 +16,7 @@ import { MetaFormTelephoneAndIddComponent } from './ui/mf-telephone.component';
 import { MetaFormToggleComponent } from './ui/mf-toggle.component';
 import { RuleEvaluatorComponent } from './ui/rule-evaluator.component';
 import { MetaFormSliderComponent } from './ui/mf-slider.component';
+import { MetaFormDateTimeComponent } from './ui/mf-date-time.component';
 
 @NgModule({
     declarations: [
@@ -27,6 +28,7 @@ import { MetaFormSliderComponent } from './ui/mf-slider.component';
         MetaFormOptionMultiComponent,
         MetaFormDateComponent,
         MetaFormTimeComponent,
+        MetaFormDateTimeComponent,
         MetaFormTelephoneAndIddComponent,
         MetaFormToggleComponent,
         MetaFormSliderComponent,

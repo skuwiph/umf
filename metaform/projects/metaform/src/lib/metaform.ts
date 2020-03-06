@@ -168,10 +168,6 @@ export class MetaForm {
         return this.answers.getValue(name);
     }
 
-    getValueTime(name: string): MFTimeValue {
-        return MFTimeControl.getTimeFrom(this.getValue(name));
-    }
-
     getValueAsDate(name: string): Date {
         const dateValue = this.answers.getValue(name);
         if (!dateValue || dateValue.length === 0) {
@@ -181,7 +177,21 @@ export class MetaForm {
         return this.convertValueToDate(dateValue);
     }
 
-    convertValueToDate(dateValue: string): Date {
+    getValueAsDateTime(name: string): Date {
+        const dateValue = MFDateTimeControl.getDatePart(this.answers.getValue(name));
+        if (!dateValue) {
+            // console.warn(`Field ${name} doesn't have an entry`);
+            return null;
+        }
+        const timeValue = MFDateTimeControl.getTimePart(this.answers.getValue(name));
+        if (!timeValue) {
+            return null;
+        }
+
+        return this.convertValueToDate(dateValue, timeValue);
+    }
+
+    convertValueToDate(dateValue: string, timeValue?: string): Date {
         let year = 0;
         let month = 0;
         let day = 1;
@@ -207,6 +217,13 @@ export class MetaForm {
         // The date value should be HH:MM (5 chars)
         if (dateValue.length === 5) {
             const parts = dateValue.split(':');
+            hh = +parts[0];
+            mm = +parts[1];
+        }
+
+        // Optional timeValue parameter
+        if (timeValue && timeValue.length === 5) {
+            const parts = timeValue.split(':');
             hh = +parts[0];
             mm = +parts[1];
         }
@@ -464,6 +481,27 @@ export class MFQuestion {
         c.hourEnd = hourEnd ?? 23;
         c.minuteStep = minuteStep ?? 1;
         c.name = name;
+        c.validators = [];
+
+        if (c.minuteStep < 1) {
+            c.minuteStep = 1;
+        } else if (c.minuteStep > 59) {
+            c.minuteStep = 15;
+        }
+
+        this.pushControl(c);
+
+        return c;
+    }
+
+    addDateTimeControl(name: string, minuteStep?: number, hourStart?: number, hourEnd?: number): MFDateTimeControl {
+        const c = new MFDateTimeControl();
+
+        c.controlType = MetaFormControlType.DateTime;
+        c.name = name;
+        c.hourStart = hourStart ?? 0;
+        c.hourEnd = hourEnd ?? 23;
+        c.minuteStep = minuteStep ?? 1;
         c.validators = [];
 
         if (c.minuteStep < 1) {
@@ -919,7 +957,6 @@ export class MFTimeControl extends MFControl {
         if (step < 1 || step > 59) {
             step = 15;
         }
-        console.log(`step: ${step}`);
 
         for (let m = 0; m <= 59; m += step) {
             minuteList.push(`00${m}`.slice(-2));
@@ -927,6 +964,139 @@ export class MFTimeControl extends MFControl {
         return minuteList;
     }
 }
+
+export class MFDateTimeControl extends MFControl {
+    hourStart: number;
+    hourEnd: number;
+    minuteStep: number;
+
+    static getTimeFrom(value: string): MFTimeValue {
+        const hours = MFTimeControl.getHourPart(value);
+        const minutes = MFTimeControl.getMinutePart(value);
+
+        if (hours && minutes) {
+            const t: MFTimeValue = {
+                hh: parseInt(hours, 10),
+                mm: parseInt(minutes, 10)
+            };
+
+            return t;
+        } else {
+            return null;
+        }
+    }
+
+    static getTimePart(value: string): string {
+        if (value && value.indexOf(' ') > -1) {
+            const timePart = value.substr(value.indexOf(' ') + 1);
+            return timePart;
+        }
+        return null;
+    }
+
+    static getDatePart(value: string): string {
+        if (value && value.indexOf(' ') > -1) {
+            const datePart = value.substr(0, value.indexOf(' '));
+            return datePart;
+        }
+        return null;
+    }
+
+    static getHourPart(value: string): string {
+        if (value && value.length > 3) {
+            const semiIdx = value.indexOf(':');
+            return `00${value.substr(0, semiIdx)}`.slice(-2);
+        }
+        return null;
+    }
+
+    static getMinutePart(value: string): string {
+        if (value && value.length > 3) {
+            const semiIdx = value.indexOf(':');
+            return `00${value.substr(semiIdx)}`.slice(-2);
+        }
+        return null;
+    }
+
+    getHours(form: MetaForm): string {
+        const timePart = MFDateTimeControl.getTimePart(form.getValue(this.name));
+        return MFDateTimeControl.getHourPart(timePart);
+    }
+
+    getMinutes(form: MetaForm): string {
+        const timePart = MFDateTimeControl.getTimePart(form.getValue(this.name));
+        return MFDateTimeControl.getMinutePart(timePart);
+    }
+
+    getHourList(): string[] {
+        const startHour = this.hourStart;
+        const endHour = this.hourEnd;
+
+        const hourList = [];
+        for (let h = startHour; h <= endHour; h++) {
+            hourList.push(`00${h}`.slice(-2));
+        }
+
+        return hourList;
+    }
+
+    getMinuteList(): string[] {
+        let step = this.minuteStep ?? 15;
+        const minuteList = [];
+
+        if (step < 1 || step > 59) {
+            step = 15;
+        }
+
+        for (let m = 0; m <= 59; m += step) {
+            minuteList.push(`00${m}`.slice(-2));
+        }
+        return minuteList;
+    }
+
+    getDay(form: MetaForm): string {
+        const value = MFDateTimeControl.getDatePart(form.getValue(this.name));
+        if (value && value.length > 5) {
+            const p = value.split('-');
+            return p[2];
+        }
+    }
+
+    getMonth(form: MetaForm): string {
+        const value = MFDateTimeControl.getDatePart(form.getValue(this.name));
+        if (value) {
+            const p = value.split('-');
+            return p[1];
+        }
+    }
+
+    getYear(form: MetaForm): string {
+        const value = MFDateTimeControl.getDatePart(form.getValue(this.name));
+        if (value) {
+            const p = value.split('-');
+            return p[0];
+        }
+    }
+
+    getMonthNames(): string[] {
+        return [
+            'Month',
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+        ];
+    }
+}
+
 
 export class MFTelephoneAndIddControl extends MFControl {
     maxLength: number;
@@ -989,6 +1159,10 @@ export class MFValidator {
 
     static Time(message: string): MFValidator {
         return new MFDateValidator('Time', message);
+    }
+
+    static DateTime(message: string): MFValidator {
+        return new MFDateTimeValidator('DateTime', message);
     }
 
     static AnswerMustMatch(matchValue: string, message: string): MFValidator {
@@ -1229,6 +1403,18 @@ export class MFDateValidator extends MFValidator {
         let valid = false;
 
         const date = form.getValueAsDate(control.name);
+
+        valid = date !== null;
+
+        return valid;
+    }
+}
+
+export class MFDateTimeValidator extends MFValidator {
+    isValid(form: MetaForm, control: MFControl): boolean {
+        let valid = false;
+
+        const date = form.getValueAsDateTime(control.name);
 
         valid = date !== null;
 
