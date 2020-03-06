@@ -1,6 +1,4 @@
-<ng-container *ngIf="form">
-    <lib-metaform-display [form]="form" [showButtons]="true" (formEvent)="onFormEvent($event)"></lib-metaform-display>
-</ng-container>
+<lib-metaform-display [form]="form" [showButtons]="true" (formEvent)="onFormEvent($event)"></lib-metaform-display>
 <lib-rule-evaluator [rule]="'HasSelectedFourthOption'" [data]="form.answers">
     <div class="rule-evaluated">
         <h3>A rule has evaluated true</h3>

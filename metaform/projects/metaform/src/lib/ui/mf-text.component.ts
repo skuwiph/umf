@@ -95,11 +95,9 @@ export class MetaFormTextComponent extends MetaFormControlBase implements OnInit
                     break;
                 case MetaFormTextType.PostalCode:
                     this.pattern = '[A-Z0-9]';
+                    break;
                 case MetaFormTextType.URI:
                     this.inputMode = 'url';
-                    break;
-                default:
-                    this.textType = 'text';
                     break;
             }
 
