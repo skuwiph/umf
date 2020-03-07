@@ -20,7 +20,7 @@ import { MetaFormOptionControlBase } from './mf-option-control-base';
                 </ng-container>
                 <ng-template #dropdown>
                     <select
-                        class="mfc mf-option-select"
+                        class="mfc mf-option-select mf-control-item"
                         [ngClass]="{ error: inError }"
                         (change)="onChange($event.target.value)"
                         (blur)="onFocusLost()"
