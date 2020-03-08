@@ -12,8 +12,6 @@ import { BusinessRuleService } from 'projects/metaform/src/lib/business-rule.ser
 import { RuleMatchType, RuleComparison } from 'projects/metaform/src/lib/business-rule';
 import { filter } from 'rxjs/operators';
 import { MFValueChange } from 'projects/metaform/src/lib/metaform-data';
-import { computeDecimalDigest } from '@angular/compiler/src/i18n/digest';
-import { deserialize } from 'v8';
 
 @Component({
     selector: 'app-root',
@@ -23,7 +21,6 @@ import { deserialize } from 'v8';
 export class AppComponent implements OnInit {
     title = 'metaform-showcase';
     form: MetaForm;
-    dateTime: Date;
 
     private lastUserEvent: UserEventType;
 
@@ -136,15 +133,15 @@ export class AppComponent implements OnInit {
             .addQuestion('q5', 'How loud should we play?')
             .addSliderControl('volume', 'Volume', 0, 11);
 
-        this.form.change$
-            .pipe(
-                filter(
-                    (c: MFValueChange) => c.name === 'interviewDateTime'),
-            )
-            .subscribe((chg: MFValueChange) => {
-                this.dateTime = this.form.getValueAsDateTime(chg.name);
-                console.log(`Value change on ${chg.name} to ${this.dateTime}`);
-            });
+        // this.form.change$
+        //     .pipe(
+        //         filter(
+        //             (c: MFValueChange) => c.name === 'interviewDateTime'),
+        //     )
+        //     .subscribe((chg: MFValueChange) => {
+        //         this.dateTime = this.form.getValueAsDateTime(chg.name);
+        //         console.log(`Value change on ${chg.name} to ${this.dateTime}`);
+        //     });
 
         this.form.change$
             .pipe(
@@ -152,7 +149,6 @@ export class AppComponent implements OnInit {
                     (c: MFValueChange) => c.name === 'otherOption'),
             )
             .subscribe((chg: MFValueChange) => {
-                console.log(`Value change on ${chg.name} to ${chg.value}`);
                 const selected = otherOptions.find(o => o.code === chg.value);
                 const text = selected?.fullText ?? null;
                 this.form.setValue('specialOptionDescription', text);
