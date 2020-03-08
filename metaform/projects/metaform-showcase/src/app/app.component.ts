@@ -159,7 +159,7 @@ export class AppComponent implements OnInit {
         if (!this.lastUserEvent || !(this.lastUserEvent === event.type)) {
             switch (event.type) {
                 case UserEventType.FormInitialised:
-                    console.log(`The form has been initialised`);
+                    console.log(`The form has been initialised: ${event.form.toJson()}`);
                     break;
                 case UserEventType.FormInvalid:
                     console.log(`The form is currently invalid`);

@@ -421,7 +421,9 @@ describe('MetaForm', () => {
     });
 
     it('A control shown by a display rule should cause validation errors', () => {
-        rules.addRule('YesNoIsYes', RuleMatchType.MatchAny).addPart('yesOrNo', RuleComparison.Equals, 'Y');
+        rules
+            .addRule('YesNoIsYes', RuleMatchType.MatchAny)
+            .addPart('yesOrNo', RuleComparison.Equals, 'Y');
 
         const form = MetaForm.create('sample', MetaFormDrawType.EntireForm);
         form.rules = rules.rules;
@@ -439,7 +441,8 @@ describe('MetaForm', () => {
         form.addQuestion('q3a', 'Enter a future date', null)
             .setDisplayRule('YesNoIsYes')
             .addDateControl('dateInTheFuture', MetaFormDateType.Full)
-            .addLabel('Future Date  ')
+            .addLabel('Future Date')
+            .addValidator(MFValidator.Required('This field is required'))
             .addValidator(MFValidator.Date('Please enter a date'))
             .addValidator(MFValidator.AnswerAfterDate('%TODAY', 'Date must be later than today!'));
 

@@ -52,6 +52,7 @@ export interface Control {
     min?: number;
     max?: number;
     step?: number;
+    html?: string;
 }
 
 export interface Question {

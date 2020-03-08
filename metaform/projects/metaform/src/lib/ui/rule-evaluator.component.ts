@@ -15,18 +15,20 @@ export class RuleEvaluatorComponent implements OnInit {
 
     ruleEvaluatesTrue = false;
 
-    constructor(private ruleService: BusinessRuleService) {}
+    constructor(private ruleService: BusinessRuleService) { }
 
     ngOnInit(): void {
-        this.ruleEvaluatesTrue = this.ruleService.evaluateRule(this.rule, this.data);
-        if (this.data) {
-            this.data.changes$.subscribe((change: MFValueChange) => {
-                this.ruleEvaluatesTrue = this.ruleService.evaluateRule(this.rule, this.data);
-            });
-        } else {
-            console.warn(
-                `RuleEvaluatorComponent has not been given an instantiated MetaFormData object for its [data] attribute!`
-            );
+        if (this.rule) {
+            this.ruleEvaluatesTrue = this.ruleService.evaluateRule(this.rule, this.data);
+            if (this.data) {
+                this.data.changes$.subscribe((change: MFValueChange) => {
+                    this.ruleEvaluatesTrue = this.ruleService.evaluateRule(this.rule, this.data);
+                });
+            } else {
+                console.warn(
+                    `RuleEvaluatorComponent has not been given an instantiated MetaFormData object for its [data] attribute!`
+                );
+            }
         }
     }
 }

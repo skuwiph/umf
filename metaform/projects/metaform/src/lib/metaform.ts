@@ -1898,6 +1898,7 @@ function metaFormJsonReplacer(key: string, value: any) {
         case 'references':
         case 'referencesField':
         case 'readonly':
+        case 'rules':
             return undefined;
         default:
             return value;
