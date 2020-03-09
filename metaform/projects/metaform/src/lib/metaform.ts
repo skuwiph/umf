@@ -169,12 +169,14 @@ export class MetaForm {
     }
 
     getValueAsDate(name: string): Date {
-        const dateValue = this.answers.getValue(name);
-        if (!dateValue || dateValue.length === 0) {
+        const dateValue = MFDateTimeControl.getDatePart(this.answers.getValue(name));
+        if (!dateValue) {
             // console.warn(`Field ${name} doesn't have an entry`);
             return null;
         }
-        return this.convertValueToDate(dateValue);
+        const timeValue = MFDateTimeControl.getTimePart(this.answers.getValue(name));
+
+        return this.convertValueToDate(dateValue, timeValue);
     }
 
     getValueAsDateTime(name: string): Date {
@@ -195,8 +197,8 @@ export class MetaForm {
         let year = 0;
         let month = 0;
         let day = 1;
-        let hh = 12;
-        let mm = 30;
+        let hh = 0;
+        let mm = 0;
 
         // The date value must be YYYY-MM-DD (10 chars)
         // Or YYYY-M-D or YYYY-MM-D or YYYY-M-DD (8 or 9 chars)
@@ -1441,7 +1443,7 @@ export class MFDateMustBeAfterValidator extends MFValidator {
             const date = form.getValueAsDate(control.name);
             const minDate = form.convertValueToDate(matchingValue);
 
-            // console.log(`${matchingValue} is ${date} > ${minDate}?`);
+            console.log(`is ${date} > ${minDate}?`);
 
             valid = date > minDate;
         }

@@ -44,7 +44,8 @@ export class AppComponent implements OnInit {
             .addQuestion('q0', 'Enter the interview date and time', '')
             .addDateTimeControl('interviewDateTime', 0, 7, 21)
             .addLabel('Start')
-            .addValidator(MFValidator.DateTime('Please enter a value'));
+            .addValidator(MFValidator.DateTime('Please enter a value'))
+            .addValidator(MFValidator.AnswerAfterDate('%TODAY', 'Date must be later than today!'));
 
         // Create the questions and controls for the form
         this.form

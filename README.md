@@ -1,12 +1,16 @@
 # Unified MetaForm
 
+## Purpose
+
+To speed up and bring consistency to user input requirements for your Angular/Native applications.
+
+This is an opinionated API and doesn't try to accomplish everything.
+
 ## To Do
 
-The following is an incomplete list of changes which need to be made:
+The following is an list of changes/features which could be added to the project as a whole:
 
 * Animations/Transitions
-
-* Proper use of flex box for horizontal/vertical layout selection
 
 * Versioning between JSON versions and saved data
 
