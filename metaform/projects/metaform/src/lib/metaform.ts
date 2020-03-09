@@ -653,14 +653,11 @@ export class MFControl {
 
     isValid(form: MetaForm, updateStatus = true): boolean {
         let valid = true;
-        // let controlName: string;
 
         if (this.validators) {
             for (const v of this.validators) {
                 if (!v.isValid(form, this)) {
-                    // console.warn(`${this.name}: ${v.message}`);
                     valid = false;
-                    // controlName = this.name;
                     this.errorMessage = v.message;
 
                     break;
