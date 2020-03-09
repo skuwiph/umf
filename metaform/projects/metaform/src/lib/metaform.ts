@@ -249,6 +249,9 @@ export class MetaForm {
                     return null;
                 }
 
+                // NOTE(Ian): I don't trust js' date handling when it comes to
+                // timezones on mobile, so any date handling may need to be replaced
+                // either with moment.js or we roll our own comparison features
                 const date = new Date(Date.UTC(year, month, day, hh, mm, 0, 0));
 
                 return date;
