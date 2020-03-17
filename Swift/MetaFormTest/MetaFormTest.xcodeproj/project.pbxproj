@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,6 +15,7 @@
 		7E5274EB2420D4450075AB3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E5274E92420D4450075AB3D /* LaunchScreen.storyboard */; };
 		7E5274F62420D4450075AB3D /* MetaFormTestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5274F52420D4450075AB3D /* MetaFormTestTests.swift */; };
 		7E5275012420D4450075AB3D /* MetaFormTestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5275002420D4450075AB3D /* MetaFormTestUITests.swift */; };
+		7E5275112420F5A20075AB3D /* MetaForm in Frameworks */ = {isa = PBXBuildFile; productRef = 7E5275102420F5A20075AB3D /* MetaForm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		7E5274FC2420D4450075AB3D /* MetaFormTestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MetaFormTestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E5275002420D4450075AB3D /* MetaFormTestUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaFormTestUITests.swift; sourceTree = "<group>"; };
 		7E5275022420D4450075AB3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7E52750E2420F4810075AB3D /* swift-metaform */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "swift-metaform"; path = "../../../swift-metaform"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E5275112420F5A20075AB3D /* MetaForm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +86,8 @@
 				7E5274F42420D4450075AB3D /* MetaFormTestTests */,
 				7E5274FF2420D4450075AB3D /* MetaFormTestUITests */,
 				7E5274DC2420D4440075AB3D /* Products */,
+				7E52750E2420F4810075AB3D /* swift-metaform */,
+				7E52750F2420F5A20075AB3D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -136,6 +141,13 @@
 			path = MetaFormTestUITests;
 			sourceTree = "<group>";
 		};
+		7E52750F2420F5A20075AB3D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -152,6 +164,9 @@
 			dependencies = (
 			);
 			name = MetaFormTest;
+			packageProductDependencies = (
+				7E5275102420F5A20075AB3D /* MetaForm */,
+			);
 			productName = MetaFormTest;
 			productReference = 7E5274DB2420D4440075AB3D /* MetaFormTest.app */;
 			productType = "com.apple.product-type.application";
@@ -594,6 +609,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7E5275102420F5A20075AB3D /* MetaForm */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MetaForm;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7E5274D32420D4440075AB3D /* Project object */;
 }
