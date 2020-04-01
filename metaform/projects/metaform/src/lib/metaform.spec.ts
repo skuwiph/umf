@@ -201,7 +201,7 @@ describe('MetaForm', () => {
             .addValidator(MFValidator.Date('Please enter a valid date'));
 
         f.setValue('date', '2000-2-29');
-        expect(f.isValid()).toEqual(true, `${f.getValue('date')} should be invalid`);
+        expect(f.isValid()).toEqual(true, `${f.getValue('date')} should be valid`);
     });
 
     it('Date validator should evaluate false: 29-2-1900 (not leap year)', () => {
@@ -421,9 +421,7 @@ describe('MetaForm', () => {
     });
 
     it('A control shown by a display rule should cause validation errors', () => {
-        rules
-            .addRule('YesNoIsYes', RuleMatchType.MatchAny)
-            .addPart('yesOrNo', RuleComparison.Equals, 'Y');
+        rules.addRule('YesNoIsYes', RuleMatchType.MatchAny).addPart('yesOrNo', RuleComparison.Equals, 'Y');
 
         const form = MetaForm.create('sample', MetaFormDrawType.EntireForm);
         form.rules = rules.rules;
