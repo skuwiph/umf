@@ -9,6 +9,7 @@ import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { BusinessRule } from './business-rule';
 import { MetaFormData, MFValueChange } from './metaform-data';
+import { Time } from '@angular/common';
 
 export class MetaForm {
     name: string;
@@ -171,7 +172,7 @@ export class MetaForm {
     getValueAsDate(name: string): Date {
         const dateValue = MFDateTimeControl.getDatePart(this.answers.getValue(name));
         if (!dateValue) {
-            // console.warn(`Field ${name} doesn't have an entry`);
+            // console.warn(`Field ${name} doesn't have a valid entry despite being: ${this.answers.getValue(name)}`);
             return null;
         }
         const timeValue = MFDateTimeControl.getTimePart(this.answers.getValue(name));
@@ -191,6 +192,16 @@ export class MetaForm {
         }
 
         return this.convertValueToDate(dateValue, timeValue);
+    }
+
+    getValueAsTime(name: string): Time {
+        const timeValue = MFDateTimeControl.getTimePart(this.answers.getValue(name));
+        if (!timeValue) {
+            // console.log(`No time part from ${timeValue}`);
+            return null;
+        }
+
+        return this.convertValueToTime(timeValue);
     }
 
     convertValueToDate(dateValue: string, timeValue?: string): Date {
@@ -224,10 +235,10 @@ export class MetaForm {
         }
 
         // Optional timeValue parameter
-        if (timeValue && timeValue.length === 5) {
-            const parts = timeValue.split(':');
-            hh = +parts[0];
-            mm = +parts[1];
+        if (timeValue) {
+            const t = this.convertValueToTime(timeValue);
+            hh = t.hours;
+            mm = t.minutes;
         }
 
         if (hh >= 0 && hh <= 23 && mm >= 0 && mm <= 59) {
@@ -261,6 +272,25 @@ export class MetaForm {
         }
 
         return null;
+    }
+
+    convertValueToTime(timeValue: string): Time {
+        let hh = 0;
+        let mm = 0;
+
+        // Optional timeValue parameter
+        if (timeValue.indexOf(':') > -1) {
+            const parts = timeValue.split(':');
+            hh = +parts[0];
+            mm = +parts[1];
+        }
+
+        if (hh < 0 || hh > 23 || mm < 0 || mm > 59) {
+            // console.log(`invalid time: ${hh} or ${mm} is out of accepted ranges`)
+            return null;
+        }
+
+        return { hours: hh, minutes: mm };
     }
 
     setValue(name: string, value: string) {
@@ -718,7 +748,7 @@ export class MFControl {
         return form.getValue(this.name) !== undefined;
     }
 
-    refresh(): void { }
+    refresh(): void {}
 }
 
 export class MFLabel extends MFControl {
@@ -846,9 +876,9 @@ export class MFOptionControlBase extends MFControl {
     }
 }
 
-export class MFOptionControl extends MFOptionControlBase { }
+export class MFOptionControl extends MFOptionControlBase {}
 
-export class MFOptionMultiControl extends MFOptionControlBase { }
+export class MFOptionMultiControl extends MFOptionControlBase {}
 
 export class MFDateControl extends MFControl {
     dateType: MetaFormDateType;
@@ -993,6 +1023,8 @@ export class MFDateTimeControl extends MFControl {
         if (value && value.indexOf(' ') > -1) {
             const timePart = value.substr(value.indexOf(' ') + 1);
             return timePart;
+        } else if (value && value.indexOf(':') > -1) {
+            return value;
         }
         return null;
     }
@@ -1001,6 +1033,8 @@ export class MFDateTimeControl extends MFControl {
         if (value && value.indexOf(' ') > -1) {
             const datePart = value.substr(0, value.indexOf(' '));
             return datePart;
+        } else if (value && value.length > 5) {
+            return value;
         }
         return null;
     }
@@ -1100,7 +1134,6 @@ export class MFDateTimeControl extends MFControl {
     }
 }
 
-
 export class MFTelephoneAndIddControl extends MFControl {
     maxLength: number;
     placeholder?: string;
@@ -1161,7 +1194,7 @@ export class MFValidator {
     }
 
     static Time(message: string): MFValidator {
-        return new MFDateValidator('Time', message);
+        return new MFTimeValidator('Time', message);
     }
 
     static DateTime(message: string): MFValidator {
@@ -1430,6 +1463,19 @@ export class MFDateTimeValidator extends MFValidator {
     }
 }
 
+export class MFTimeValidator extends MFValidator {
+    isValid(form: MetaForm, control: MFControl): boolean {
+        let valid = true;
+
+        const value = form.getValue(control.name);
+        if (value) {
+            const date = form.getValueAsTime(control.name);
+            valid = date !== null;
+        }
+        return valid;
+    }
+}
+
 export class MFDateMustBeAfterValidator extends MFValidator {
     value: string;
 
@@ -1443,7 +1489,7 @@ export class MFDateMustBeAfterValidator extends MFValidator {
             const date = form.getValueAsDate(control.name);
             const minDate = form.convertValueToDate(matchingValue);
 
-            console.log(`is ${date} > ${minDate}?`);
+            // console.log(`is ${date} > ${minDate}?`);
 
             valid = date > minDate;
         }
@@ -1481,7 +1527,6 @@ export class MFMustBeBetweenValidator extends MFValidator {
 
         const answerToCheck = form.getValue(control.name);
         if (answerToCheck) {
-
             const minCheck = this.getAnswerForControl(form.answers, this.min);
             const maxCheck = this.getAnswerForControl(form.answers, this.max);
 

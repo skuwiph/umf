@@ -93,7 +93,9 @@ export class MetaformDeserialiser {
                                 fc.addValidator(MFValidator.AnswerBeforeTime(v.value, v.message));
                                 break;
                             case 'ExceedWordCount':
-                                fc.addValidator(MFValidator.AnswerMustExceedWordCount(parseInt(v.value, 10), v.message));
+                                fc.addValidator(
+                                    MFValidator.AnswerMustExceedWordCount(parseInt(v.value, 10), v.message)
+                                );
                                 break;
                             case 'DateTime':
                                 fc.addValidator(MFValidator.DateTime(v.message));
@@ -102,8 +104,6 @@ export class MetaformDeserialiser {
                                 console.warn(`Got validator of type: ${v.type} and NO implementation`);
                         }
                     }
-                } else {
-                    console.warn(`The control ${c.name} does not have validators?`);
                 }
 
                 if (c.validatorsAsync) {
