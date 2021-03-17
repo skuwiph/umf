@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 
 import { MetaFormDisplayComponent } from './metaform-display.component';
@@ -9,13 +9,14 @@ describe('MetaformDisplayComponent', () => {
     let component: MetaFormDisplayComponent;
     let fixture: ComponentFixture<MetaFormDisplayComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [HttpClientModule],
-            declarations: [MetaFormDisplayComponent]
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [HttpClientModule],
+                declarations: [MetaFormDisplayComponent]
+            }).compileComponents();
         })
-            .compileComponents();
-    }));
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MetaFormDisplayComponent);

@@ -1,7 +1,8 @@
-import { Input, Output } from '@angular/core';
+import { Input, Output, Directive } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { MetaForm, MFControl, MFControlValidityChange } from '../metaform';
 
+@Directive()
 export abstract class MetaFormControlBase {
     @Input() form: MetaForm;
     @Input() control: MFControl;
@@ -16,30 +17,28 @@ export abstract class MetaFormControlBase {
     ro = false;
     readonlyValue: string;
 
-    constructor() { }
+    constructor() {}
 
     onFocusLost() {
         this.checkControlStatus();
     }
 
-    protected setReadonlyValue(): void { }
+    protected setReadonlyValue(): void {}
 
     protected checkControlStatus(updateStatus = true) {
         let error = !this.control.isValid(this.form, updateStatus);
         if (!error) {
-            this.control.isValidAsync(this.form).subscribe(
-                (valid: boolean) => {
-                    // console.log(`async validator finished: ${valid}`);
-                    error = !valid;
-                    this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !error));
+            this.control.isValidAsync(this.form).subscribe((valid: boolean) => {
+                // console.log(`async validator finished: ${valid}`);
+                error = !valid;
+                this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !error));
 
-                    if (updateStatus) {
-                        this.inError = error;
-                    }
-
-                    return;
+                if (updateStatus) {
+                    this.inError = error;
                 }
-            );
+
+                return;
+            });
         }
 
         this.changeValidity.emit(new MFControlValidityChange(this.control.controlId, !error));

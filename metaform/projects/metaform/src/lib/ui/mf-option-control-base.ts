@@ -1,4 +1,4 @@
-import { OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { OnInit, Output, EventEmitter, Input, Directive } from '@angular/core';
 import { MFControlValidityChange, MFOptionValue, MFOptionControlBase } from '../metaform';
 import { MetaFormControlBase } from './mf-control-base';
 import { FormControl } from '@angular/forms';
@@ -7,6 +7,7 @@ import { filter } from 'rxjs/operators';
 import { MetaFormService } from '../metaform.service';
 import { MFOptionsChanged, MFValueChange } from '../metaform-data';
 
+@Directive()
 export abstract class MetaFormOptionControlBase extends MetaFormControlBase implements OnInit {
     @Input() displayIfEmpty = false;
     @Output() optionLoadComplete: EventEmitter<MFOptionsChanged> = new EventEmitter<MFOptionsChanged>();
