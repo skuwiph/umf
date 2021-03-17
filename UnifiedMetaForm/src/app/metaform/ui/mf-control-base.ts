@@ -1,7 +1,8 @@
-import { Input, Output } from '@angular/core';
+import { Input, Output, Directive } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { MetaForm, MFControl, MFControlValidityChange } from '../meta-form';
 
+@Directive()
 export abstract class MetaFormControlBase {
     @Input() form: MetaForm;
     @Input() control: MFControl;

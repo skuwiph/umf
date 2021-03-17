@@ -1,4 +1,4 @@
-import { OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { OnInit, Output, EventEmitter, Input, Directive } from '@angular/core';
 import { MFControlValidityChange, MFOptionValue, MFValueChange, MFOptionsChanged, MFOptionControlBase } from '../meta-form';
 import { MetaFormControlBase } from './mf-control-base';
 import { FormControl } from '@angular/forms';
@@ -6,6 +6,7 @@ import { ControlLayoutStyle } from '../meta-form-enums';
 import { filter } from 'rxjs/operators';
 import { MetaFormService } from '../meta-form.service';
 
+@Directive()
 export abstract class MetaFormOptionControlBase extends MetaFormControlBase implements OnInit {
 
     @Input() displayIfEmpty = false;
