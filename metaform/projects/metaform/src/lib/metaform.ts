@@ -655,6 +655,7 @@ export class MFControl {
         if (!this.validators) {
             this.validators = [];
         }
+        console.debug(`Adding ${validator}`);
         this.validators.push(validator);
 
         if (validator.hasOwnProperty('referencesField')) {
@@ -683,9 +684,12 @@ export class MFControl {
 
     isValid(form: MetaForm, updateStatus = true): boolean {
         let valid = true;
+        // console.log(`Checking error status on control ${this.name}`);
 
         if (this.validators) {
+            // console.log(`Validators present`);
             for (const v of this.validators) {
+                // console.log(`${v.type} check`);
                 if (!v.isValid(form, this)) {
                     valid = false;
                     this.errorMessage = v.message;
@@ -1442,7 +1446,6 @@ export class MFDateValidator extends MFValidator {
         const value = form.getValue(control.name);
         if (value) {
             const date = form.getValueAsDate(control.name);
-
             valid = date !== null;
         }
         return valid;
@@ -1456,7 +1459,6 @@ export class MFDateTimeValidator extends MFValidator {
         const value = form.getValue(control.name);
         if (value) {
             const date = form.getValueAsDateTime(control.name);
-
             valid = date !== null;
         }
         return valid;

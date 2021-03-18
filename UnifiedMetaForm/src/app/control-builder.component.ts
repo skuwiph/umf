@@ -60,7 +60,7 @@ export class ControlBuilderComponent implements OnInit, OnChanges {
         }
 
         if (this.controlForm) {
-            console.log(`Setting control form`);
+            // console.log(`Setting control form`);
             this.controlEditForm = this.controlForm.createFromControl(this._control);
             if (this.controlDisplay) {
                 this.controlDisplay.refreshCurrentDisplay();

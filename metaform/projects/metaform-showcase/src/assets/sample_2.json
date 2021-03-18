@@ -1,0 +1,294 @@
+{
+    "name": "sample",
+    "drawType": 0,
+    "version": 1,
+    "allowSaves": false,
+    "dateModified": "2021-03-18T09:33:58.051Z",
+    "sections": [],
+    "questions": [
+      {
+        "controls": [
+          {
+            "controlType": 7,
+            "name": "interviewDateTime",
+            "hourStart": 7,
+            "hourEnd": 21,
+            "minuteStep": 1,
+            "validators": [
+              {
+                "type": "DateTime",
+                "message": "Please enter a valid date and time"
+              },
+              {
+                "type": "AnswerAfterDate",
+                "message": "Date must be later than today!",
+                "value": "%TODAY"
+              }
+            ],
+            "label": "Start"
+          }
+        ],
+        "controlLayout": 1,
+        "available": true,
+        "captionFootnote": "",
+        "name": "q_q0",
+        "caption": "Enter the interview date and time"
+      },
+      {
+        "controls": [
+          {
+            "controlType": 2,
+            "textType": 0,
+            "maxLength": 50,
+            "placeholder": "First name",
+            "name": "firstName",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter a value"
+              }
+            ]
+          },
+          {
+            "controlType": 2,
+            "textType": 0,
+            "maxLength": 50,
+            "placeholder": "Last name",
+            "name": "lastName",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter a value"
+              }
+            ]
+          }
+        ],
+        "controlLayout": 1,
+        "available": true,
+        "name": "q_q1",
+        "caption": "Please enter your name"
+      },
+      {
+        "controls": [
+          {
+            "iddList": [],
+            "controlType": 8,
+            "name": "contactNumber",
+            "placeholder": "number",
+            "maxLength": 10,
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter a value"
+              }
+            ]
+          }
+        ],
+        "controlLayout": 1,
+        "available": true,
+        "name": "q_q1a",
+        "caption": "Please enter your telephone number"
+      },
+      {
+        "controls": [
+          {
+            "optionLayout": 0,
+            "controlType": 3,
+            "options": {
+              "expandOptions": true,
+              "nullItem": null,
+              "list": [
+                {
+                  "code": "Y",
+                  "description": "Yes"
+                },
+                {
+                  "code": "N",
+                  "description": "No"
+                }
+              ]
+            },
+            "name": "yesOrNo",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please select an answer"
+              }
+            ]
+          }
+        ],
+        "controlLayout": 1,
+        "available": true,
+        "name": "q_q3",
+        "caption": "Can you answer yes or no?"
+      },
+      {
+        "controls": [
+          {
+            "optionLayout": 1,
+            "controlType": 3,
+            "options": {
+              "expandOptions": false,
+              "nullItem": "Please Select",
+              "list": [
+                {
+                  "code": "A",
+                  "description": "Option A",
+                  "fullText": "This option's text <b>describes something relevant</b> to the user."
+                },
+                {
+                  "code": "B",
+                  "description": "Option B",
+                  "fullText": "This option went to climb a <b>particularly</b> tall mountain."
+                },
+                {
+                  "code": "C",
+                  "description": "Option C",
+                  "fullText": "This option <i>didn't want to go outside</i>, but was <u>tempted by the sunshine</u>. "
+                }
+              ]
+            },
+            "name": "otherOption",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please select an answer"
+              }
+            ]
+          },
+          {
+            "controlType": 1,
+            "name": "html",
+            "html": "[specialOptionDescription]"
+          }
+        ],
+        "controlLayout": 1,
+        "available": true,
+        "captionFootnote": null,
+        "name": "q_q41",
+        "caption": "Select an option?"
+      },
+      {
+        "controls": [
+          {
+            "optionLayout": 0,
+            "controlType": 4,
+            "options": {
+              "expandOptions": true,
+              "nullItem": null,
+              "list": [
+                {
+                  "code": "1",
+                  "description": "First"
+                },
+                {
+                  "code": "2",
+                  "description": "Second"
+                },
+                {
+                  "code": "3",
+                  "description": "Third"
+                },
+                {
+                  "code": "4",
+                  "description": "Fourth"
+                }
+              ]
+            },
+            "name": "mops",
+            "validators": []
+          }
+        ],
+        "controlLayout": 1,
+        "available": true,
+        "captionFootnote": null,
+        "name": "q_q4",
+        "caption": "Please select all applicable answers?"
+      },
+      {
+        "controls": [
+          {
+            "controlType": 10,
+            "name": "volume",
+            "text": "Volume",
+            "min": 0,
+            "max": 11,
+            "step": 1,
+            "validators": []
+          }
+        ],
+        "controlLayout": 1,
+        "available": true,
+        "name": "q_q5",
+        "caption": "How loud should we play?"
+      },
+      {
+        "controls": [
+          {
+            "controlType": 2,
+            "textType": 0,
+            "maxLength": 50,
+            "placeholder": "House address",
+            "name": "address1",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter your house address"
+              }
+            ]
+          },
+          {
+            "controlType": 2,
+            "textType": 0,
+            "maxLength": 50,
+            "name": "address2",
+            "validators": []
+          },
+          {
+            "controlType": 2,
+            "textType": 0,
+            "maxLength": 50,
+            "placeholder": "Town/city",
+            "name": "town",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter your town or city"
+              }
+            ]
+          },
+          {
+            "controlType": 2,
+            "textType": 0,
+            "maxLength": 50,
+            "placeholder": "County/State",
+            "name": "county",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter your county or state"
+              }
+            ]
+          },
+          {
+            "controlType": 2,
+            "textType": 6,
+            "maxLength": 10,
+            "placeholder": "Postal code",
+            "name": "postcode",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter your postal code"
+              }
+            ]
+          }
+        ],
+        "controlLayout": 1,
+        "available": true,
+        "name": "q_q6",
+        "caption": "Mailing address"
+      }
+    ],
+    "title": "Sample Form"
+  }

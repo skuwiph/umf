@@ -13,8 +13,12 @@ export class MetaformDeserialiser {
         form.dataSource = data.dataSource;
         form.dateModified = data.dateModified;
 
-        for (const s of data.sections) {
-            form.addSection(s.title);
+        if (data.sections) {
+            for (const s of data.sections) {
+                form.addSection(s.title);
+            }
+        } else {
+            form.addSection('Default');
         }
 
         for (const q of data.questions) {

@@ -9,46 +9,87 @@ import { MFDateControl } from '../metaform';
 @Component({
     selector: 'lib-mf-date',
     template: `
-<div *ngIf="ro; else edit" class="mf-readonly">
-    {{readonlyValue}}
-</div>
-<ng-template #edit>
-    <form [ngClass]="{ 'error': inError }" [formGroup]="formGroup" class="control-date">
-        <ng-container [ngSwitch]="dateType">
-            <div class="row-prefix" *ngIf="labelText">
-                <label class="control-prefix">{{labelText}}</label>
-            </div>
-            <div class="date" *ngSwitchCase="'full'">
-                <input class="mfc dd" [ngClass]="{ 'error': inError }" formControlName="dd" size="2"
-                type="number" name="{{name}}_dd"  placeholder="DD" maxLength="2" (blur)="onFocusLost()">
-                <input class="mm" [ngClass]="{ 'error': inError }" formControlName="mm" size="2"
-                type="number" name="{{name}}_mm"  placeholder="MM" maxLength="2" (blur)="onFocusLost()">
-                <input class="yy" [ngClass]="{ 'error': inError }" formControlName="yyyy" size="4"
-                type="number" name="{{name}}_yyyy"  placeholder="YYYY" maxLength="4" (blur)="onFocusLost()">
-            </div>
-            <div class="shortdate" *ngSwitchCase="'short'">
-                <select class="mfc month" [ngClass]="{ 'error': inError }" formControlName="month" (blur)="onFocusLost()">
-                    <option *ngFor="let m of monthList; let i=index" value="{{i}}">{{m}}</option>
-                </select>
-                <input class="yy" [ngClass]="{ 'error': inError }" formControlName="yyyy" size="4"
-                type="number" name="{{name}}_yyyy" placeholder="YYYY" maxLength="4" (blur)="onFocusLost()">
-            </div>
-        </ng-container>
-    </form>
-</ng-template>
-`,
+        <div *ngIf="ro; else edit" class="mf-readonly">
+            {{ readonlyValue }}
+        </div>
+        <ng-template #edit>
+            <form [ngClass]="{ error: inError }" [formGroup]="formGroup" class="control-date">
+                <ng-container [ngSwitch]="dateType">
+                    <div class="row-prefix" *ngIf="labelText">
+                        <label class="control-prefix">{{ labelText }}</label>
+                    </div>
+                    <div class="date" *ngSwitchCase="'full'">
+                        <input
+                            class="mfc dd"
+                            [ngClass]="{ error: inError }"
+                            formControlName="dd"
+                            size="2"
+                            type="number"
+                            name="{{ name }}_dd"
+                            placeholder="DD"
+                            maxLength="2"
+                            (blur)="onFocusLost()"
+                        />
+                        <input
+                            class="mm"
+                            [ngClass]="{ error: inError }"
+                            formControlName="mm"
+                            size="2"
+                            type="number"
+                            name="{{ name }}_mm"
+                            placeholder="MM"
+                            maxLength="2"
+                            (blur)="onFocusLost()"
+                        />
+                        <input
+                            class="yy"
+                            [ngClass]="{ error: inError }"
+                            formControlName="yyyy"
+                            size="4"
+                            type="number"
+                            name="{{ name }}_yyyy"
+                            placeholder="YYYY"
+                            maxLength="4"
+                            (blur)="onFocusLost()"
+                        />
+                    </div>
+                    <div class="shortdate" *ngSwitchCase="'short'">
+                        <select
+                            class="mfc month"
+                            [ngClass]="{ error: inError }"
+                            formControlName="month"
+                            (blur)="onFocusLost()"
+                        >
+                            <option *ngFor="let m of monthList; let i = index" value="{{ i }}">{{ m }}</option>
+                        </select>
+                        <input
+                            class="yy"
+                            [ngClass]="{ error: inError }"
+                            formControlName="yyyy"
+                            size="4"
+                            type="number"
+                            name="{{ name }}_yyyy"
+                            placeholder="YYYY"
+                            maxLength="4"
+                            (blur)="onFocusLost()"
+                        />
+                    </div>
+                </ng-container>
+            </form>
+        </ng-template>
+    `,
     styleUrls: ['./mf.components.css']
 })
 export class MetaFormDateComponent extends MetaFormControlBase implements OnInit {
-
     formGroup: FormGroup;
     dateType: string;
     monthList: string[];
 
-    constructor(private mfService: MetaFormService) { super(); }
+    constructor(private mfService: MetaFormService) {
+        super();
+    }
 
     ngOnInit(): void {
-
         if (this.control) {
             const dateControl = this.control as MFDateControl;
             this.name = this.control.name;
@@ -66,7 +107,7 @@ export class MetaFormDateComponent extends MetaFormControlBase implements OnInit
                         yyyy: new FormControl(dateControl.getYear(this.form))
                     });
                     this.formGroup.valueChanges.subscribe(obs => {
-                        if (obs.yyyy && obs.mm && obs.dd) {
+                        if (obs.yyyy || obs.mm || obs.dd) {
                             const date = `${obs.yyyy}-${obs.mm}-${obs.dd}`;
                             this.form.setValue(this.control.name, date);
                         } else {
@@ -102,7 +143,6 @@ export class MetaFormDateComponent extends MetaFormControlBase implements OnInit
                     this.dateType = 'full';
                     break;
             }
-
         }
     }
 
@@ -110,7 +150,6 @@ export class MetaFormDateComponent extends MetaFormControlBase implements OnInit
         if (this.readonly || this.control.readonly) {
             this.ro = true;
             if (this.control.hasValue(this.form)) {
-
                 const dateControl = this.control as MFDateControl;
                 const m = parseInt(dateControl.getMonth(this.form), 10);
                 const y = dateControl.getYear(this.form);
@@ -131,5 +170,4 @@ export class MetaFormDateComponent extends MetaFormControlBase implements OnInit
             }
         }
     }
-
 }

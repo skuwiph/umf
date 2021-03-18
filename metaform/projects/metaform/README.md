@@ -96,6 +96,18 @@ onFormEvent(event: MetaFormUserEvent): void {
 }
 ```
 
+### Display text on your page based on rule evaluation
+
+``` (typescript)
+    this.rules
+        .addRule('HasSelectedFourthOption', RuleMatchType.MatchAll)
+        .addPart('mops', RuleComparison.Contains, '4');
+```
+
+``` (html)
+<lib-rule-evaluator [rule]="'HasSelectedFourthOption'" [data]="form.answers">
+```
+
 ### Examples
 
 #### Create a question with two text controls
@@ -148,4 +160,40 @@ form
     .addLabel('Future Date')
     .addValidator(MFValidator.Date('Please enter a date'))
     .addValidator(MFValidator.AnswerAfterDate('%TODAY', 'Date must be later than today!'));
+```
+
+#### Load a form from a local JSON file
+
+``` (typescript)
+    var jsonLoaded: MetaForm = null;
+
+    const otherOptions: SpecialOption[] = [];
+    otherOptions.push(new SpecialOption('A', 'Option A',
+        `Displayed on selection of Option <i>A</i>`));
+    otherOptions.push(new SpecialOption('B', 'Option B',
+        `Displayed on selection of Option <u>B</u>`));
+    otherOptions.push(new SpecialOption('C', 'Option C',
+        `Displayed on selection of Option <b>C</b>`));
+
+    this.formService.loadFormWithName('./assets/', 'sample_2.json')
+        .subscribe(d => {
+            jsonLoaded = d;
+            jsonLoaded.rules = this.rules.rules;
+
+            this.form = jsonLoaded;
+
+            this.form.change$
+            .pipe(
+                filter(
+                    (c: MFValueChange) => c.name === 'otherOption'),
+            )
+            .subscribe((chg: MFValueChange) => {
+                const selected = otherOptions.find(o => o.code === chg.value);
+                const text = selected?.fullText ?? null;
+                this.form.setValue('specialOptionDescription', text);
+            });
+        },
+        error => {
+            console.error(error);
+        });
 ```

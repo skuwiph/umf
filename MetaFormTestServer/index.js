@@ -340,7 +340,7 @@ app.post("/validate/email", cors(), (req, res, next) => {
 });
 
 app.get("/form/:formName", cors(), (req, res, next) => {
-    console.log(`Looking for ${req.params.formName.toLowerCase()}.json in ${__dirname}/forms`);
+    // console.log(`Looking for ${req.params.formName.toLowerCase()}.json in ${__dirname}/forms`);
     res.sendFile(path.join(__dirname, '/forms', `${req.params.formName.toLowerCase()}.json`));
 });
 

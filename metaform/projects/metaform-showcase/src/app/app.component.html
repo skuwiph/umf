@@ -1,3 +1,4 @@
+<div *ngIf="form; else loading">
 <lib-metaform-display [form]="form" [showButtons]="true" (formEvent)="onFormEvent($event)"></lib-metaform-display>
 <lib-rule-evaluator [rule]="'HasSelectedFourthOption'" [data]="form.answers">
     <div class="rule-evaluated">
@@ -9,3 +10,7 @@
                 target="_blank">links</a>.</p>
     </div>
 </lib-rule-evaluator>
+</div>
+<ng-template #loading>
+    <p>Loading...</p>
+</ng-template>
