@@ -17,6 +17,7 @@ import { MetaFormToggleComponent } from './ui/mf-toggle.component';
 import { RuleEvaluatorComponent } from './ui/rule-evaluator.component';
 import { MetaFormSliderComponent } from './ui/mf-slider.component';
 import { MetaFormDateTimeComponent } from './ui/mf-date-time.component';
+import { MetaFormErrorComponent } from './ui/mf-error.component';
 
 @NgModule({
     declarations: [
@@ -32,9 +33,10 @@ import { MetaFormDateTimeComponent } from './ui/mf-date-time.component';
         MetaFormTelephoneAndIddComponent,
         MetaFormToggleComponent,
         MetaFormSliderComponent,
-        RuleEvaluatorComponent
+        RuleEvaluatorComponent,
+        MetaFormErrorComponent
     ],
     imports: [CommonModule, HttpClientModule, FormsModule, ReactiveFormsModule],
     exports: [MetaFormDisplayComponent, RuleEvaluatorComponent]
 })
-export class MetaFormModule { }
+export class MetaFormModule {}

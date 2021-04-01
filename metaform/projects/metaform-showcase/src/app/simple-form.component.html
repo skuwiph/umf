@@ -1,0 +1,16 @@
+<div *ngIf="form; else loading">
+<lib-metaform-display [form]="form" [showButtons]="true" (formEvent)="onFormEvent($event)"></lib-metaform-display>
+<lib-rule-evaluator [rule]="'HasSelectedFourthOption'" [data]="form.answers">
+    <div class="rule-evaluated">
+        <h3>A rule has evaluated true</h3>
+        <p>We have specified that this block can only be displayed if the rule <b>HasSelectedFourthOption</b> evaluates
+            true.</p>
+        <p>Since we use the <code>ng-content</code> tag, anything within this block is permissible content, including <a
+                href="https://blog.ng-book.com/dynamic-components-with-content-projection-in-angular/"
+                target="_blank">links</a>.</p>
+    </div>
+</lib-rule-evaluator>
+</div>
+<ng-template #loading>
+    <p>Loading...</p>
+</ng-template>

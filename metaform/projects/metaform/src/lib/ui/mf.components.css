@@ -6,6 +6,15 @@ input.error, input.error, select.error {
     border-color:  red;
 }
 
+.errorMessage {
+    margin: 0.25rem 0;
+    background-color: rgb(156, 42, 42);
+    color: white;
+    width: calc(100% - 1rem + 4px);
+    padding: 0.5rem 0.25rem;
+    border-radius: 5px;
+}
+
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;

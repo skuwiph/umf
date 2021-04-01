@@ -1,6 +1,6 @@
 {
     "name": "sample",
-    "drawType": 0,
+    "drawType": 2,
     "version": 1,
     "allowSaves": false,
     "dateModified": "2021-03-18T09:33:58.051Z",
@@ -88,6 +88,73 @@
         "available": true,
         "name": "q_q1a",
         "caption": "Please enter your telephone number"
+      },
+      {
+        "controls": [
+          {
+            "controlType": 2,
+            "textType": 0,
+            "maxLength": 50,
+            "placeholder": "House address",
+            "name": "address1",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter your house address"
+              }
+            ]
+          },
+          {
+            "controlType": 2,
+            "textType": 0,
+            "maxLength": 50,
+            "name": "address2",
+            "validators": []
+          },
+          {
+            "controlType": 2,
+            "textType": 0,
+            "maxLength": 50,
+            "placeholder": "Town/city",
+            "name": "town",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter your town or city"
+              }
+            ]
+          },
+          {
+            "controlType": 2,
+            "textType": 0,
+            "maxLength": 50,
+            "placeholder": "County/State",
+            "name": "county",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter your county or state"
+              }
+            ]
+          },
+          {
+            "controlType": 2,
+            "textType": 6,
+            "maxLength": 10,
+            "placeholder": "Postal code",
+            "name": "postcode",
+            "validators": [
+              {
+                "type": "Required",
+                "message": "Please enter your postal code"
+              }
+            ]
+          }
+        ],
+        "controlLayout": 1,
+        "available": true,
+        "name": "q_q6",
+        "caption": "Mailing address"
       },
       {
         "controls": [
@@ -221,74 +288,7 @@
         "available": true,
         "name": "q_q5",
         "caption": "How loud should we play?"
-      },
-      {
-        "controls": [
-          {
-            "controlType": 2,
-            "textType": 0,
-            "maxLength": 50,
-            "placeholder": "House address",
-            "name": "address1",
-            "validators": [
-              {
-                "type": "Required",
-                "message": "Please enter your house address"
-              }
-            ]
-          },
-          {
-            "controlType": 2,
-            "textType": 0,
-            "maxLength": 50,
-            "name": "address2",
-            "validators": []
-          },
-          {
-            "controlType": 2,
-            "textType": 0,
-            "maxLength": 50,
-            "placeholder": "Town/city",
-            "name": "town",
-            "validators": [
-              {
-                "type": "Required",
-                "message": "Please enter your town or city"
-              }
-            ]
-          },
-          {
-            "controlType": 2,
-            "textType": 0,
-            "maxLength": 50,
-            "placeholder": "County/State",
-            "name": "county",
-            "validators": [
-              {
-                "type": "Required",
-                "message": "Please enter your county or state"
-              }
-            ]
-          },
-          {
-            "controlType": 2,
-            "textType": 6,
-            "maxLength": 10,
-            "placeholder": "Postal code",
-            "name": "postcode",
-            "validators": [
-              {
-                "type": "Required",
-                "message": "Please enter your postal code"
-              }
-            ]
-          }
-        ],
-        "controlLayout": 1,
-        "available": true,
-        "name": "q_q6",
-        "caption": "Mailing address"
-      }
+      }     
     ],
-    "title": "Sample Form"
+    "title": "Simple Form from JSON"
   }

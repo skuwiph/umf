@@ -74,7 +74,9 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     }
 
     onControlValidityChange(event: MFControlValidityChange): void {
+        // console.log(`onControlValidityChange: ${JSON.stringify(event)}`);
         if (!this.display.controlStatus) {
+            // console.log(`Not updating control status`);
             return;
         }
         this.display.controlStatus.set(event.name, event.valid);
@@ -146,7 +148,6 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
 
     private checkPageStatus() {
         this.pageIsValid = this.form.areQuestionsValid(this.display.questions, false);
-
         this.formEvent.emit(
             new MetaFormUserEvent(this.pageIsValid ? UserEventType.FormValid : UserEventType.FormInvalid, this.form)
         );

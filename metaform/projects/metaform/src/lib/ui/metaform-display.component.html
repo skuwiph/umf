@@ -65,7 +65,7 @@
                             </ng-container>
                             <ng-container *ngSwitchDefault><b>No control implementation:</b> <pre>{{c | json}}</pre></ng-container>
                         </ng-container>
-                        <div *ngIf="c.inError" class="errorMessage">{{c.errorMessage}}</div>
+                        <lib-mf-error [form]="form" [control]="c"></lib-mf-error>
                     </div>
                 </div>
                 <div class="footnote" *ngIf="q.captionFootnote">{{q.captionFootnote}}</div>

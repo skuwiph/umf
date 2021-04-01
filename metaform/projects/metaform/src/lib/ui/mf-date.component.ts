@@ -85,7 +85,7 @@ export class MetaFormDateComponent extends MetaFormControlBase implements OnInit
     dateType: string;
     monthList: string[];
 
-    constructor(private mfService: MetaFormService) {
+    constructor(private formService: MetaFormService) {
         super();
     }
 

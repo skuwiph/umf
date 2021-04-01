@@ -267,7 +267,7 @@ app.get("/country", cors(), (req, res, next) => {
 
 app.get("/country/:countryCode/regions", cors(), (req, res, next) => {
     var countryCode = req.params.countryCode.toUpperCase();
-    if (countryCode === 'UK') {
+    if (countryCode === 'GB') {
         res.json([
             { 'code': '1', 'description': 'Scotland' },
             { 'code': '2', 'description': 'Northern Ireland' },

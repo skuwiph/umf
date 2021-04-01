@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { BusinessRule } from './business-rule';
 import { MetaFormData, MFValueChange } from './metaform-data';
 import { Time } from '@angular/common';
+import { takeUntil } from 'rxjs/operators';
 
 export class MetaForm {
     name: string;
@@ -607,6 +608,24 @@ export class MFQuestion {
             if (!element.isValid(form, updateStatus)) {
                 valid = false;
             }
+
+            if (element.validatorsAsync) {
+                // console.log(`Have to check async`);
+                for (const v of element.validatorsAsync) {
+                    if (!updateStatus) {
+                        valid = v.lastCheckedStatus;
+                        if (valid) {
+                            element.inErrorAsync = false;
+                        }
+                    }
+                }
+            }
+
+            if (valid) {
+                if (element.inError) {
+                    valid = false;
+                }
+            }
         });
 
         return valid;
@@ -638,13 +657,38 @@ export class MFControl {
     label?: string;
 
     inError = false;
-    errorMessage?: string;
+    errorMessage: string;
+
+    errorMessagePromise: Promise<string> | null = null;
+    inErrorAsync = false;
 
     isReferencedBy: string[];
     references: string[];
     dependencies: string[];
 
     readonly = false;
+
+    private resolve: Function | null = null;
+
+    constructor() {
+        this.reset();
+    }
+
+    reset() {
+        this.inErrorAsync = false;
+        this.errorMessagePromise = new Promise<string>((resolve, reject) => {
+            this.resolve = resolve;
+        });
+    }
+
+    updateErrorMessage(message: string) {
+        if (!message) {
+            this.reset();
+        } else {
+            this.resolve!(message);
+            this.inErrorAsync = true;
+        }
+    }
 
     addLabel(label: string): MFControl {
         this.label = label;
@@ -692,8 +736,9 @@ export class MFControl {
                 // console.log(`${v.type} check`);
                 if (!v.isValid(form, this)) {
                     valid = false;
-                    this.errorMessage = v.message;
 
+                    this.errorMessage = v.message;
+                    this.reset();
                     break;
                 }
             }
@@ -714,34 +759,27 @@ export class MFControl {
     isValidAsync(form: MetaForm, updateStatus = true): Observable<boolean> {
         const subject = new Subject<boolean>();
 
-        let valid = true;
-        let controlName: string;
+        // Check async
+        if (this.validatorsAsync) {
+            // console.log(`I have async validators`);
+            for (const v of this.validatorsAsync) {
+                // console.log(`Checking ${v.type} with url ${v.url}`);
+                v.isValid(form, this).subscribe(r => {
+                    // console.log(`${v.url} returned ${JSON.stringify(r)}: message is ${v.message}`);
 
-        if (valid) {
-            // Check async
-            // console.log('Checking async validators')
-            if (this.validatorsAsync) {
-                // console.log(`I have async validators`);
-                for (const v of this.validatorsAsync) {
-                    // console.log(`Checking ${v.type} with url ${v.url}`);
-                    v.isValid(form, this).subscribe(r => {
-                        // console.log(`${v.url} returned ${JSON.stringify(r)}`);
+                    const valid = r;
+                    if (!valid) {
+                        this.errorMessage = v.message;
+                    } else {
+                        this.errorMessage = undefined;
+                    }
 
-                        valid = r;
-                        if (!valid) {
-                            controlName = this.name;
-                            this.errorMessage = v.message;
-                        }
+                    // console.log(`Setting valid=${valid} on control ${this.name} currently in error: ${this.inErrorAsync}`);
+                    this.inErrorAsync = !valid;
+                    this.updateErrorMessage(this.errorMessage);
 
-                        if (valid) {
-                            this.errorMessage = undefined;
-                        }
-
-                        // console.log(`Setting valid=${valid} on control ${this.name} currently in error: ${this.inError}`);
-                        this.inError = !valid;
-                        subject.next(r);
-                    });
-                }
+                    subject.next(r);
+                });
             }
         }
 
@@ -1364,6 +1402,9 @@ export class MFValidatorAsync {
 
     referencesField: string[];
 
+    lastCheckedValue: string;
+    lastCheckedStatus: boolean;
+
     static AsyncValidator(http: HttpClient, url: string, message: string): MFAsyncValidator {
         const v = new MFAsyncValidator(http, 'Async', url, message);
         return v;
@@ -1372,6 +1413,14 @@ export class MFValidatorAsync {
     isValid(form: MetaForm, control: MFControl): Observable<boolean> {
         console.error(`SHOULDN'T BE HERE`);
         return null;
+    }
+
+    storeCheckedValue(value: string) {
+        this.lastCheckedValue = value;
+    }
+
+    storeCheckedStatus(isValid: boolean) {
+        this.lastCheckedStatus = isValid;
     }
 }
 
@@ -1579,11 +1628,21 @@ export class MFAsyncValidator extends MFValidatorAsync {
     isValid(form: MetaForm, control: MFControl): Observable<boolean> {
         const s = new Subject<boolean>();
 
-        this.http.post(this.url, { check: form.getValue(control.name) }).subscribe((d: MFAsyncValidationResponse) => {
-            // console.log(`Data: ${JSON.stringify(d)}`);
-            s.next(d.valid);
-            s.complete();
-        });
+        const value = form.getValue(control.name);
+        if (this.lastCheckedValue !== value) {
+            this.storeCheckedValue(value);
+
+            this.http.post(this.url, { check: value }).subscribe((d: MFAsyncValidationResponse) => {
+                // console.log(`Data: ${JSON.stringify(d)}`);
+                this.storeCheckedStatus(d.valid);
+                s.next(d.valid);
+                // s.complete();
+            });
+        } else {
+            setTimeout(() => {
+                s.next(this.lastCheckedStatus);
+            }, 100);
+        }
 
         return s;
     }
@@ -1641,9 +1700,11 @@ export class MFOptionValue {
 export class MFControlValidityChange {
     name: string;
     valid: boolean;
-    constructor(name: string, valid: boolean) {
+    message?: string;
+    constructor(name: string, valid: boolean, message?: string) {
         this.name = name;
         this.valid = valid;
+        this.message = message;
     }
 }
 

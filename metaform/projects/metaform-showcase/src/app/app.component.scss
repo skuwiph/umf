@@ -1,15 +1,25 @@
-.rule-evaluated {
-    border:1px solid rgb(99, 130, 189);
-    background-color: rgb(162, 193, 250);
-    border-radius: 5px;
-    margin: 1.5rem 2rem;
-    padding: 0.25rem 0.5rem;
+.body {
+    display: flex;
+    flex-direction: row;
+}
 
-    h3 {
-        font-size: 10pt;
-    }
+nav {
+    min-width: 20em;
+}
 
-    p, a, b, code {
-        font-size: 8pt;
-    }
+nav > ul {
+    list-style: none;
+    padding-left: 0;
+}
+nav > ul > li{
+    padding: 0.25rem 1rem;
+}
+nav > ul > li > a {
+    width: 100%;
+    text-decoration: none;
+    padding: 0.25rem 1rem;   
+}
+nav > ul > li > a:hover {
+    background-color: blue;
+    color: white;
 }

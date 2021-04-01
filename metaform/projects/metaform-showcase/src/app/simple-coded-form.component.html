@@ -1,0 +1,6 @@
+<div *ngIf="form; else loading">
+    <lib-metaform-display [form]="form" [showButtons]="true" (formEvent)="onFormEvent($event)"></lib-metaform-display>
+</div>
+<ng-template #loading>
+    <p>Loading...</p>
+</ng-template>

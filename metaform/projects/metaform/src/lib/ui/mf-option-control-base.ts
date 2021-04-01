@@ -62,6 +62,8 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
     }
 
     loadOptions(optionControl: MFOptionControlBase): void {
+        this.loaded = false;
+
         const url = optionControl.urlForService(this.form, this.control);
         if (url) {
             this.formService.loadOptionsFromUrl(this.form, url).subscribe((data: MFOptionValue[]) => {
@@ -74,6 +76,7 @@ export abstract class MetaFormOptionControlBase extends MetaFormControlBase impl
                 this.populateOptions(optionControl);
             });
         } else {
+            console.warn(`No url for ${this.control.name}}`);
         }
     }
 

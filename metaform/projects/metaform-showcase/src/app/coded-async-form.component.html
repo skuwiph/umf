@@ -1,0 +1,7 @@
+<p>Please make sure that the MetaFormTestServer node.js test server is running on port 3000</p>
+<div *ngIf="form; else loading">
+    <lib-metaform-display [form]="form" [showButtons]="true" (formEvent)="onFormEvent($event)"></lib-metaform-display>
+</div>
+<ng-template #loading>
+    <p>Loading...</p>
+</ng-template>

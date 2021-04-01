@@ -75,7 +75,7 @@ export class MetaFormDateTimeComponent extends MetaFormControlBase implements On
     hourList: string[];
     minuteList: string[];
 
-    constructor(private mfService: MetaFormService) {
+    constructor(private formService: MetaFormService) {
         super();
     }
 

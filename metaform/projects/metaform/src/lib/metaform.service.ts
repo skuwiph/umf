@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { throwError, Observable, Subject } from 'rxjs';
 import { BusinessRuleService } from './business-rule.service';
@@ -12,7 +12,7 @@ import { MetaformDeserialiser } from './serialisation/v1.metaform-deserialiser';
     providedIn: 'root'
 })
 export class MetaFormService {
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
     // Create a blank form
     createForm(name: string, title: string, drawType?: MetaFormDrawType): MetaForm {
@@ -137,7 +137,7 @@ export class MetaFormService {
         let checkSection = 0;
         let found = false;
 
-        console.log(`lastSection: ${lastSection}, checking ${lastSection + direction}`);
+        // console.log(`lastSection: ${lastSection}, checking ${lastSection + direction}`);
 
         checkSection = lastSection + direction;
         while (
@@ -145,9 +145,9 @@ export class MetaFormService {
             ((direction > 0 && checkSection < form.sections.length) || (direction < 0 && checkSection > -1))
         ) {
             const currentSection = form.sections[checkSection];
-            console.log(`Check ${currentSection.title}`);
+            // console.log(`Check ${currentSection.title}`);
             if (this.isSectionValidForDisplay(form.answers, currentSection, ruleService)) {
-                console.log(`Section ${currentSection.title} passes rule ${currentSection.ruleToMatch}`);
+                // console.log(`Section ${currentSection.title} passes rule ${currentSection.ruleToMatch}`);
                 activeSection = currentSection;
                 found = true;
             } else {

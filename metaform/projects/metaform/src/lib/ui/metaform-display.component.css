@@ -30,15 +30,6 @@ label.caption {
     margin-bottom: 0.5rem;
 }
 
-.errorMessage {
-    margin: 0.25rem 0;
-    background-color: rgb(156, 42, 42);
-    color: white;
-    width: calc(100% - 1rem + 4px);
-    padding: 0.5rem 0.25rem;
-    border-radius: 5px;
-}
-
 .mf-controls {
     display: flex;
 }
