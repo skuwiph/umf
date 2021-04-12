@@ -8,6 +8,32 @@
 form = this.formService.createForm('sample', 'Sample Form', MetaFormDrawType.EntireForm);
 ```
 
+### Draw types
+
+#### EntireForm
+
+This will display all form questions on a single page.
+
+#### SingleSection
+
+By setting sections up on your form, you can display all questions within a given section:
+
+``` (typescript)
+form.addSection(title: 'Section #1', ruleToMatch?: 'ruleName');
+```
+
+Questions must be added to the desired section via ordinal:
+
+``` (typescript)
+form
+    .addQuestion('country', 'Please select a country from URL')
+    .setSection(1)
+```
+
+#### SingleQuestion
+
+This will display all controls for a single question.
+
 ### Add a question to a form
 
 ``` (typescript)
@@ -65,8 +91,15 @@ form.change$
 ### Display the form
 
 ``` (html)
-<lib-metaform-display [form]="form" [showButtons]="true"
- (formEvent)="onFormEvent($event)"></lib-metaform-display>
+<lib-metaform-display [form]="form" [showButtons]="true" (formEvent)="onFormEvent($event)"></lib-metaform-display>
+```
+
+Optional `@Input` parameters:
+
+``` (html)
+[backButtonLabel]="'◄'" 
+[nextButtonLabel]="'Next ►'" 
+[submitButtonLabel]="'Submit'"
 ```
 
 ### Form events
@@ -83,6 +116,12 @@ onFormEvent(event: MetaFormUserEvent): void {
         case UserEventType.FormValid:
             console.log(`The form is now valid`);
             break;
+        case UserEventType.NavigationButtonClickedBack:
+            console.log('The previous/back button has been clicked');
+            break;
+        case UserEventType.NavigationButtonClickedForward:
+            console.log('The forward/next button has been clicked')
+            break;            
         case UserEventType.FormSubmit:
             console.log(
                 `The 'Submit' button on the display component has been clicked. Data is: ${JSON.stringify(
@@ -96,6 +135,8 @@ onFormEvent(event: MetaFormUserEvent): void {
 }
 ```
 
+The `MetaFormUserEvent.type` is guaranteed to be `FormInitialised` before any other event is sent.
+
 ### Display text on your page based on rule evaluation
 
 ``` (typescript)
@@ -103,6 +144,8 @@ onFormEvent(event: MetaFormUserEvent): void {
         .addRule('HasSelectedFourthOption', RuleMatchType.MatchAll)
         .addPart('mops', RuleComparison.Contains, '4');
 ```
+
+Add the `lib-rule-evaluator` tag to your page:
 
 ``` (html)
 <lib-rule-evaluator [rule]="'HasSelectedFourthOption'" [data]="form.answers">

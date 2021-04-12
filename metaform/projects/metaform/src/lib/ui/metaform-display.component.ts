@@ -23,6 +23,10 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     @Input() showButtons = false;
     @Input() preventFocus = false;
     @Input() alwaysShowOptions = false;
+    @Input() nextButtonLabel = 'Next';
+    @Input() submitButtonLabel = 'Submit';
+    @Input() backButtonLabel = 'ᐊ';
+
     @Output() formEvent: EventEmitter<MetaFormUserEvent> = new EventEmitter<MetaFormUserEvent>();
 
     display: DisplayQuestion;
@@ -33,8 +37,8 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     pageIsValid = false;
     atEndOfForm = false;
     atStartOfForm = false;
-
-    nextButtonText = 'Next';
+    nextButtonText: string;
+    lastFormStatus = UserEventType.None;
 
     ngOnInit(): void {
         if (!this.form) {
@@ -46,21 +50,21 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.formEvent.emit(new MetaFormUserEvent(UserEventType.FormInitialised, this.form));
+        this.sendFormEvent(UserEventType.FormInitialised);
 
         this.setFocusOnFirstControl();
     }
 
     previousPage() {
-        this.formEvent.emit(new MetaFormUserEvent(UserEventType.NavigationButtonClicked, this.form));
+        this.sendFormEvent(UserEventType.NavigationButtonClickedBack);
         this.getPreviousQuestions();
     }
 
     nextPage() {
         if (this.atEndOfForm) {
-            this.formEvent.emit(new MetaFormUserEvent(UserEventType.FormSubmit, this.form));
+            this.sendFormEvent(UserEventType.FormSubmit);
         } else {
-            this.formEvent.emit(new MetaFormUserEvent(UserEventType.NavigationButtonClicked, this.form));
+            this.sendFormEvent(UserEventType.NavigationButtonClickedForward);
             this.getNextQuestions();
         }
     }
@@ -137,9 +141,9 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
         this.atStartOfForm = this.display.atStart;
         this.currentFormItem = this.display.lastItem;
         if (this.atEndOfForm) {
-            this.nextButtonText = 'Submit';
+            this.nextButtonText = this.submitButtonLabel;
         } else {
-            this.nextButtonText = 'Next ᐅ';
+            this.nextButtonText = this.nextButtonLabel;
         }
 
         this.checkPageStatus();
@@ -148,9 +152,7 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
 
     private checkPageStatus() {
         this.pageIsValid = this.form.areQuestionsValid(this.display.questions, false);
-        this.formEvent.emit(
-            new MetaFormUserEvent(this.pageIsValid ? UserEventType.FormValid : UserEventType.FormInvalid, this.form)
-        );
+        this.sendFormEvent(this.pageIsValid ? UserEventType.FormValid : UserEventType.FormInvalid);
     }
 
     private setFocusOnFirstControl(): void {
@@ -165,6 +167,16 @@ export class MetaFormDisplayComponent implements OnInit, AfterViewInit {
                 }
             }, 250);
         }
+    }
+
+    private sendFormEvent(type: UserEventType) {
+        // Be helpful to clients; don't send anything prior to form initialised
+        if (this.lastFormStatus === UserEventType.None && type !== UserEventType.FormInitialised) {
+            return;
+        }
+
+        this.formEvent.emit(new MetaFormUserEvent(type, this.form));
+        this.lastFormStatus = type;
     }
 }
 
@@ -192,13 +204,15 @@ export class MetaFormUserEvent {
 }
 
 export enum UserEventType {
+    None,
     FormInitialised,
     FormInvalid,
     FormValid,
     FormSubmit,
     QuestionSelected,
     ControlSelected,
-    NavigationButtonClicked
+    NavigationButtonClickedBack,
+    NavigationButtonClickedForward
 }
 
 export class ControlSelectedEvent {

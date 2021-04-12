@@ -36,7 +36,7 @@ export class SimpleCodedFormComponent implements OnInit {
             .addPart('mops', RuleComparison.Contains, '4');
 
         // Generate the form and link to the created rules
-        this.form = this.formService.createForm('sample', 'Simple Form from Code', MetaFormDrawType.EntireForm);
+        this.form = this.formService.createForm('sample', 'Simple Form from Code', MetaFormDrawType.SingleQuestion);
         this.form.rules = this.rules.rules;
 
         // Create the questions and controls for the form
@@ -187,6 +187,12 @@ export class SimpleCodedFormComponent implements OnInit {
                     break;
                 case UserEventType.FormValid:
                     console.log(`The form is now valid`);
+                    break;
+                case UserEventType.NavigationButtonClickedBack:
+                    console.log('The previous/back button has been clicked');
+                    break;
+                case UserEventType.NavigationButtonClickedForward:
+                    console.log('The forward/next button has been clicked');
                     break;
                 case UserEventType.FormSubmit:
                     console.log(

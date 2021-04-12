@@ -78,6 +78,6 @@
         <ng-container *ngIf="pageIsValid">{{nextButtonText}}</ng-container>
         <ng-container *ngIf="!pageIsValid">Please correct errors</ng-container>
     </button>
-    <button *ngIf="!atStartOfForm" class="btn btn-prev" (click)="previousPage()">ᐊ</button>
+    <button *ngIf="!atStartOfForm" class="btn btn-prev" (click)="previousPage()">{{backButtonLabel}}</button>
 </div>
 </ng-container>
