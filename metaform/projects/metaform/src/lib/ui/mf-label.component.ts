@@ -6,7 +6,7 @@ import { MetaFormService } from '../metaform.service';
     selector: 'lib-mf-label',
     template: `
         <div class="mf-label">
-            <label>{{ text }}</label>
+            <label class="{{ style }}">{{ text }}</label>
         </div>
     `,
     styleUrls: ['./mf.components.css']
@@ -17,6 +17,7 @@ export class MetaFormLabelComponent implements OnInit {
 
     name: string;
     text: string;
+    style = '';
 
     constructor(private formService: MetaFormService) {}
 
@@ -25,6 +26,9 @@ export class MetaFormLabelComponent implements OnInit {
             const labelControl = this.control as MFLabelControl;
             this.name = this.control.name;
             this.text = labelControl.text;
+            this.style = labelControl.style ?? '';
+
+            console.log(`Style: ${this.style}`);
         }
     }
 }

@@ -46,6 +46,9 @@ export class SimpleCodedFormComponent implements OnInit {
             .addValidator(MFValidator.Required('Please enter a value'))
             .addValidator(MFValidator.Email('Please enter a valid email address'));
         this.form.getQuestion('q2').addToggleControl('marketing', 'Please send me marketing emails');
+
+        this.form.getQuestion('q2').addLabel('Please enter a password', 'caption');
+
         this.form
             .getQuestion('q2')
             .addTextControl('password', MetaFormTextType.Password, 255, 'Password')

@@ -441,12 +441,13 @@ export class MFQuestion {
         return c;
     }
 
-    addLabel(text: string): MFQuestion {
+    addLabel(text: string, style?: string): MFQuestion {
         const c = new MFLabelControl();
 
         c.controlType = MetaFormControlType.Label;
         c.name = `Label`;
         c.text = text;
+        c.style = style;
 
         this.pushControl(c);
 
@@ -1205,6 +1206,7 @@ export class MFToggleControl extends MFControl {
 
 export class MFLabelControl extends MFControl {
     text: string;
+    style: string;
 }
 
 export class MFSliderControl extends MFControl {
