@@ -52,12 +52,78 @@ form.addQuestion('q1', 'Please enter your name')
 .addValidator(MFValidator.Required('Please enter a value'))
 ```
 
+### Add an asynchronous validator to a control
+
+``` (typescript)
+    .addValidatorAsync(
+        MFValidatorAsync.AsyncValidator(
+            this.http,
+            'http://localhost:3000/validate/email',
+            'This email has already been registered'
+        )
+```
+
+Where `this.http` is of type `HttpClient`.
+
+The endpoint must return JSON of the format:
+
+``` (json)
+{
+    valid: true|false
+}
+```
+
+As a simple `node.js` example:
+
+``` (javascript)
+app.post("/validate/email", cors(), (req, res, next) => {
+    var check = req.body.check.toLowerCase();
+    // console.log(`Validate email called with '${check}'`);
+
+    if (check === 'fail@example.com') {
+        res.json(
+            { 'valid': false }
+        );
+    } else {
+        res.json(
+            { 'valid': true }
+        );
+    }
+});
+```
+
+_Note: async validation does complicate the control flow somewhat, and is best avoided until a refactoring of the validation logic to work purely on promises/observables can be completed._
+
+In most instances the use of async can be avoided as, per the above example, many of the requirements can be managed on form submit in your own code.
+
 ### Declare a rule
 
 ``` (typescript)
 ruleService
     .addRule('HasSelectedFourthOption', RuleMatchType.MatchAll)
-    .addPart('fieldName', RuleComparison.Contains, '4');
+    .addPart('fieldName', RuleComparison.Contains, '4')
+    .addPart('fieldName2', RuleComparison.Equals, 'Match-Me-Too');
+```
+
+Rule constants:
+
+``` (typescript)
+export enum RuleMatchType {
+    MatchAny,
+    MatchAll
+}
+```
+
+``` (typescript)
+export enum RuleComparison {
+    Unknown,
+    Equals,
+    NotEquals,
+    LessThan,
+    GreaterThan,
+    Contains = 5,
+    Between
+}
 ```
 
 ### Link rules to a form
